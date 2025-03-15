@@ -1,0 +1,104 @@
+<div id="main">
+
+    <div id="navbar">
+
+        <div id="nav-logo">
+
+            <h3>Diary</h3>
+        </div>
+
+        <div id="nav-elements">
+            <a href="/search"><i class="ri-search-line"></i></a> <a href="/stories">STORIES</a><a
+                href="/stories/newWrite"><i class="ri-pen-nib-fill"></i></a> 
+        </div>
+      
+
+     
+        <div id="nav-profile">
+            <!-- ,<div class="signup"><a href=""><h5>Signup/Login</h5></a></div>  -->
+            <% if(!currUser){%>
+                <a href="/login" style="width: 100px;height: 40px;">
+            <button style="width: 100%; height: 100%; background-color: rgb(255, 255, 255);color: rgb(0, 0, 0);  border-radius: 50px;">Login</button>
+                </a>
+                <%}else{%>
+
+                    <img src="<%=user.image.url%>" alt="Profile">
+                    <div class="Profile-card-list">
+
+
+                        <div class="Profile-card-list-top">
+                            <ul>
+                                <li>
+                                    <h5>
+                                        <%=user.name%>
+                                    </h5>
+                                </li>
+
+                                <li>
+                                    <h5>
+                                        <%=user.username%>
+                                    </h5>
+                                </li>
+                            </ul>
+
+
+                        </div>
+
+                        <div class="Profile-card-list-mid">
+                            <ul>
+                    
+                                <li>
+                                    <a href="/profile"
+                                        class="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-gray-700">
+                                        <i class="ri-account-circle-fill"></i>
+
+                                        <span class="text-sm font-medium"> Profile </span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="/dashbord"
+                                        class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                        <i class="ri-dashboard-fill te"></i>
+
+                                        <span class="text-sm font-medium"> Dashbord</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="/notification"
+                                        class="flex items-center gap-2  rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 relative">
+                                        <i class="ri-notification-fill"></i>
+
+                                        <span class="text-sm font-medium">Notification</span> 
+                                        
+                                        <span id="red-dot" class="absolute  left-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+
+                                    </a>
+                                </li>
+                        <li>
+                                    <a href="/stories/newWrite"
+                                        class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500  hover:text-gray-700">
+                                        <i class="fa-solid fa-pen-nib"></i>
+    
+                                        <span class="text-sm font-medium">Write</span>
+                                    </a>
+                                </li>
+                         
+                            </ul>
+                       
+                        </div>
+
+                        <div class="Profile-card-list-btm" style="background-color: black;">
+                            <a href="/logout" style="color: white; display: flex;align-items: center;justify-content: center;gap: 10px;">
+                                <h5 style="color: whitesmoke;"> Log out</h5>
+                                <i style="color: white;" class="ri-logout-circle-r-line"></i>
+                            </a>
+                        </div>
+                 
+                    </div>
+                    <%}%>
+        </div>
+
+    </div>
+</div>

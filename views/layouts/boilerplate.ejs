@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width initial-scale=1.0">
+    <title>DIARY.</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
+
+   <link rel="stylesheet" href="/css/navbar.css">
+   <link rel="stylesheet" href="/css/card.css">
+   <script src="https://cdn.tailwindcss.com"></script>
+   
+</head>
+<body>
+    <%-include('../include/navbar.ejs')%>
+    <%-body%>
+    <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const profileImg = document.querySelector('#nav-profile img');
+        const dropdownMenu = document.querySelector('.Profile-card-list');
+
+        profileImg.addEventListener('click', function (e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!profileImg.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.remove('show');
+            }
+            dropdownMenu.classList.remove('show');
+
+        });
+    });
+
+
+
+
+
+    setTimeout(() => {
+            document.getElementById('toast-success').style.display = "none"
+    location.reload();
+
+        }, 3000);
+
+        // document.getElementById('flash-cls').addEventListener('click', () => {
+        //     document.getElementById('toast-success').style.display = "none"
+
+        // })
+</script> 
+
+<script>
+
+  const flashMessage = "<%= success %>"; 
+  if (flashMessage === 'your story is live!') {
+      // confetti animation
+      confetti({
+              particleCount: 200,  // Number of confetti particles per layer
+              angle: Math.random() * 360,  // Random angle to spread confetti
+              spread: 90 + Math.random() * 90,  // Random spread
+              origin: { x: Math.random(), y: Math.random() },  // Random origin points
+              colors: ['#ff6347', '#ff4500', '#32cd32', '#1e90ff', '#ff1493'],  // Custom colors
+              shapes: ['circle', 'square', 'triangle'],  // Multiple particle shapes
+              gravity: 0.3 + Math.random() * 0.5,  // Random gravity for variation
+              drift: Math.random() * 1 - 0.5  // Random drift for side motion
+          });
+
+          setTimeout(() => {
+          confetti({
+              particleCount: 500, 
+              spread: 360,
+              origin: { x: 0.5, y: 0.5 },
+              colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00'],
+              shapes: ['circle'],
+              gravity: 0.6,
+              scalar: 1.2
+          });
+      }, 100);
+  }
+</script>
+<script>
+ document.querySelectorAll('#like').forEach(el => {
+    const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+    el.innerText = moment(rawDate).fromNow();
+});
+document.querySelectorAll('#follow').forEach(el => {
+    const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+    el.innerText = moment(rawDate).fromNow();
+});
+</script>
+<script>
+    
+    document.addEventListener("DOMContentLoaded", function () {
+    const notificationIcon = document.getElementById("notification-icon");
+    const redDot = document.getElementById("red-dot");
+
+    async function fetchUnreadCount() {
+        try {
+            const response = await fetch("/notifications/unread-count");
+            const data = await response.json();
+
+            if (data.unreadCount > 0) {
+                redDot.classList.remove("hidden"); // Show red dot
+            } else {
+                redDot.classList.add("hidden"); // Hide red dot
+            }
+        } catch (error) {
+            console.error("Error fetching unread notifications count:", error);
+        }
+    }
+
+    // Fetch unread notifications count when page loads
+    fetchUnreadCount();
+
+ 
+});
+
+
+</script>
+
+<!-- <script>
+     document.querySelectorAll('[data-story]').forEach(el => {
+        el.innerHTML = el.getAttribute('data-story');
+    });
+        const storyContainer = document.getElementById('story-container');
+
+
+        storyContainer.innerHTML = storyContainer.getAttribute('data-story');
+        storyContainer.style.cssText = textElement.getAttribute('data-story');
+        //     const storyContainers = document.getElementById('story-container');
+
+
+
+
+</script> -->
+</body>
+</html>

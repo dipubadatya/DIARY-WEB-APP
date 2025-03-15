@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-w-2::-webkit-scrollbar {
+            width: 0.25rem;
+            height: 0.25rem;
+        }
+
+        .scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+            --bg-opacity: 1;
+            background-color: #f7fafc;
+            background-color: rgba(247, 250, 252, var(--bg-opacity));
+        }
+
+        .scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+            --bg-opacity: 1;
+            background-color: #edf2f7;
+            background-color: rgba(237, 242, 247, var(--bg-opacity));
+        }
+
+        .scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+            border-radius: 0.25rem;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- component -->
+    <div class="flex-1 p:2 sm:p-6 justify-between flex  flex-col h-screen">
+        <div class="flex sm:items-center justify-between  py-3 p-3 sticky border-b-2">
+            <div class="relative flex items-center space-x-4">
+                <div class="relative">
+
+                    <img src="<%=receiverUser.image.url  %>" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
+                </div>
+
+                <div class="flex flex-col leading-tight">
+                    <div class="text-2xl mt-1 flex items-center">
+                        <span class="text-gray-700 mr-3">
+                            <%=receiverUser.username%>
+                        </span>
+                    </div>
+                    <span id="typingIndicator" class="text-lg text-gray-600">
+                        <!-- <%=receiverUser.bio%> -->
+                    </span>
+                </div>
+            </div>
+
+        </div>
+        <div id="messages"
+            class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+            <% messages.forEach(msg=> { %>
+                <% if (msg.sender.equals(user._id)) { %>
+                    <!-- outgoing-->
+                    <div class="chat-message">
+                        <div class="flex items-end justify-end">
+                            <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+                                <div><span
+                                        class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">
+                                        <%=msg.message%>
+                                    </span></div>
+                                <span>
+                                    <%= msg.timestamp.toLocaleTimeString('en-US', { hour: 'numeric' , minute: '2-digit'
+                                        }) %>
+                                </span>
+
+                            </div>
+
+                            <!-- <img src="<%=receiverUser.image.url  %>"
+                                alt="My profile" class="w-6 h-6 rounded-full order-2"> -->
+                        </div>
+                    </div>
+
+                    <% } else { %>
+                        <!--incoming-->
+                        <div class="chat-message">
+
+                            <div class="flex items-end">
+                                <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
+                                    <div><span
+                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
+                                            <%=msg.message %>
+                                        </span></div>
+
+                                    <span>
+                                        <%= msg.timestamp.toLocaleTimeString('en-US', { hour: 'numeric' ,
+                                            minute: '2-digit' }) %>
+                                    </span>
+
+
+                                </div>
+                                <!-- <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
+                                    alt="My profile" class="w-6 h-6 rounded-full order-1"> -->
+                            </div>
+                        </div>
+                        <% } %>
+                            <% }) %>
+        </div>
+        <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
+            <div class="relative flex">
+                <span class="absolute inset-y-0 flex items-center">
+                    <button type="button"
+                        class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
+                        <i class="ri-chat-1-line"></i>
+                    </button>
+                </span>
+                <form style="width: 100%;height: 100%;" action="/chat/<%=receiverId %>" method="post">
+                    <input type="text" name="message" placeholder="Write your message!"
+                        class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3">
+                    <div class="absolute right-0 items-center inset-y-0  sm:flex">
+    
+                        <button
+                            class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
+                            <span class="font-bold">Send</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                class="h-6 w-6 ml-2 transform rotate-90">
+                                <path
+                                    d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+
+
+ 
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const sender = "<%= currUser._id %>";
+        const receiver = "<%= receiverId %>";
+
+       
+
+        // Emit typing event when user types
+        const messageInput = document.querySelector("input[name='message']");
+        messageInput.addEventListener("input", () => {
+            socket.emit("userTyping", { senderId: sender });
+        });
+
+        document.querySelector("form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const message = messageInput.value;
+            socket.emit("sendMessage", { sender, receiver, message });
+            messageInput.value = "";
+
+        });
+
+        socket.on("receiveMessage", (data) => {
+    if ((data.sender === sender && data.receiver === receiver) ||
+        (data.sender === receiver && data.receiver === sender)) {
+        
+        const chatBox = document.getElementById("messages");
+        const newMessage = document.createElement("div");
+
+        // Convert timestamp to human-readable format
+        const time = new Date(data.timestamp).toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit' 
+        });
+
+        newMessage.innerHTML = `
+            <div class="chat-message">
+                <div class="flex items-end ${data.sender === sender ? 'justify-end' : ''}">
+                    <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-${data.sender === sender ? 1 : 2} items-${data.sender === sender ? 'end' : 'start'}">
+                        <div><span class="px-4 py-2 rounded-lg inline-block ${data.sender === sender ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'}">
+                            ${data.message}
+                        </span></div>
+                        <span class="text-gray-500">${time}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        chatBox.appendChild(newMessage);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+});
+        // Display typing indicator
+        socket.on("userTyping", ({ senderId }) => {
+            const typingIndicator = document.getElementById("typingIndicator");
+            typingIndicator.innerText = "Typing...";
+            setTimeout(() => {
+                typingIndicator.innerText = "";
+            }, 5000);
+        });
+        socket.on("updateStatus", (message) => {
+            const statuses = document.querySelectorAll(".status");
+            statuses[statuses.length - 1].className = `status ${message.seen ? "blue-tick" : "double-tick"}`;
+        });
+        // Show notification for new messages
+        socket.on("newNotification", ({ senderId, message }) => {
+            const notificationBox = document.getElementById("notification-box");
+            notificationBox.innerHTML = `<p>New message: ${message}</p>`;
+        });
+    </script>
+</body>
+
+</html>

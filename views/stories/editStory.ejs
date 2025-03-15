@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/writer.css">
+</head>
+
+<body>
+    <div id="main">
+        <div id="writer-container">
+            <form action="/stories/<%=editStory._id%>?_method=PUT" method="post" enctype="multipart/form-data">
+
+                <div class="writer-header">
+                    <a href="landing.html">
+                        <h1>Diary</h1>
+                    </a>
+                    <div class="wrtr-hd-input">
+                        <input type="text" name="title" value="<%=editStory.title%>" placeholder=" story title"
+                            class="story-title">
+                        <input type="file" name="editStory[image]" value="<%=editStory.image%>" id="img"
+                            placeholder="storie image" class="story-img">
+    
+                    </div>
+                    <button>SAVE</button>
+
+                </div>
+                <!-- <div class="writer-text">
+
+                    <textarea id="story"  name="story" data-story="<%=editStory.story%>"
+                        placeholder="write your story..." ><pre><%=editStory.story%></pre></textarea>
+                </div> -->
+                <div class="writer-text">
+                    <textarea id="story" name="story" placeholder="Write your story..."><%=  editStory.story %></textarea>
+                </div>
+                
+
+
+
+            </form>
+        </div>
+    </div>
+    <script src="/tinymce/tinymce.min.js"></script>
+    <script src="/path/to/your/tinymce-config.js"></script>
+
+
+    <!-- <script>
+
+    tinymce.init({
+            selector: 'textarea#my-editor',
+            height: 800,
+            width: 1000,
+     
+
+        });
+        const storyContainer = document.getElementById('story-container');
+
+        storyContainer.forEach(element => {
+            element.innerHTML = storyContainer.getAttribute('data-story');
+            storyContainer.style.cssText = textElement.getAttribute('data-story');
+
+        });
+        storyContainer.innerHTML = storyContainer.getAttribute('data-story');
+        storyContainer.dataset.story = storyContainer.getAttribute('data-story');
+
+
+
+    </script> -->
+</body>
+</html>

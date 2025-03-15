@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern User Search</title>
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-gradient-to-r from-purple-50 to-indigo-50 flex items-center justify-center p-8">
+    <div class="max-w-md w-full">
+        <!-- Search Bar -->
+        <div class="relative">
+            <input type="text" id="searchBar" placeholder="Search username..."
+                class="w-full px-6 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-300 shadow-sm bg-white/80 backdrop-blur-sm" />
+               
+                <i class="ri-search-2-line  absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400"></i>
+        </div>
+        <!-- User List -->
+        <div id="userList" class="mt-4 space-y-4"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const searchBar = document.getElementById("searchBar");
+            const userList = document.getElementById("userList");
+
+            searchBar.addEventListener("input", async function () {
+                const query = searchBar.value.trim();
+
+                if (query === "") {
+                    userList.innerHTML = ""; // Clear list when input is empty
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/username/${query}`);
+                    const users = await response.json();
+
+                    if (users.length > 0) {
+                        userList.innerHTML = users.map(user => `
+  <a href="/profile/${user._id}">
+                       
+                            <div class="user-card flex items-center space-x-4 bg-white/90 p-4 rounded-lg shadow-md border border-gray-200 ">
+                                <img src="${user.image.url}" alt="User Image" class="w-12 h-12 rounded-full object-cover border-2 border-purple-200 shadow-sm">
+                                <div>
+                                    <h2 class="text-lg font-bold text-gray-800">${user.name || "No Name"}</h2>
+                                    <p class="text-gray-500 text-sm">@${user.username}</p>
+                                </div>
+                            </div>
+                           </a>
+                        `).join("");
+                    } else {
+                        userList.innerHTML = `<p class="text-gray-500 text-center mt-4">No users found</p>`;
+                    }
+                } catch (error) {
+                    console.error("Error fetching users:", error);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

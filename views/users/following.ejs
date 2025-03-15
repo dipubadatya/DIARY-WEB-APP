@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <script src="https://cdn.tailwindcss.com"></script>
+
+
+</head>
+<body class="bg-black-100 p-1 flex justify-center min-h-screen" >
+
+
+    <div class="bg-white shadow-md  rounded-xl p-6 w-full max-w-md" style="box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;">
+      <h2 class="text-xl font-bold text-gray-800 mb-4">Following</h2>
+      
+   
+      <div class="space-y-4">
+        <% if (profile.following && profile.following.length > 0) { %>
+          <% for (const following of profile.following) { %>
+              <div class="flex items-center justify-between">
+                
+                  <div class="flex items-center space-x-3">
+                    <a class="flex items-center space-x-3" href="/profile/<%=following._id%>">
+                  
+                      <img class="h-12 w-12 rounded-full object-cover" src="<%= following.image.url %>" alt="User">
+                      <div>
+                          <p class="font-semibold text-gray-800"><%= following.username %></p>
+                          <p class="text-gray-500 text-sm"><%= following.name %></p>
+                      </div>
+                    </a>
+                  </div>
+      
+                 
+              </div>
+          <% } %>
+      <% } else { %>
+          <p>No followers found.</p>
+      <% } %>
+        
+      </div>
+  </div>
+
+
+
+  
+
+  
+</body>
+
+</html>

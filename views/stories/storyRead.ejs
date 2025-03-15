@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%=pageTitle %>
+    </title>
+    <link rel="stylesheet" href="/css/storyRead.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+    <div id="container" style="position: relative;">
+
+        <div id="navbar">
+
+            <div id="nav-logo">
+
+                <h3>Diary</h3>
+            </div>
+
+            <div id="nav-elements">
+                <a href="/search"><i class="ri-search-line"></i></a> <a href="/stories">STORIES</a><a
+                    href="/stories/newWrite"><i class="ri-pen-nib-fill"></i></a>
+            </div>
+            <div id="nav-profile">
+                <!-- ,<div class="signup"><a href=""><h5>Signup/Login</h5></a></div>  -->
+                <% if(!currUser){%>
+                    <a href="/login">
+                        <h1>SIGN-IN</h1>
+                    </a>
+                    <%}else{%>
+
+
+
+
+
+
+
+
+
+                        <img src="<%=user.image.url%>" alt="Profile">
+                        <div class="Profile-card-list">
+
+
+                            <div class="Profile-card-list-top">
+                                <ul>
+                                    <li>
+                                        <h5>
+                                            <%=user.name%>
+                                        </h5>
+                                    </li>
+
+                                    <li>
+                                        <h5>
+                                            <%=user.username%>
+                                        </h5>
+                                    </li>
+                                </ul>
+
+
+                            </div>
+
+                            <div class="Profile-card-list-mid">
+                                <ul>
+                                    <!-- <li> <a href="/profile">
+                                            <h6>Profile</h6>
+                                        </a></li>
+                                    <li><a href="/dashbord">
+                                            <h6>Dashbord</h6>
+                                        </a></li>
+                                    <li> <a href="/stories/newWrite">
+                                            <h6>Write</h6>
+                                        </a></li> -->
+
+
+                                    <li>
+                                        <a href="/profile"
+                                            class="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-gray-700">
+                                            <i class="ri-account-circle-fill"></i>
+
+                                            <span class="text-sm font-medium"> Profile </span>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="/dashbord"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="ri-dashboard-fill te"></i>
+
+                                            <span class="text-sm font-medium"> Dashbord</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/notification"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="ri-notification-fill"></i>
+    
+                                            <span class="text-sm font-medium">Notification</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/stories/newWrite"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="fa-solid fa-pen-nib"></i>
+
+                                            <span class="text-sm font-medium">Write</span>
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+
+                            </div>
+
+                            <div class="Profile-card-list-btm" style="background-color: black;">
+                                <a href="/logout" style="color: white; display: flex;align-items: center;justify-content: center;gap: 10px;">
+                                    <h5 style="color: whitesmoke;"> Log out</h5>
+                                    <i style="color: white;" class="ri-logout-circle-r-line"></i>
+
+                                </a>
+                            </div>
+
+                        </div>
+                        <%}%>
+            </div>
+
+        </div>
+        <div class="flex items-center justify-center">
+            <% if(success && success.length){%>
+                <div id="toast-success" 
+                    class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-900 bg-white rounded-lg shadow"
+                    role="alert">
+                    <div
+                        class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500  rounded-lg  dark:text-black-200">
+                        <i class="ri-chat-check-line"></i>
+                        <span class="sr-only">Check icon</span>
+                    </div>
+                    <div class="ml-3 text-sm font-normal">
+                        <%=success %>
+                    </div>
+                    <!-- <button type="button" id="flash-cls"
+                        class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white  dark:hover:bg-gray-400"
+                        >
+                        <span class="sr-only">Close</span>
+                        <i class="ri-close-fill"></i>
+                    </button> -->
+
+                </div>
+                <% } %>
+        </div>
+        <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
+            <!-- Modal Container -->
+            <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/3 p-6">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 class="text-lg font-semibold text-gray-900">Ready to say goodbye?</h3>
+                    <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <!-- Modal Body -->
+                <div class="mt-4">
+                    <p class="text-gray-700">
+                        Once deleted, it’s gone forever. No going back.</p>
+                </div>
+                <!-- Modal Footer -->
+                <div class="mt-6 flex justify-end space-x-3">
+                    <button id="cancelBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</button>
+                    <form action="/stories/<%=story._id%>/delete?_method=DELETE" method="post">
+                    <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
+                </form>
+                </div>
+            </div>
+        </div>
+        <div id="page1">
+
+            <div class="story-paper">
+
+                <div class="pg1-story-ppr-header">
+
+                    <h3 style="text-align: center;">
+
+                        <%=story.title.toUpperCase()%>
+                            <img style="width: 50%;height: 50%;" src="
+                        <%=story.image.url%>" alt="">
+
+                    </h3>
+
+                    <a href="/profile/<%=story.owner._id%>">
+                        <h5 class=" text-white rounded-full " href="#" style="color: white;">
+                            <%=story.owner.username%>
+                        </h5>
+                    </a>
+                </div>
+                <!-- <div class="pg1-story-ppr-lines">
+                       <p id="story-container" data-story="<%=story.story%>" id="story-content-<%= story._id %>">
+                        <pre>  <%=story.story  %></pre>
+                    </p>
+                </div> -->
+                <div class="pg1-story-ppr-lines">
+                    <p id="story-container" data-story="<%=story.story%>" id="story-content-<%= story._id %>">
+                    <pre class="story-text"><%= story.story %></pre>
+                    </p>
+
+
+                </div>
+
+
+
+
+                <div class=" fixed bottom-6 right-24 z-10 ">
+                    <div id="option-list" style="display: none;"
+                        class="flex  flex-col justify-end py-1 sm mb-4 space-y-2 bg-white border border-gray-100 rounded-lg shadow-sm  dark:bg-white">
+                        <ul class="text-sm text-gray-900 dark:text-gray-900">
+                            <li>
+                                <% if (story.owner._id.equals(currUser._id)) {%>
+                                    <a href="/stories/<%=story._id%>/edit"
+                                        class="flex items-center gap-2.5 px-5 py-2  dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white ">
+                                        <i class="ri-pencil-line"></i>
+                                        <span class="text-sm font-medium">EDIT</span>
+                                    </a>
+                                    <%}%>
+                            </li>
+                            <li>
+                                <% if (story.owner._id.equals(currUser._id)) {%>
+                                    <a href="#" id="openModalBtn"
+                                        class="flex items-center gap-2.5 px-5 py-2   dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white">
+                                        <i class="ri-delete-bin-6-line"></i>
+                                        <!-- <form action="/stories/<%=story._id%>/delete?_method=DELETE" method="post">
+
+                                            <button> <span class="text-sm font-medium">DELETE</span></button>
+
+
+
+                                        </form> -->
+                                        <button > <span class="text-sm font-medium">DELETE</span></button>
+                                        
+                                    </a>
+                                    <%}%>
+                            </li>
+                            <li>
+                                <a href="/stories/download/<%=story._id%>"
+                                    class="flex items-center gap-2.5 px-5 py-2  dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white">
+                                    <i class="ri-download-cloud-line"></i>
+
+                                    <span class="text-sm font-medium">download</span>
+
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <button id="option" type="button"
+                        class="flex items-center justify-center ml-auto text-white bg-blue-700 rounded-full w-14 h-14 ">
+                        <i class="ri-function-line"></i>
+
+                    </button>
+                </div>
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+        <div id="page2">
+
+
+            <div id="like-container">
+                <div id="like-form">
+                    <div id="like">
+                        <form action="/stories/<%=story._id%>/likes">
+
+                            <% if(story.likedBy.includes(currUser.id)) {%>
+
+                                <button onclick="refreshPage()"><i class="ri-heart-3-fill"></i></button>
+
+
+                                <%}else{%>
+
+
+                                    <button><i class="ri-heart-add-2-line"></i></button>
+
+
+
+
+
+                                    <%}%>
+
+
+                        </form>
+                    </div>
+                    <h1>
+                        <%=story.likesCounts%>
+                    </h1>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div id="gif-container" style="display: none;">
+
+                <form id="comment-form" action="/gif/<%=story._id%>" method="post">
+
+                    <!-- GIF Search Bar -->
+                    <div class="max-w-lg mx-auto bg-white rounded-xl shadow-md mt-1.5 overflow-hidden md:max-w-2xl "
+                        style="height: 700px;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;">
+                        <div class="p-8">
+                            <span id="gif-cls" class="mt-3"> <i class="ri-close-large-line"></i></span>
+
+                            <div class="flex items-center justify-between">
+                                <input type="text" id="gif-search" placeholder="Search for GIFs.." required
+                                    class="w-full px-4 mr-2 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <button type="button" onclick="searchGIFs()"
+                                    class="ml-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Search</button>
+                            </div>
+                        </div>
+                        <!-- GIF Results -->
+                        <div id="gif-results"
+                            class="mt-4 p-2 gap-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
+                            style="max-height: 400px;">
+                            <!-- GIFs will be dynamically inserted here -->
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="gif" id="selected-gif">
+                    <button type="submit"></button>
+                </form>
+            </div>
+
+
+
+
+            <div id="comment-section-container" style="margin-top: 30px">
+
+                <div id="comment-input">
+
+                    <form action="/comment/<%=story._id%>" method="post">
+
+                        <textarea  name="comment[comment]" placeholder="write your comments" required></textarea>
+
+
+
+                        <div class="flex items-center justify-between gap-1.5 w-full h-20 mt-1">
+                            <div class="flex items-center space-x-2">
+                                <button id="gif-btn" type="button"
+                                    style="font-size: larger; color: rgb(14, 14, 14);background-color: antiquewhite;"
+                                    class="p-2 rounded-full hover:bg-white-200 transition duration-200">
+                                    <i class="ri-file-gif-line"></i>
+                                </button>
+
+                            </div>
+                            <div class="flex items-center space-x-2">
+
+                                <button type="submit"
+                                    class="bg-blue-500  text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200">
+                                    Comment
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+
+
+                <div id="comment-msg-boxs" style="border-top:1px solid rgb(129, 7, 7);">
+                    <h1>
+                        <%=story.comments.length %> COMMENTS
+                    </h1>
+                    <hr>
+                    <% for (review of story.comments) { %>
+                        <div class="comment-card">
+                            <div class="comment-profile">
+                                <div class="comment-user-img">
+                                    <img src="<%=review.author.image.url%>" alt="user">
+                                </div>
+                                <div class="comment-user-info">
+                                    <a href="/comment/<%=review.author._id%>">
+                                        <h4>
+                                            <%=review.author.username%>
+                                        </h4>
+                                    </a>
+
+
+                                    <span>
+
+                                        <p id="lastEdited-<%= review._id %>">
+                                            <%= review.timeStamp.toISOString() %>
+                                        </p> %></p>
+
+
+
+                                    </span>
+
+
+                                </div>
+                            </div>
+                            <div class="comment-content">
+                                <p>
+                                    <%=review.comment%>.
+                                        <% if (review.gif) { %>
+                                            <img src="<%= review.gif %>" width="200">
+                                            <% } %>
+                                </p>
+                            </div>
+
+                            <% if (review.author._id.equals(currUser._id)) {%>
+                                <div class="inline-flex items-center rounded-md shadow-sm mt-3 ">
+
+                                    <form
+                                        class="text-slate-800  text-sm bg-red-400   rounded-l-lg  font-medium px-4 py-2 inline-flex space-x-1 items-center"" action="
+                                        /comment/<%=story._id%>/review/<%=review._id%>?_method=DELETE"
+                                            method="post">
+                                            <button>
+                                                <span><i class="ri-delete-bin-7-line"></i>
+                                                </span>
+                                                <span class=" md:inline-block">Delete</span>
+                                            </button>
+                                    </form>
+                                    <form
+                                        class="text-slate-800 hover:text-blue-600 text-sm   border-y font-medium px-4 py-2 inline-flex space-x-1 items-center"
+                                        action="/comment/<%=story._id%>/review/<%=review._id%>" method="get">
+
+                                        <button>
+
+                                            <span>
+                                                <i class="ri-chat-settings-line"></i>
+                                            </span>
+                                            <span class=" md:inline-block">Edit</span>
+                                        </button>
+                                    </form>
+
+                                </div>
+                                <% } %>
+
+                        </div>
+                        <%}%>
+
+
+
+
+
+
+
+                </div>
+
+            </div>
+        
+        </div>
+
+    </div>
+
+
+
+    <script>
+        setTimeout(() => {
+            document.getElementById('toast-success').style.display = "none"
+        
+            location.reload()
+        }, 3000);
+
+        // document.getElementById('flash-cls').addEventListener('click', () => {
+        //     document.getElementById('toast-success').style.display = "none"
+
+        // })
+    </script>
+
+    <script>
+
+
+//for story delete  modal
+const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const modal = document.getElementById('modal');
+
+        openModalBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+        //for GIF search
+        async function searchGIFs() {
+            const query = document.getElementById('gif-search').value;
+            const response = await fetch(`/search-gif?q=${query}`);
+            const gifs = await response.json();
+
+            const gifResultsDiv = document.getElementById('gif-results');
+            gifResultsDiv.innerHTML = '';
+
+            gifs.forEach(gif => {
+
+                const img = document.createElement('img');
+                img.src = gif.images.fixed_height.url;
+                img.style.cursor = 'pointer';
+                img.onclick = () => {
+                    document.getElementById('selected-gif').value = gif.images.fixed_height.url;
+                    gifResultsDiv.innerHTML = `<img src="${gif.images.fixed_height.url}" >`;
+                    document.getElementById('comment-form').submit();
+
+                };
+                gifResultsDiv.appendChild(img);
+
+
+            });
+
+        }
+
+
+
+        //for gif container open /close
+        let gifContainer = document.getElementById('gif-container')
+        document.getElementById('gif-btn').addEventListener('click', () => {
+            if (gifContainer.style.display = "none") {
+                gifContainer.style.display = "block"
+            } else {
+                gifContainer.style.display = "none"
+
+            }
+        })
+        document.getElementById('gif-cls').addEventListener('click', () => {
+            if (gifContainer.style.display = "bloack") {
+                gifContainer.style.display = "none"
+                document.getElementById('gif-results').value = ""
+                document.getElementById('gif-search').value = ""
+
+            } else {
+                gifContainer.style.display = "none"
+
+            }
+        })
+
+
+
+        // FOR DROPDOWNS
+
+        //for profile dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileImg = document.querySelector('#nav-profile img');
+            const dropdownMenu = document.querySelector('.Profile-card-list');
+
+            profileImg.addEventListener('click', function (e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!profileImg.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+                dropdownMenu.classList.remove('show');
+
+            });
+        });
+
+
+        //for story edit options
+        let option = document.getElementById('option-list')
+
+        document.getElementById('option').addEventListener('click', () => {
+            if (option.style.display === "none") {
+                option.style.display = "block"
+            } else {
+                option.style.display = "none"
+            }
+
+        })
+
+
+        // for track current time 
+        document.querySelectorAll('[id^="lastEdited-"]').forEach(el => {
+            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+            el.innerText = ` ${moment(rawDate).fromNow()}`;
+        });
+
+
+        //     document.querySelectorAll('[data-story]').forEach(el => {
+        //     el.innerHTML = el.getAttribute('data-story');
+        // });
+        //     const storyContainer = document.getElementById('story-container');
+
+
+        //     storyContainer.innerHTML = storyContainer.getAttribute('data-story');
+        //     storyContainer.style.cssText = textElement.getAttribute('data-story');
+
+    </script>
+    
+   
+
+</body>
+
+</html>

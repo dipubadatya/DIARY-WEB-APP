@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<%=pageDescription%>">
+    <title>
+        <%=pageTitle%>
+    </title>
+    <link rel="stylesheet" href="/css/dashbord.css">
+    <!-- <link rel="stylesheet" href="/css/navbar.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.0/lottie.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+
+
+</head>
+
+<body>
+    <div id="main">
+        <div id="navbar">
+            <div id="nav-logo">
+                <h3>Diary</h3>
+            </div>
+            <div id="nav-elements">
+                <a href="search"><i class="ri-search-line"></i></a> <a href="/stories">STORIES</a>
+                <a href="/stories/newWrite"><i class="ri-pen-nib-fill"></i></a>
+            </div>
+            <div id="nav-profile">
+                <!-- ,<div class="signup"><a href=""><h5>Signup/Login</h5></a></div>  -->
+                <% if(!currUser){%>
+                    <a href="/login">
+                        <h1>SIGN-IN</h1>
+                    </a>
+                    <%}else{%>
+
+
+
+
+                        <img src="<%=user.image.url%>" alt="Profile">
+                        <div class="Profile-card-list">
+
+
+                            <div class="Profile-card-list-top">
+                                <ul>
+                                    <li>
+                                        <h5>
+                                            <%=user.name%>
+                                        </h5>
+                                    </li>
+                                    <li>
+                                        <h5>
+                                            <%=user.username%>
+                                        </h5>
+                                    </li>
+                                </ul>
+
+
+                            </div>
+
+                            <div class="Profile-card-list-mid">
+
+
+
+
+                                <ul>
+
+                                    <li>
+                                        <a href="/profile"
+                                            class="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-gray-700">
+                                            <i class="ri-account-circle-fill"></i>
+
+                                            <span class="text-sm font-medium"> Profile </span>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="/dashbord"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="ri-dashboard-fill te"></i>
+
+                                            <span class="text-sm font-medium"> Dashbord</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/notification"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="ri-notification-fill"></i>
+    
+                                            <span class="text-sm font-medium">Notification</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/stories/newWrite"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="fa-solid fa-pen-nib"></i>
+
+                                            <span class="text-sm font-medium">Write</span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
+                            <div class="Profile-card-list-btm" style="background-color: black;">
+                                <a href="/logout"
+                                    style="color: white; display: flex;align-items: center;justify-content: center;gap: 10px;">
+                                    <h5 style="color: whitesmoke;"> Log out</h5>
+                                    <i style="color: white;" class="ri-logout-circle-r-line"></i>
+
+                                </a>
+                            </div>
+
+                        </div>
+                        <%}%>
+            </div>
+
+        </div>
+        <div class="flex items-center justify-center">
+            <% if(success && success.length){%>
+                <div id="toast-success"
+                    class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow"
+                    role="alert">
+                    <div
+                        class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500  rounded-lg  dark:text-black-200">
+                        <i class="ri-chat-check-line"></i>
+                        <span class="sr-only">Check icon</span>
+                    </div>
+                    <div class="ml-3 text-sm font-normal">
+                        <%=success %>
+                    </div>
+                    <!-- <button type="button" id="flash-cls"
+                        class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white  dark:hover:bg-gray-400"
+                        data-dismiss-target="#toast-success" aria-label="Close">
+                        <span class="sr-only">Close</span>
+                        <i class="ri-close-fill"></i>
+                    </button> -->
+
+                </div>
+                <% } %>
+        </div>
+      
+        
+        <div class="dashboard-container">
+            
+            <!-- Profile Section -->
+            <div class="profile-section" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                <div class="profile-header">
+                    <div class="profile-image">
+                        <img id="profile-preview" src="<%=user.image.url%>" alt="">
+
+                    </div>
+                    <h2>
+                        <%=user.name%>
+                    </h2>
+                    <p>@<%=user.username%>
+                    </p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box"
+                        style="box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;">
+                        <h3>
+                            <%=user.stories.length%>
+                        </h3>
+                        <p>Posts</p>
+                    </div>
+                    <div class="stat-box"
+                        style="box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;">
+                        <h3>
+                            <%=user.following.length%>
+                        </h3>
+                        <a href="/following/<%=user._id%>">
+                            <p>Following</p>
+                        </a>
+                    </div>
+                    <div class="stat-box"
+                        style="box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;">
+
+                        <h3>
+                            <%=user.followers.length%>
+                        </h3>
+                        <a href="/followers/<%=user._id%>">
+
+                            <p>Followers</p>
+                        </a>
+                    </div>
+                </div>
+            
+                
+                <script>
+                    function toggleNotifications() {
+                        document.getElementById('notif-panel').classList.toggle('hidden');
+                    }
+                </script>
+                <div class="profile-form">
+                    <form action="/dashbord/<%=user._id%>?_method=PUT" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="profile-input">Profile Picture</label>
+                            <input class="block w-full text-sm text-slate-500  file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-violet-50 file:text-violet-700
+                            hover:file:bg-violet-100" id="profile-input" type="file" name="dashbord[image]"
+                                value="<%=user.image%>" accept="image/*">
+
+                        </div>
+
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="dashbord[name]" value="<%=user.name%>">
+                        </div>
+                        <div class="form-group">
+                            <label>Username</label>
+                            <input type="text" name="dashbord[username]" value="<%=user.username%>">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <input type="text" name="dashbord[bio]" value="<%=user.bio%>">
+                        </div>
+                        <button>Update Profile</button>
+                    </form>
+
+
+                </div>
+                <button id="deleteAccountBtn" class="bg-white-500 mt-0.5 w-full text-black px-4 py-2 rounded">
+                    <i class="fas fa-trash-alt mr-2"></i>Delete Account
+                </button>
+            </div>
+
+            <!-- Delete Account Modal -->
+            <div id="deleteAccountModal"
+                class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800">Are you absolutely sure?</h2>
+                        <button id="closeModalBtn" class="text-gray-600 hover:text-gray-800 focus:outline-none">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <p class="text-gray-600 mb-6">
+                        Deleting your account will remove all your stories, comments, and data permanently.</p>
+                    <div class="flex justify-end">
+                        <button id="cancelBtn"
+                            class="bg-gray-300 text-gray-800 px-4 py-2 rounded mr-2 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50">
+                            Cancel
+                        </button>
+                        <form action="/delete?_method=DELETE" method="post">
+                            <button
+                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                                <i class="fas fa-trash-alt mr-2"></i>Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Stories Section -->
+            <div class="stories-section" style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                <div class="stories-header">
+                    <h2>Your Stories</h2>
+                    <button class="new-story-btn" style="background-color: black;">
+                        <a style="color: white;" href="/stories/newWrite"><i style="color: white;"
+                                class="ri-add-line"></i> New Story</a>
+                    </button>
+
+                </div>
+
+
+                <div class="stories-grid" id="load"
+                    style="display: block; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+
+
+                    <% for(stories of user.stories) { %>
+                        <div class="story-card mb-2 border-b-2">
+                            <div class="story-info">
+                                <h3>
+                                    <%=stories.title%>s
+                                </h3>
+                                <%if(stories.editedAt){%>
+                                <p id="lastEdited-<%=stories._id %>">Last edited: <%= stories.editedAt %></p>
+                                <% } %>
+
+                            </div>
+
+
+                            <span class="inline-flex -space-x-px overflow-hidden rounded-md border bg-white shadow-sm">
+                                <form action="/stories/<%=stories._id%>/edit" method="get">
+
+                                    <button
+                                        class="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative">
+                                        Edit
+                                    </button>
+                                </form>
+                                <a href="/stories/<%=stories._id%>">
+                                    <button
+                                        class="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative">
+                                        View
+                                    </button>
+                                </a>
+                                <form action="/stories/<%=stories._id%>/delete?_method=DELETE" method="post">
+
+                                    <button
+                                        class="inline-block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:relative">
+                                        Delete
+                                    </button>
+                                </form>
+
+                            </span>
+                        </div>
+                        <% } %>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileImg = document.querySelector('#nav-profile img');
+            const dropdownMenu = document.querySelector('.Profile-card-list');
+
+            profileImg.addEventListener('click', function (e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!profileImg.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+                dropdownMenu.classList.remove('show');
+
+            });
+        });
+
+
+
+        const profilePreview = document.getElementById("profile-preview");
+        const profileInput = document.getElementById("profile-input");
+
+        profileInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    profilePreview.src = e.target.result;
+                    profilePreview.style.display = "block";
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                profilePreview.src = "";
+                profilePreview.style.display = "none";
+            }
+
+        });
+
+        document.querySelectorAll('[id^="lastEdited-"]').forEach(el => {
+            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+            el.innerText = `Last edited: ${moment(rawDate).fromNow()}`;
+        });
+
+
+        setTimeout(() => {
+            document.getElementById('toast-success').style.display = "none"
+            location.reload();
+
+        }, 3000);
+
+        // document.getElementById('flash-cls').addEventListener('click', () => {
+        //     document.getElementById('toast-success').style.display = "none"
+
+        // })
+    </script>
+    <script>
+        const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+        const deleteAccountModal = document.getElementById('deleteAccountModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        deleteAccountBtn.addEventListener('click', () => {
+            deleteAccountModal.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            deleteAccountModal.classList.add('hidden');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            deleteAccountModal.classList.add('hidden');
+        });
+    </script>
+</body>
+<script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
+
+</html>

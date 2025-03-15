@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writte</title>
+    <link rel="stylesheet" href="/css/writer.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body>
+    <div id="main">
+        <div id="writer-container">
+            <form action="/stories" method="post" enctype="multipart/form-data" ">
+
+                <div class=" writer-header">
+                <a href="/stories">
+                    <h1>Diary</h1>
+                </a>
+                <div class="wrtr-hd-input">
+                    <input type="text" name="title" placeholder=" story title" class="story-title" id="my-editor"
+                        required>
+
+                    <input type="file" name="image" placeholder="story cover img" class="story-img" required>
+
+                </div>
+                <button
+                    class="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">publish</button>
+
+        </div>
+        <div class="writer-text" class="min-h-[300px] border border-gray-300 p-4 rounded-lg focus:outline-none">
+            <textarea name="story" placeholder="write your story..."></textarea>
+        </div>
+
+
+
+        </form>
+
+
+    </div>
+
+    
+
+    <script src="/tinymce/tinymce.min.js"></script>
+
+    <script>
+        tinymce.init({
+            selector: 'textarea#my-editor',
+            height: 800,
+            width: 1000,
+          
+
+
+
+        });
+    </script>
+
+</body>
+
+</html>

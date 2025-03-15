@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/signup.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body>
+    <div id="main">
+        <div class="font-[sans-serif] relative w-full">
+            <div class="h-[340px] font-[sans-serif]">
+                <img src="https://images.unsplash.com/photo-1581855339095-0c282d58527b?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Banner Image" class="w-full h-full object-cover" />
+            </div>
+
+            <div class="relative -mt-10 m-4">
+                <form action="/signup" method="post"
+                    class="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-6 sm:p-8 rounded-2xl">
+                    <div class="mb-12">
+                        <h3 class="text-gray-800 text-3xl text-center">Register</h3>
+                      
+                    </div>
+
+                    <div>
+                        <label class="text-gray-800 text-xs block mb-2">Full Name</label>
+                        <div class="relative flex items-center">
+                            <input name="name" type="text" required
+                                class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
+                                placeholder="Enter name" />
+                            <i class="ri-user-fill  w-5 h-4  text-gray-400   absolute right-2 "></i>
+                        </div>
+                    </div>
+
+                    <div class="mt-8">
+                        <label class="text-gray-800 text-xs block mb-2">User Name</label>
+                        <div class="relative flex items-center">
+                            <input name="username" type="text" required
+                                class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
+                                placeholder="Enter username" />
+                            <i class="ri-user-fill  w-5 h-4  text-gray-400   absolute right-2 "></i>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <label class="text-gray-800 text-xs block mb-2">Email</label>
+                        <div class="relative flex items-center">
+                            <input oninput="checkEmailExistence()" name="email" id="email" type="text" required
+                                class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
+                                placeholder="Enter email" />
+                            <i class="ri-mail-line  w-5 h-4  text-gray-400   absolute right-2 "></i>
+                 
+
+                        </div>
+                        <span class="mt-3" id="emailFeedback"></span>
+                    </div>
+
+                    <div class="mt-8">
+                        <label class="text-gray-800 text-xs block mb-2">Password</label>
+                        <div class="relative flex items-center">
+                            <input name="password" type="password" required
+                                class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
+                                placeholder="Enter password" />
+                            <i class="ri-eye-line w-4 h-4   text-gray-400  absolute right-2"></i>
+
+                        </div>
+                    </div>
+
+                    <div class="flex items-center mt-8">
+                        <div id="email-message" style="color: red;"></div>
+                        <label id="email-message" class="ml-3 text-red-500 block text-sm">
+
+
+                        </label>
+                    </div>
+                   
+                    <button type="submit" 
+                        class="w-full shadow-xl py-2.5 px-4 text-sm font-semibold tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all">
+                        Register
+                    </button>
+                    <p class="text-gray-800 text-sm mt-4 text-center">Already have an account? <a href="/login"
+                            class="text-blue-500 font-semibold hover:underline ml-1">Login here</a></p>
+            </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+</body>
+<script>
+       setTimeout(() => {
+            document.getElementById('flash').style.display = "none"
+        
+        }, 3000);
+
+
+    let close = document.getElementById('close').addEventListener('click', () => {
+        flash.style.display = "none"
+    })
+</script>
+<script>
+    async function checkEmailExistence() {
+        const email = document.getElementById('email').value;
+        const feedbackElement = document.getElementById('emailFeedback');
+        
+        if (email) {
+            // Sending request to backend to check email existence
+            const response = await fetch('/check-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const result = await response.json();
+            
+            if (result.exists) {
+                feedbackElement.textContent = 'Email already exists!';
+                feedbackElement.style.color = 'red';
+            } 
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+</script>
+
+</html>

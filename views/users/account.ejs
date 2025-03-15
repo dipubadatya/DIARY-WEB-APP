@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="<%= pageDescription %>">
+    <title>
+        <%=pageTitle%>
+    </title>
+    <link rel="icon" type="image/png">
+    <link rel="stylesheet" href="/css/account.css" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+    <div id="main">
+
+        <div id="navbar">
+
+            <div id="nav-logo">
+
+                <h3>Diary</h3>
+            </div>
+
+            <div id="nav-elements">
+                <a href="/search"><i class="ri-search-line"></i></a> <a href="/stories">STORIES</a><a
+                    href="/stories/newWrite"><i class="ri-pen-nib-fill"></i></a>
+            </div>
+            <div id="nav-profile">
+                <!-- ,<div class="signup"><a href=""><h5>Signup/Login</h5></a></div>  -->
+                <% if(!currUser){%>
+                    <a href="/login">
+                        <h1>SIGN-IN</h1>
+                    </a>
+                    <%}else{%>
+
+
+
+
+
+
+
+
+
+                        <img src="<%=user.image.url%>" alt="Profile">
+                        <div class="Profile-card-list">
+
+
+                            <div class="Profile-card-list-top">
+                                <ul>
+                                    <li>
+                                        <h5>
+                                            <%=user.name%>
+                                        </h5>
+                                    </li>
+
+                                    <li>
+                                        <h5>
+                                            <%=user.username%>
+                                        </h5>
+                                    </li>
+                                </ul>
+
+
+                            </div>
+
+                            <div class="Profile-card-list-mid">
+                                <ul>
+
+
+                                    <li>
+                                        <a href="/profile"
+                                            class="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-gray-700">
+                                            <i class="ri-account-circle-fill"></i>
+
+                                            <span class="text-sm font-medium"> Profile </span>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="/dashbord"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="ri-dashboard-fill te"></i>
+
+                                            <span class="text-sm font-medium"> Dashbord</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/notification"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="ri-notification-fill"></i>
+    
+                                            <span class="text-sm font-medium">Notification</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/stories/newWrite"
+                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                                            <i class="fa-solid fa-pen-nib"></i>
+
+                                            <span class="text-sm font-medium">Write</span>
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+
+                            </div>
+
+                            <div class="Profile-card-list-btm" style="background-color: black;">
+                                <a href="/logout" style="color: white; display: flex;align-items: center;justify-content: center;gap: 10px;">
+                                    <h5 style="color: whitesmoke;"> Log out</h5>
+                                    <i style="color: white;" class="ri-logout-circle-r-line"></i>
+
+                                </a>
+                            </div>
+
+                        </div>
+                        <%}%>
+            </div>
+
+        </div>
+
+        
+        <div id="page">
+
+
+            <div id="center-card">
+                <div id="center-card-top">
+                    <div id="center-card-top-banner">
+                        <% if(profile.banner.url){ %>
+                            <img src="<%=profile.banner.url%>" alt="" />
+                            <%}else {%>
+                                <img src="https://i.pinimg.com/736x/7c/05/b9/7c05b92ca71023ebde50496547407ac5.jpg"
+                                    alt="" />
+
+                                <%}%>
+                                    <% if (profile._id.equals(currUser._id)) {%>
+
+                                        <i class="ri-pencil-fill" id="banner-icon"></i>
+                                        <% } %>
+                    </div>
+
+                    <div id="profile-img">
+                        <img src="<%=profile.image.url%>" alt="" />
+                    </div>
+
+
+                    <div id="profile-form" style="display: none">
+                        <div id="prof-heading">
+                            <h1>Profile Photo</h1>
+                            <i class="ri-close-large-line" id="profile-form-close"></i>
+                        </div>
+                        <div class="profile-image">
+
+                            <%if(profile.image.url){%>
+                                <img id="profile-preview" src="<%=profile.image.url%>" alt="" />
+                                <%}else{%>
+                                    <img id="profile-preview"
+                                        src="https://i.pinimg.com/736x/7c/05/b9/7c05b92ca71023ebde50496547407ac5.jpg"
+                                        alt="" />
+                                    <%}%>
+
+
+
+                        </div>
+                        <% if (profile._id.equals(currUser._id)) {%>
+
+                            <form action="/profile/<%=profile._id%>/image?_method=PUT" method="post"
+                                enctype="multipart/form-data">
+                                <div id="prof-form-container">
+                                    <input type="file" id="profile-input" name="prof-image"
+                                        value="<%=profile.image.url%>" accept="image/*" style="display: none;" />
+
+                                    <div id="profile-file">
+
+                                        <h3 id="prof-cng">Add photo</h3>
+
+                                        <button> save </button>
+                                     
+                                    </div>
+
+
+
+
+                                </div>
+
+
+                            </form>
+                            <% }%>
+                    </div>
+                    <div id="center-card-top-username">
+                        <div id="username-left">
+                            <h3>
+                                <%=profile.name%>
+                            </h3>
+                            <div id="follower" style="display: flex; gap: 5px;">
+
+                                <p style="color: rgb(45, 45, 47); font-weight: 600;">
+                                    <%=profile.followers.length %>
+                                </p>
+                                <span class="follower" style="color: rgb(50, 50, 189); font-weight: 470;"><a
+                                        href="/followers/<%=profile._id%>"> followers </a> </span>
+
+
+                            </div>
+
+                        </div>
+                        
+                        <div id="username-right">
+                            <% if (!profile._id.equals(currUser._id)) { %>
+                                <a href="/chat/<%=profile._id %>">
+
+                                    <i style="color: rgb(0, 0, 0);font-size: 25px;font-weight: 400; color: #062579;"
+                                        class="ri-message-3-line"></i>
+                                    <!-- <i style="color: rgb(0, 0, 0);font-size: 25px;font-weight: 400;" class="ri-message-3-fill"></i> -->
+                                </a>
+                                <div class="flex gap-2 px-2">
+                                    <% if (currUser.following.some(followingId=> followingId.equals(profile._id))) { %>
+                                        <!-- Show Unfollow Button -->
+                                        <form action="/unfollow/<%= profile._id %>" method="post">
+                                            <button
+                                                class=" unfollow-btn bg-green text-gray-800 hover:bg-gray-200 flex items-center space-x-1 px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                                                Following
+                                            </button>
+
+                                        </form>
+                                        <% } else { %>
+                                            <!-- Show Follow Button -->
+                                            <form action="/follow/<%= profile._id %>" method="post">
+                                                <button
+                                                    class="follow-btn px-4 py-1.5 text-sm font-semibold bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                                    Follow
+                                                </button>
+                                            </form>
+                                            <% } %>
+                                </div>
+                                <% } %>
+                                    <%if(profile._id.equals(currUser._id)){%>
+
+                                        <a href="/dashbord"> <i class="ri-pencil-fill"></i></a>
+                                        <%}%>
+                        </div>
+                    </div>
+                    <div id="banner-form" style="display: none">
+                        <div id="heading">
+                            <h1>Background Photo</h1>
+
+                            <% if(profile.banner.url){ %>
+                                <form action="/profile/<%=profile._id%>/delete?_method=PUT" method="post">
+                                    <button style="border: none; font-size: 20px; font-weight: 200;"><i
+                                            class="ri-delete-bin-6-line"></i></button>
+                                </form>
+                                <% }%>
+                                    <i class="ri-close-large-line" id="banner-form-close"></i>
+                        </div>
+                        <div class="banner-img">
+                            <% if(profile.banner.url){ %>
+                                <img id="image-preview" src="<%=profile.banner.url%>" alt="" />
+                                <%}else {%>
+                                    <img id="image-preview"
+                                        src="https://i.pinimg.com/736x/7c/05/b9/7c05b92ca71023ebde50496547407ac5.jpg"
+                                        alt="" />
+
+
+                                    <%}%>
+
+
+                        </div>
+
+                        <form action="/profile/<%=profile._id%>/banner?_method=PUT" method="post"
+                            enctype="multipart/form-data">
+                            <div id="form-container">
+                                <input type="file" id="image-input" name="image" value="<%=profile.banner.url%>"
+                                    style="display: none" accept="image/*" />
+                                <div id="input-file">
+
+
+
+                                    <span id="img-cng">change photo</span>
+
+                                    <button> save </button>
+                                </div>
+
+
+
+
+                            </div>
+
+
+                        </form>
+
+                    </div>
+                </div>
+                <div id="center-card-center">
+                    <h3>Bio</h3>
+                    <p>
+                        <%=profile.bio%>
+                    </p>
+                    <!-- <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam iusto unde, maiores voluptas blanditiis ab! Error cupiditate animi quae ut? Ipsa necessitatibus quibusdam possimus omnis, voluptate at? Aliquid, inventore vero.</p> -->
+                </div>
+
+                <div id="center-card-bottom">
+
+
+
+
+
+                    <section id="Projects"
+                        class="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
+                        <% if (!profile.stories.length && profile.stories) {%>
+                            <div style="width: 100%;height: 100%;background-color: rgb(255, 255, 255);"></div>
+                            <img style="display: flex; align-self: center; align-items: center;"
+                                src="/open-doodles-reading-side.gif" alt="">
+
+                            <% } else {%>
+
+
+
+                                <% for(stories of profile.stories){ %>
+
+
+                                    <div
+                                        class="w-72 bg-white shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
+                                        <a href="/stories/<%=stories._id%>">
+                                            <img src="<%=stories.image.url%>" alt="Product"
+                                                class="h-80 w-72 object-cover rounded-t-xl" />
+                                            <div class="px-4 py-3 w-72">
+
+                                                <p class="text-lg font-bold text-black truncate block capitalize">
+                                                    <%=stories.title%>
+                                                </p>
+                                                <div class="flex items-center">
+                                                    <p class="text-lg font-semibold text-black cursor-auto my-3"> <i
+                                                            class="fa-regular fa-heart"></i>
+                                                        <%=stories.likesCounts%>
+                                                    </p>
+
+                                                    <div class="ml-auto">
+
+                                                        <i class="fa-regular fa-eye">
+                                                            <%=stories.views.length%>
+                                                        </i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <%}%>
+                                        <% } %>
+
+
+
+
+
+                    </section>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let icon = document.getElementById("banner-icon");
+        let bannerForm = document.getElementById("banner-form");
+        icon.addEventListener("click", function () {
+            if (bannerForm.style.display === "none") {
+                bannerForm.style.display = "block";
+            } else {
+                bannerForm.style.display = "none";
+            }
+        });
+
+        let profileInput = document.getElementById("profile-input");
+        let profile = document.getElementById("prof-cng");
+        profile.addEventListener('click', () => {
+            profileInput.click();
+        });
+
+
+        const imageInput = document.getElementById("image-input");
+        const imagePreview = document.getElementById("image-preview");
+
+        imageInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = "block";
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.src = "";
+                imagePreview.style.display = "none";
+            }
+        });
+
+        let bannerForms = document.getElementById("banner-form");
+        let bannerIcon = document.getElementById("banner-form-close");
+
+        bannerIcon.addEventListener("click", () => {
+            bannerForms.style.display = "none";
+        });
+
+        let imageInputs = document.getElementById("image-input");
+        let formContainer = document.getElementById("img-cng");
+        formContainer.addEventListener("click", function () {
+            imageInput.click();
+        });
+        let profileForm = document.getElementById("profile-form");
+        let profileImage = document.getElementById("profile-img");
+        profileImage.addEventListener('click', () => {
+            profileForm.style.display = "block";
+        })
+        let profileFormClose = document.getElementById("profile-form-close");
+
+        profileFormClose.addEventListener('click', () => {
+            profileForm.style.display = "none";
+        })
+
+
+
+        const profilePreview = document.getElementById("profile-preview");
+
+        profileInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    profilePreview.src = e.target.result;
+                    profilePreview.style.display = "block";
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                profilePreview.src = "";
+                profilePreview.style.display = "none";
+            }
+
+        });
+
+
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileImg = document.querySelector('#nav-profile img');
+            const dropdownMenu = document.querySelector('.Profile-card-list');
+
+            profileImg.addEventListener('click', function (e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!profileImg.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                    dropdownMenu.classList.remove('show');
+                }
+                dropdownMenu.classList.remove('show');
+
+            });
+        });
+    </script>
+</body>
+
+</html>

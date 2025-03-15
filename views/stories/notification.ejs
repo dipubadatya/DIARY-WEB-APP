@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+    <div class=" w-full z-40 h-full bg-gray-800 bg-opacity-90 top-0 overflow-y-auto  fixed sticky-0" id="chec-div">
+     
+        <div class="w-full absolute z-10 right-0 h-full overflow-x-hidden transform translate-x-0 transition ease-in-out duration-700"
+            id="notification">
+            <div class="w-full bg-gray-50 h-screen overflow-y-auto p-8 absolute right-0">
+                <div class="flex items-center justify-between">
+                    <p tabindex="0" class="focus:outline-none text-2xl font-semibold leading-6 text-gray-800">
+                        Notifications</p>
+
+
+                </div>
+
+     <!-- Today Notifications -->
+     <% if (todayNotifications.length > 0) { %>
+        <h3 class="text-lg font-semibold mt-6 text-gray-700">Today</h3>
+        <% todayNotifications.forEach(notif => { %>
+       
+    
+
+                <% user.notifications.reverse().forEach(notif=> { %>
+                    <% if (notif.type==="like" ) { %>
+                        <div class="w-full p-3 mt-8 bg-white rounded flex ">
+                            <div tabindex="0" aria-label="heart icon" role="img"
+                                class="focus:outline-none w-8 h-8 border rounded-full border-gray-200 flex items-center justify-center">
+                                <i class="ri-heart-2-fill text-amber-800"></i>
+                            </div>
+                            <a class="flex justify-center  " href="/stories/<%= notif.storyId %>"> 
+                                <div class="pl-3 ">
+                                    <p class="focus:outline-none text-sm leading-none "><span class="text-indigo-700">
+                                            <%= notif.fromUser.username %>
+                                        </span> liked your <span class="text-indigo-700">story</span></p>
+                                    <p id="like"
+                                        class="focus:outline-none text-xs leading-3 pt-1 text-gray-500 flex items-center justify-between w-full">
+                                        <%= notif.timeStamp %>
+
+                                    </p>
+
+                                </div>
+
+                                <div
+                                    class="focus:outline-none cursor-pointer flex justify-center gap-1.5">
+                                    <form action="/notification/<%=notif._id%>?_method=DELETE" method="post">
+
+
+                                        <button>
+                                            <i class="ri-close-line"></i>
+                                        </button>
+
+                                    </form>
+                                </div>
+
+                            </a>
+                        </div>
+                        <% } else if (notif.type==="follow" ) { %>
+                            <div class="w-full p-3 mt-4 bg-white rounded shadow flex flex-shrink-0">
+                                <div tabindex="0" aria-label="group icon" role="img"
+                                    class="focus:outline-none w-8 h-8 border rounded-full border-gray-200 flex flex-shrink-0 items-center justify-center">
+                                    <i class="ri-user-follow-fill"></i>
+                                </div>
+                                <div class="pl-3 w-full">
+                                    <a href="/profile/<%= notif.fromUser._id %>">
+
+                                        <div class="flex items-center justify-between w-full">
+                                            <p tabindex="0" class="focus:outline-none text-sm leading-none"><span
+                                                    class="text-indigo-700">
+                                                    <%=notif.fromUser.username%>
+                                                </span> Follwoing you</p>
+                                            <div  
+                                                class="focus:outline-none cursor-pointer">
+                                                <form action="/notification/<%=notif._id%>?_method=DELETE" method="post">
+
+
+                                                    <button>
+                                                        <i class="ri-close-line"></i>
+
+                                                    </button>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <p id="follow" class="focus:outline-none text-xs leading-3 pt-1 text-gray-500">
+                                        <%= notif.timeStamp%>
+                                    </p>
+                                </div>
+
+                            </div>
+                            <% } %>
+
+                                <% }) %>
+                                <% }) %>
+                                <% } %>
+            </div>
+          
+        </div>
+   
+        
+    </div>
+
+    <script>let notification = document.getElementById("notification");
+        let checdiv = document.getElementById("chec-div");
+        let flag3 = false;
+        const notificationHandler = () => {
+            if (!flag3) {
+                notification.classList.add("translate-x-full");
+                notification.classList.remove("translate-x-0");
+                setTimeout(function () {
+                    checdiv.classList.add("hidden");
+                }, 100);
+                flag3 = true;
+            } else {
+                setTimeout(function () {
+                    notification.classList.remove("translate-x-full");
+                    notification.classList.add("translate-x-0");
+                }, 100);
+                checdiv.classList.remove("hidden");
+                flag3 = false;
+            }
+        };
+    </script>
+    <script>
+        document.querySelectorAll('#like').forEach(el => {
+            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+            el.innerText = moment(rawDate).fromNow();
+        });
+        document.querySelectorAll('#follow').forEach(el => {
+            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+            el.innerText = moment(rawDate).fromNow();
+        });
+    </script>
+    
+</body>
+
+</html>

@@ -15,134 +15,131 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
 
+<script>
+   tailwind.config = {
+            darkMode: 'class',
+            
+        }
 
+</script>
 </head>
 
-<body>
+<body >
     <div id="main">
-        <div id="navbar">
-            <div id="nav-logo">
-                <h3>Diary</h3>
-            </div>
-            <div id="nav-elements">
-                <a href="search"><i class="ri-search-line"></i></a> <a href="/stories">STORIES</a>
-                <a href="/stories/newWrite"><i class="ri-pen-nib-fill"></i></a>
-            </div>
-            <div id="nav-profile">
-                <!-- ,<div class="signup"><a href=""><h5>Signup/Login</h5></a></div>  -->
-                <% if(!currUser){%>
-                    <a href="/login">
-                        <h1>SIGN-IN</h1>
+        <nav class="bg-white shadow-lg sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div class="flex justify-between h-16">
+                <!-- Left side - Logo and navigation links -->
+                <div class="flex items-center justify-between">
+                  <!-- Logo -->
+                  <div class="flex-shrink-0 flex items-center">
+                    <a href="/stories">
+                    <span class="text-2xl font-bold">
+                      <i class="fas fa-book-open mr-2"></i>Diary
+                    </span>
+                  </a>
+                  </div>
+                  
+                  <!-- Desktop Navigation Links -->
+                  <div class="hidden md:ml-8 md:flex md:space-x-8">
+                    <a href="/stories" class="flex items-center username h-16 px-2 text-sm font-medium text-gray-900 border-b-2 border-accent">
+                      <i class="fas fa-book text-accent mr-2"></i>
+                      <span>Stories</span>
                     </a>
-                    <%}else{%>
-
-
-
-
-                        <img src="<%=user.image.url%>" alt="Profile">
-                        <div class="Profile-card-list">
-
-
-                            <div class="Profile-card-list-top">
-                                <ul>
-                                    <li>
-                                        <h5>
-                                            <%=user.name%>
-                                        </h5>
-                                    </li>
-                                    <li>
-                                        <h5>
-                                            <%=user.username%>
-                                        </h5>
-                                    </li>
-                                </ul>
-
-
-                            </div>
-
-                            <div class="Profile-card-list-mid">
-
-
-
-
-                                <ul>
-
-                                    <li>
-                                        <a href="/profile"
-                                            class="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-gray-700">
-                                            <i class="ri-account-circle-fill"></i>
-
-                                            <span class="text-sm font-medium"> Profile </span>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="/dashbord"
-                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                                            <i class="ri-dashboard-fill te"></i>
-
-                                            <span class="text-sm font-medium"> Dashbord</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/notification"
-                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                                            <i class="ri-notification-fill"></i>
-    
-                                            <span class="text-sm font-medium">Notification</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/stories/newWrite"
-                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                                            <i class="fa-solid fa-pen-nib"></i>
-
-                                            <span class="text-sm font-medium">Write</span>
-                                        </a>
-                                    </li>
-
-                                </ul>
-
-                            </div>
-
-                            <div class="Profile-card-list-btm" style="background-color: black;">
-                                <a href="/logout"
-                                    style="color: white; display: flex;align-items: center;justify-content: center;gap: 10px;">
-                                    <h5 style="color: whitesmoke;"> Log out</h5>
-                                    <i style="color: white;" class="ri-logout-circle-r-line"></i>
-
-                                </a>
-                            </div>
-
-                        </div>
-                        <%}%>
-            </div>
-
-        </div>
-        <div class="flex items-center justify-center">
-            <% if(success && success.length){%>
-                <div id="toast-success"
-                    class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow"
-                    role="alert">
-                    <div
-                        class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500  rounded-lg  dark:text-black-200">
-                        <i class="ri-chat-check-line"></i>
-                        <span class="sr-only">Check icon</span>
-                    </div>
-                    <div class="ml-3 text-sm font-normal">
-                        <%=success %>
-                    </div>
-                    <!-- <button type="button" id="flash-cls"
-                        class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white  dark:hover:bg-gray-400"
-                        data-dismiss-target="#toast-success" aria-label="Close">
-                        <span class="sr-only">Close</span>
-                        <i class="ri-close-fill"></i>
-                    </button> -->
-
+                    <a href="/stories/newWrite" class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
+                      <i class="fas fa-feather-alt text-primary-500 mr-2"></i>
+                      <span>Write</span>
+                    </a>
+                  </div>
                 </div>
-                <% } %>
-        </div>
-      
+                
+                <!-- Right side - Search, notifications, profile -->
+                <div class="flex items-center">
+                  <button id="theme-toggle" class="p-2 rounded-full  ">
+                    <i id="theme-icon" class="ri-sun-line text-gray-800 dark:text-gray-700"></i>
+                </button>
+                  <!-- Search button -->
+                  <div class="flex-shrink-0 mr-2">
+                    <a href="/search">
+                    <button class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </a>
+                  </div>
+               
+                  <!-- Notification bell -->
+                  <div class="flex-shrink-0 mr-2 relative">
+                    <a href="/notification">
+                      <button onclick="markNotificationsSeen()" class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
+                        <i class="fas fa-bell"></i>
+                        <!-- Make sure the red dot has the correct ID -->
+                        <span id="red-dot" class="red-dot absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-xs font-bold text-red-700 hidden">
+                          5 <!-- This number is dynamic, based on unread notifications -->
+                        </span>
+                      </button>
+                    </a>
+                  </div>
+                  
+                  <!-- Profile dropdown -->
+                  <div class="ml-3 relative">
+                    <div>
+                      <button id="profile-menu-button" type="button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" aria-expanded="false" aria-haspopup="true">
+                        <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400" src="<%=user.image.url  %>" alt="User profile">
+                      </button>
+                    </div>
+                    
+                    <!-- Dropdown menu -->
+                    <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
+                      <div class="px-4 py-3 border-b border-gray-100">
+                        <div class="flex items-center space-x-3">
+                          <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400" src="<%=user.image.url  %>" alt="User profile">
+                          <div>
+                            <p class="text-sm font-semibold text-gray-800"><%=user.name%></p>
+                            <p class="text-xs text-gray-500">@<%=user.username%></p>
+                          </div>
+                        </div>
+                      </div>
+                      <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
+                        <i class="fas fa-chart-line mr-2 text-primary-500"></i> Dashboard
+                      </a>
+                      <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
+                        <i class="fas fa-user mr-2 text-primary-500"></i> Profile
+                      </a>
+                      <a href="/stories/newWrite" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
+                        <i class="fas fa-pen-fancy mr-2 text-primary-500"></i> Write
+                      </a>
+                      <div class="border-t border-gray-100 mt-1">
+                        <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200" role="menuitem">
+                          <i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Sign out
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                 
+                  <!-- Mobile menu button -->
+                  <div class="md:hidden ml-2">
+                    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-primary-500 hover:text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" aria-controls="mobile-menu" aria-expanded="false">
+                      <i class="fas fa-bars text-lg"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+              <div class="py-3 space-y-1 px-4">
+                <a href="#" class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 font-medium">
+                  <i class="fas fa-book mr-3 text-primary-600"></i>
+                  <span>Stories</span>
+                </a>
+                <a href="#" class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gradient-to-r hover:from-accent-light/10 hover:to-primary-100 hover:text-primary-700 font-medium transition-all duration-200">
+                  <i class="fas fa-feather-alt mr-3 text-accent"></i>
+                  <span>Write</span>
+                </a>
+              </div>
+            </div>
+          </nav>
         
         <div class="dashboard-container">
             
@@ -271,9 +268,15 @@
 
 
                 <div class="stories-grid" id="load"
-                    style="display: block; border-radius: 10px; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
+                    style="display: block; border-radius: 10px; height: 100%;">
 
-
+    
+                    <% if (!user.stories.length && user.stories) { %>
+                      <div class="flex flex-col items-center h-full justify-center py-12">
+                          <img src="/open-doodles-reading-side.gif" alt="No stories" class="w-64 h-64 object-contain mb-4">
+                          <p class="text-gray-500 dark:text-white text-lg">No stories have been published yet.</p>
+                      </div>
+                  <% } else { %>
                     <% for(stories of user.stories) { %>
                         <div class="story-card mb-2 border-b-2">
                             <div class="story-info">
@@ -314,6 +317,7 @@
                         <% } %>
 
                 </div>
+                <% } %>
 
             </div>
 
@@ -321,25 +325,28 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const profileImg = document.querySelector('#nav-profile img');
-            const dropdownMenu = document.querySelector('.Profile-card-list');
-
-            profileImg.addEventListener('click', function (e) {
-                e.stopPropagation();
-                dropdownMenu.classList.toggle('show');
-            });
-
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function (event) {
-                if (!profileImg.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                    dropdownMenu.classList.remove('show');
-                }
-                dropdownMenu.classList.remove('show');
-
-            });
-        });
-
+       // Profile dropdown toggle
+       const profileButton = document.getElementById('profile-menu-button');
+          const profileDropdown = document.getElementById('profile-dropdown');
+          
+          profileButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+          });
+          
+          // Close dropdown when clicking outside
+          window.addEventListener('click', (event) => {
+            if (!profileButton.contains(event.target)) {
+              profileDropdown.classList.add('hidden');
+            }
+          });
+          
+          // Mobile menu toggle
+          const mobileMenuButton = document.getElementById('mobile-menu-button');
+          const mobileMenu = document.getElementById('mobile-menu');
+          
+          mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+          });
 
 
         const profilePreview = document.getElementById("profile-preview");
@@ -399,6 +406,83 @@
             deleteAccountModal.classList.add('hidden');
         });
     </script>
+    <script>
+            // Dark Mode Implementation
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the theme toggle button and icon
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    
+    // Check for saved theme preference or use the system preference
+    const savedTheme = localStorage.getItem('theme') || 
+                      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    
+    // Apply the saved theme on page load
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+        themeIcon.classList.remove('ri-sun-line');
+        themeIcon.classList.add('ri-moon-line');
+    } else {
+        document.documentElement.classList.remove('dark');
+        themeIcon.classList.remove('ri-moon-line');
+        themeIcon.classList.add('ri-sun-line');
+    }
+    
+    // Toggle theme when button is clicked
+    themeToggle.addEventListener('click', function() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        
+        // Update the icon
+        if (isDark) {
+            themeIcon.classList.remove('ri-sun-line');
+            themeIcon.classList.add('ri-moon-line');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            themeIcon.classList.remove('ri-moon-line');
+            themeIcon.classList.add('ri-sun-line');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+});
+    </script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+       checkUnreadNotifications(); // Run on page load
+   
+       // ✅ Check for new notifications every 5 seconds
+       setInterval(checkUnreadNotifications, 5000);
+   });
+   
+   // Function to check unread notifications
+   function checkUnreadNotifications() {
+       fetch('/check-unread-notifications')
+           .then(response => response.json())
+           .then(data => {
+               const redDot = document.getElementById("red-dot");
+               if (data.success && data.unreadCount > 0) {
+                   redDot.classList.remove("hidden"); // ✅ Show red dot if there are unread notifications
+                   redDot.textContent = data.unreadCount; // Update the unread count on the red dot
+               } else {
+                   redDot.classList.add("hidden"); // ✅ Hide red dot if no unread notifications
+               }
+           })
+           .catch(error => console.error("Error fetching notifications:", error));
+   }
+   
+   // Function to mark notifications as seen when clicked
+   function markNotificationsSeen() {
+       fetch('/mark-notifications-seen') // Assuming you have an endpoint for this
+           .then(() => {
+               document.getElementById("red-dot").classList.add("hidden"); // ✅ Hide red dot when clicked
+           })
+           .catch(error => console.error("Error marking notifications as seen:", error));
+   }
+   
+           
+      
+   
+           </script>
 </body>
 <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
 

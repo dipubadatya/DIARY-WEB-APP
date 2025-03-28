@@ -1111,3 +1111,35 @@ body {
     }
 
 }
+
+@media screen and (max-width: 360px) {
+    #page2 {
+        height: 200vh;
+    }
+
+    #pg2-header {
+        justify-content: safe;
+        height: 10%;
+    }
+
+    #pg2-header h1 {
+        font-size: 3vw;
+        width: 80%;
+    }
+
+    .pg2-card {
+        width: 100%;
+        height: 40%;
+        /* Allow height to adjust */
+    }
+
+
+    #page3{
+    
+      
+        height: 70%;
+    }
+  
+
+
+}

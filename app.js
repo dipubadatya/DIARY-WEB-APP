@@ -46,6 +46,7 @@ app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce
 
 // Session setup
 const store = MongoStore.create({
+    // mongoUrl: process.env.MONGO_LOCAL,
     mongoUrl: process.env.MONGO_ATLAS,
     crypto: { secret: process.env.SESSION_CRYPTO_SECRET },
     touchAfter: 24 * 3600

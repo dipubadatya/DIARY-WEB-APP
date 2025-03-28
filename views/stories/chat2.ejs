@@ -6,11 +6,189 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <style>
         body::-webkit-scrollbar {
             display: none;
         }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            overscroll-behavior: none;
+        }
 
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        .scrollbar-track-transparent::-webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .scrollbar-thumb-gray::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.5);
+            border-radius: 9999px;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            word-wrap: break-word;
+            margin-bottom: 4px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .message-bubble:hover {
+            transform: translateY(-1px);
+        }
+
+        .typing-indicator {
+            display: inline-block;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            float: left;
+            margin: 0 1px;
+            background-color: #3b82f6;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: typing 1s infinite;
+        }
+
+        .typing-indicator span:nth-of-type(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-indicator span:nth-of-type(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-of-type(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+        }
+
+        emoji-picker {
+            --emoji-size: 1.5rem;
+            --background: #ffffff;
+            --border-color: #e5e7eb;
+            --category-emoji-size: 1.2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 0.5rem;
+        }
+
+        .date-header {
+            position: relative;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .date-header span {
+            background-color: #f8fafc;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            color: #64748b;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .chat-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 100vh;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+            background-color: white;
+        }
+
+        .message-time {
+            font-size: 0.65rem;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        .message-input-container {
+            background-color: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .message-input {
+            border-radius: 9999px;
+            padding-left: 3rem;
+            padding-right: 6rem;
+            height: 3rem;
+            transition: all 0.2s ease;
+        }
+
+        .message-input:focus {
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+        }
+
+        .header-container {
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.75rem 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .send-button {
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+        }
+
+        .send-button:hover {
+            transform: scale(1.05);
+        }
+
+        .notification-toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.75rem 1rem;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 50;
+        }
+
+        .notification-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
         .scrollbar-w-2::-webkit-scrollbar {
             width: 0.25rem;
             height: 0.25rem;
@@ -31,18 +209,30 @@
         .scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
             border-radius: 0.25rem;
         }
+        emoji-picker {
+    --emoji-size: 1.5rem;
+    --background: #f7fafc;
+    --border-color: #e2e8f0;
+    --num-columns: 8;
+    --category-emoji-size: 1.2rem;
+}
+
+.hidden {
+    display: none;
+}
     </style>
 
 </head>
 
 <body>
+   
     <!-- component -->
     <div class="flex-1 p:2 sm:p-6 justify-between flex  flex-col h-screen">
         <div class="flex sm:items-center justify-between  py-3 p-3 sticky border-b-2">
             <div class="relative flex items-center space-x-4">
                 <div class="relative">
 
-                    <img src="<%=receiverUser.image.url  %>" alt="" class="w-10 sm:w-16 h-10 sm:h-16 rounded-full">
+                    <img src="<%=receiverUser.image.url  %>" alt="" class="w-10 sm:w-16 h-10 object-cover sm:h-16 rounded-full">
                 </div>
 
                 <div class="flex flex-col leading-tight">
@@ -51,6 +241,16 @@
                             <%=receiverUser.username%>
                         </span>
                     </div>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <span id="userStatus">Online</span>
+                        <div id="typingIndicatorContainer" class="hidden ml-2">
+                            <div class="typing-indicator">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
                     <span id="typingIndicator" class="text-lg text-gray-600">
                         <!-- <%=receiverUser.bio%> -->
                     </span>
@@ -58,89 +258,94 @@
             </div>
 
         </div>
-        <div id="messages"
-            class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-            <% messages.forEach(msg=> { %>
-                <% if (msg.sender.equals(user._id)) { %>
-                    <!-- outgoing-->
-                    <div class="chat-message">
-                        <div class="flex items-end justify-end">
-                            <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
-                                <div><span
-                                        class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">
+       
+        <div id="messages" class="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
+            <% const groupedMessages = {}; %>
+            <% messages.forEach(msg => { %>
+                <% const date = msg.date; %>
+                <% if (!groupedMessages[date]) { %>
+                    <% groupedMessages[date] = []; %>
+                <% } %>
+                <% groupedMessages[date].push(msg); %>
+            <% }) %>
+        
+            <% Object.keys(groupedMessages).forEach(date => { %>
+                <div class="date-header">
+                    <span><%= moment(date).format('MMMM Do YYYY') %></span>
+                </div>
+                <% groupedMessages[date].forEach(msg => { %>
+                    <% if (msg.sender.equals(user._id)) { %>
+                        <!-- outgoing-->
+                        <div class="chat-message">
+                            <div class="flex items-end justify-end">
+                                <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-1 items-end">
+                                    <div><span class="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white">
                                         <%=msg.message%>
                                     </span></div>
-                                <span>
-                                    <%= msg.timestamp.toLocaleTimeString('en-US', { hour: 'numeric' , minute: '2-digit'
-                                        }) %>
-                                </span>
-
+                                    <span>
+                                        <%= moment(msg.timestamp).format('h:mm A') %>
+                                    </span>
+                                </div>
                             </div>
-
-                            <!-- <img src="<%=receiverUser.image.url  %>"
-                                alt="My profile" class="w-6 h-6 rounded-full order-2"> -->
                         </div>
-                    </div>
-
                     <% } else { %>
                         <!--incoming-->
                         <div class="chat-message">
-
                             <div class="flex items-end">
                                 <div class="flex flex-col space-y-2 text-xs max-w-xs mx-2 order-2 items-start">
-                                    <div><span
-                                            class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
-                                            <%=msg.message %>
-                                        </span></div>
-
+                                    <div><span class="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
+                                        <%=msg.message %>
+                                    </span></div>
                                     <span>
-                                        <%= msg.timestamp.toLocaleTimeString('en-US', { hour: 'numeric' ,
-                                            minute: '2-digit' }) %>
+                                        <%= moment(msg.timestamp).format('h:mm A') %>
                                     </span>
-
-
                                 </div>
-                                <!-- <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144"
-                                    alt="My profile" class="w-6 h-6 rounded-full order-1"> -->
                             </div>
                         </div>
-                        <% } %>
-                            <% }) %>
+                    <% } %>
+                <% }) %>
+            <% }) %>
         </div>
-        <div class="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
-            <div class="relative flex">
-                <span class="absolute inset-y-0 flex items-center">
-                    <button type="button"
-                        class="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-gray-500 hover:bg-gray-300 focus:outline-none">
-                        <i class="ri-chat-1-line"></i>
-                    </button>
-                </span>
-                <form style="width: 100%;height: 100%;" action="/chat/<%=receiverId %>" method="post">
-                    <input type="text" name="message" placeholder="Write your message!"
-                        class="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-md py-3">
-                    <div class="absolute right-0 items-center inset-y-0  sm:flex">
-    
-                        <button
-                            class="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none">
-                            <span class="font-bold">Send</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                                class="h-6 w-6 ml-2 transform rotate-90">
-                                <path
-                                    d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
+      <!-- Message Input -->
+      <div class="message-input-container">
+        <form class="relative" action="/chat/<%=receiverId %>" method="post">
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <button type="button" id="emojiButton" class="p-2 text-gray-500 hover:text-blue-500 focus:outline-none transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-7.536 5.879a1 1 0 001.415 0 3 3 0 014.242 0 1 1 0 001.415-1.415 5 5 0 00-7.072 0 1 1 0 000 1.415z" clip-rule="evenodd" />
+                    </svg>
+                </button>
             </div>
-        </div>
+            
+            <input type="text" name="message" id="messageInput" 
+                placeholder="Type your message..." 
+                class="message-input w-full bg-gray-100 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-400 text-gray-700 rounded-full py-3 pl-12 pr-24 transition">
+            
+            <div class="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                <button type="button" class="p-2 rounded-full text-gray-500 hover:text-blue-500 focus:outline-none transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4a.5.5 0 01-.5-.5v-6.75l2.106 2.378a.5.5 0 00.743.01l2.999-3.12a.5.5 0 01.74.009l5.116 5.43a.5.5 0 01-.106.743A.5.5 0 0116 15zm0-10H4a.5.5 0 00-.5.5v1.904l2.095 2.365a.5.5 0 00.74.01l2.999-3.12a.5.5 0 01.74.009l5.746 6.09a.5.5 0 01-.149.739.5.5 0 01-.596-.149L10.42 8.139a.5.5 0 00-.74-.009L6.682 11.25a.5.5 0 01-.743-.01L4 9.005V5.5a.5.5 0 01.5-.5h11a.5.5 0 01.5.5v9z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <button type="submit" class="send-button bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full focus:outline-none transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                </button>
+            </div>
+        </form>
+        
+        <!-- Emoji Picker -->
+        <emoji-picker id="emojiPicker" class="hidden absolute bottom-16 left-4 z-20"></emoji-picker>
+    </div>
+</div>
     </div>
 
     </div>
     </div>
 
-
- 
+    <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1.12.0/index.js" type="module"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
@@ -166,15 +371,13 @@
         socket.on("receiveMessage", (data) => {
     if ((data.sender === sender && data.receiver === receiver) ||
         (data.sender === receiver && data.receiver === sender)) {
-        
+
         const chatBox = document.getElementById("messages");
         const newMessage = document.createElement("div");
 
         // Convert timestamp to human-readable format
-        const time = new Date(data.timestamp).toLocaleTimeString('en-US', { 
-            hour: 'numeric', 
-            minute: '2-digit' 
-        });
+        const time = moment(data.timestamp).format('h:mm A');
+        const date = moment(data.timestamp).format('YYYY-MM-DD');
 
         newMessage.innerHTML = `
             <div class="chat-message">
@@ -192,14 +395,29 @@
         chatBox.appendChild(newMessage);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
-});
-        // Display typing indicator
+});    
+
+        // Handle typing indicator
+        let typingTimer;
+        messageInput.addEventListener("input", () => {
+            socket.emit("userTyping", { senderId: sender });
+            
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => {
+                socket.emit("stopTyping", { senderId: sender });
+            }, 2000);
+        });
+
+        // Socket events
         socket.on("userTyping", ({ senderId }) => {
-            const typingIndicator = document.getElementById("typingIndicator");
-            typingIndicator.innerText = "Typing...";
-            setTimeout(() => {
-                typingIndicator.innerText = "";
-            }, 5000);
+            if (senderId === receiver) {
+                typingIndicatorContainer.classList.remove("hidden");
+                
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(() => {
+                    typingIndicatorContainer.classList.add("hidden");
+                }, 3000);
+            }
         });
         socket.on("updateStatus", (message) => {
             const statuses = document.querySelectorAll(".status");
@@ -210,6 +428,28 @@
             const notificationBox = document.getElementById("notification-box");
             notificationBox.innerHTML = `<p>New message: ${message}</p>`;
         });
+   
+        const emojiButton = document.getElementById('emojiButton');
+const emojiPicker = document.getElementById('emojiPicker');
+// const messageInput = document.getElementById('messageInput');
+
+// Toggle emoji picker visibility
+emojiButton.addEventListener('click', () => {
+    emojiPicker.classList.toggle('hidden');
+});
+
+// Insert selected emoji into the input field
+emojiPicker.addEventListener('emoji-click', (event) => {
+    messageInput.value += event.detail.unicode;
+    emojiPicker.classList.add('hidden'); 
+});
+
+// Hide emoji picker when clicking outside
+document.addEventListener('click', (event) => {
+    if (!emojiButton.contains(event.target) && !emojiPicker.contains(event.target)) {
+        emojiPicker.classList.add('hidden');
+    }
+});
     </script>
 </body>
 

@@ -1,70 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern User Search</title>
-    <link
-    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
-    rel="stylesheet"
-/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <style>
+        /* Fullscreen loading overlay */
+        #loadingOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #f8f5f0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-out;
+    }
+    
+    #loadingOverlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .text-animation {
+      font-family: 'Courier New', monospace;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #3a3a3a;
+      margin-bottom: 2rem;
+    }
+    
+    .writing-animation {
+      position: relative;
+      width: 200px;
+      height: 200px;
+    }
+    
+    .paper {
+      position: absolute;
+      width: 150px;
+      height: 200px;
+      background-color: white;
+      border-radius: 2px;
+      box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .pencil {
+      position: absolute;
+      width: 8px;
+      height: 120px;
+      background: linear-gradient(to bottom, #F5D393 70%, #E3B778 70%, #E3B778 80%, #4D4D4D 80%, #4D4D4D 90%, #F1C27D 90%);
+      border-radius: 4px 4px 0 0;
+      top: 40px;
+      right: 40px;
+      transform-origin: bottom;
+      animation: write 1.5s ease-in-out infinite;
+      z-index: 10;
+    }
+    
+    .pencil-tip {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 0 4px 10px 4px;
+      border-color: transparent transparent #4D4D4D transparent;
+    }
+    
+    .line {
+      position: absolute;
+      height: 2px;
+      background-color: #CDCDCD;
+      width: 0;
+      left: 15px;
+    }
+    
+    .line1 { top: 40px; animation: draw 3s infinite; }
+    .line2 { top: 60px; animation: draw 3s infinite 0.3s; }
+    .line3 { top: 80px; animation: draw 3s infinite 0.6s; }
+    .line4 { top: 100px; animation: draw 3s infinite 0.9s; }
+    .line5 { top: 120px; animation: draw 3s infinite 1.2s; }
+    .line6 { top: 140px; animation: draw 3s infinite 1.5s; }
+    .line7 { top: 160px; animation: draw 3s infinite 1.8s; }
+    
+    .ink-drop {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background-color: #4D4D4D;
+      border-radius: 50%;
+      opacity: 0;
+    }
+    
+    .drop1 { top: 40px; left: 100px; animation: drop 3s infinite 0.4s; }
+    .drop2 { top: 90px; left: 70px; animation: drop 3s infinite 1.2s; }
+    .drop3 { top: 130px; left: 110px; animation: drop 3s infinite 2s; }
+    
+    @keyframes write {
+      0%, 100% { transform: rotate(2deg); }
+      50% { transform: rotate(-2deg); }
+    }
+    
+    @keyframes draw {
+      0% { width: 0; }
+      30% { width: 120px; }
+      60% { width: 120px; }
+      90%, 100% { width: 0; opacity: 0.2; }
+    }
+    
+    @keyframes drop {
+      0%, 70% { opacity: 0; transform: scale(0); }
+      75% { opacity: 1; transform: scale(1); }
+      85% { opacity: 0.5; transform: scale(1.5); }
+      100% { opacity: 0; transform: scale(0); }
+    }
+       
+    </style>
 </head>
+<body class="bg-gray-100 min-h-screen">
 
-<body class="bg-gradient-to-r from-purple-50 to-indigo-50 flex items-center justify-center p-8">
-    <div class="max-w-md w-full">
-        <!-- Search Bar -->
-        <div class="relative">
-            <input type="text" id="searchBar" placeholder="Search username..."
-                class="w-full px-6 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-300 shadow-sm bg-white/80 backdrop-blur-sm" />
-               
-                <i class="ri-search-2-line  absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400"></i>
+    <div id="loadingOverlay">
+       
+        <div class="writing-animation">
+          <div class="paper">
+            <div class="line line1"></div>
+            <div class="line line2"></div>
+            <div class="line line3"></div>
+            <div class="line line4"></div>
+            <div class="line line5"></div>
+            <div class="line line6"></div>
+            <div class="line line7"></div>
+            <div class="ink-drop drop1"></div>
+            <div class="ink-drop drop2"></div>
+            <div class="ink-drop drop3"></div>
+          </div>
+          <div class="pencil">
+            <div class="pencil-tip"></div>
+          </div>
         </div>
-        <!-- User List -->
-        <div id="userList" class="mt-4 space-y-4"></div>
+      </div>
+
+    <!-- Main Content -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Find People</h1>
+            
+            <!-- Search Bar -->
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="ri-search-line text-gray-400"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchBar" 
+                    placeholder="Search by username..." 
+                    class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-800"
+                />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <i class="ri-close-line text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" id="clearSearch"></i>
+                </div>
+            </div>
+
+            <!-- Search Results -->
+            <div id="userList" class="mt-6 space-y-3"></div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="hidden mt-6 flex justify-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
+            const loadingOverlay = document.getElementById("loadingOverlay");
             const searchBar = document.getElementById("searchBar");
             const userList = document.getElementById("userList");
+            const loadingState = document.getElementById("loadingState");
+            const clearSearch = document.getElementById("clearSearch");
+            let searchTimeout;
 
-            searchBar.addEventListener("input", async function () {
-                const query = searchBar.value.trim();
+            // Hide loading overlay after page loads
+            setTimeout(() => {
+                loadingOverlay.classList.add("hidden");
+            }, 2000); // Adjust timing as needed
 
-                if (query === "") {
-                    userList.innerHTML = ""; // Clear list when input is empty
-                    return;
-                }
+            // Clear search input and results
+            clearSearch.addEventListener("click", function() {
+                searchBar.value = "";
+                userList.innerHTML = "";
+                clearSearch.classList.add("hidden");
+            });
 
-                try {
-                    const response = await fetch(`/username/${query}`);
-                    const users = await response.json();
-
-                    if (users.length > 0) {
-                        userList.innerHTML = users.map(user => `
-  <a href="/profile/${user._id}">
-                       
-                            <div class="user-card flex items-center space-x-4 bg-white/90 p-4 rounded-lg shadow-md border border-gray-200 ">
-                                <img src="${user.image.url}" alt="User Image" class="w-12 h-12 rounded-full object-cover border-2 border-purple-200 shadow-sm">
-                                <div>
-                                    <h2 class="text-lg font-bold text-gray-800">${user.name || "No Name"}</h2>
-                                    <p class="text-gray-500 text-sm">@${user.username}</p>
-                                </div>
-                            </div>
-                           </a>
-                        `).join("");
-                    } else {
-                        userList.innerHTML = `<p class="text-gray-500 text-center mt-4">No users found</p>`;
-                    }
-                } catch (error) {
-                    console.error("Error fetching users:", error);
+            // Toggle clear button visibility
+            searchBar.addEventListener("input", function() {
+                if (searchBar.value.trim() === "") {
+                    clearSearch.classList.add("hidden");
+                } else {
+                    clearSearch.classList.remove("hidden");
                 }
             });
+
+            // Search functionality with debounce
+            searchBar.addEventListener("input", function() {
+                const query = searchBar.value.trim();
+                
+                // Clear previous timeout
+                clearTimeout(searchTimeout);
+                
+                if (query === "") {
+                    userList.innerHTML = "";
+                    loadingState.classList.add("hidden");
+                    return;
+                }
+                
+                // Show loading state
+                loadingState.classList.remove("hidden");
+                
+                // Debounce search to avoid too many requests
+                searchTimeout = setTimeout(async function() {
+                    try {
+                        const response = await fetch(`/username/${query}`);
+                        const users = await response.json();
+                        
+                        loadingState.classList.add("hidden");
+                        
+                        if (users.length > 0) {
+                            userList.innerHTML = users.map(user => `
+                                <a href="/profile/${user._id}" class="block hover:bg-gray-50 transition-colors rounded-lg">
+                                    <div class="flex items-center p-3">
+                                        <div class="flex-shrink-0">
+                                            <img src="${user.image?.url || '/api/placeholder/48/48'}" alt="${user.name || 'User'}" 
+                                                class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm" 
+                                                onerror="this.src='/api/placeholder/48/48'"/>
+                                        </div>
+                                        <div class="ml-4 flex-1">
+                                            <div class="font-medium text-gray-900">${user.name || "No Name"}</div>
+                                            <div class="text-sm text-gray-500">@${user.username}</div>
+                                        </div>
+                                        <div class="ml-2">
+                                            <button class="px-3 py-1 text-sm rounded-full text-blue-600 font-medium border border-blue-600 hover:bg-blue-50 transition-colors">
+                                                Follow
+                                            </button>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="border-b border-gray-100 last:border-b-0"></div>
+                            `).join("");
+                        } else {
+                            userList.innerHTML = `
+                                <div class="text-center py-12">
+                                    <div class="text-gray-400 text-5xl mb-4">
+                                        <i class="ri-user-search-line"></i>
+                                    </div>
+                                    <h3 class="text-lg font-medium text-gray-600">No users found</h3>
+                                    <p class="text-gray-500 mt-1">Try searching with a different username</p>
+                                </div>
+                            `;
+                        }
+                    } catch (error) {
+                        console.error("Error fetching users:", error);
+                        loadingState.classList.add("hidden");
+                        userList.innerHTML = `
+                            <div class="text-center py-8">
+                                <div class="text-red-400 text-4xl mb-3">
+                                    <i class="ri-error-warning-line"></i>
+                                </div>
+                                <h3 class="text-lg font-medium text-gray-600">Something went wrong</h3>
+                                <p class="text-gray-500 mt-1">Please try again later</p>
+                            </div>
+                        `;
+                    }
+                }, 300); // 300ms debounce
+            });
+
+            // Focus search bar on load
+            searchBar.focus();
         });
     </script>
 </body>
-
 </html>

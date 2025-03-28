@@ -63,23 +63,81 @@ router.get('/followers/:id',isLoggedIn,async(req,res)=>{
 
 //     res.render('./stories/notification.ejs',{user})
 // })
-router.get('/notifications/unread-count', isLoggedIn, async (req, res) => {
+router.get('/check-unread-notifications', isLoggedIn, async (req, res) => {
     try {
-        const user = await User.findById(req.user._id);
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
+        let user = await User.findById(req.user._id);
+        if (!user) return res.json({ success: false });
 
-        // Count unread notifications
-        const unreadCount = user.notifications.filter(notif => !notif.read).length;
-
-        res.json({ unreadCount });
+        let unreadCount = user.notifications.filter(notif => !notif.read).length;
+        res.json({ success: true, unreadCount });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Server error" });
+        res.status(500).json({ success: false, message: "Server error" });
     }
 });
 
+// router.get('/notification', isLoggedIn, async (req, res) => {
+//     let user = await User.findById(req.user._id).populate({
+//         path: 'notifications.fromUser',
+//         select: 'username name image'
+//     });
+
+//     if (!user) {
+//         req.flash("error", "User not found.");
+//         return res.redirect("/");
+//     }
+//     user.notifications.forEach(notif => notif.read = true);
+//     const notifications = user.notifications.reverse(); 
+//     // Date filters
+  
+
+//     res.render('./stories/notification.ejs', { 
+       
+//         user
+//     });
+// });
+const moment = require('moment');
+
+// router.get('/notification', isLoggedIn, async (req, res) => {
+//     let user = await User.findById(req.user._id).populate({
+//         path: 'notifications.fromUser',
+//         select: 'username name image'
+//     });
+
+//     if (!user) {
+//         req.flash("error", "User not found.");
+//         return res.redirect("/");
+//     }
+
+//     user.notifications.forEach(notif => notif.read = true);
+
+//     // Grouping logic
+//     let today = [];
+//     let yesterday = [];
+//     let last7Days = [];
+    
+//     let currentDate = moment().startOf('day'); // Today at 00:00
+//     let yesterdayDate = moment().subtract(1, 'days').startOf('day'); // Yesterday at 00:00
+//     let sevenDaysAgo = moment().subtract(7, 'days').startOf('day'); // 7 days ago at 00:00
+
+//     user.notifications.forEach(notif => {
+//         let notifDate = moment(notif.timeStamp);
+
+//         if (notifDate.isSame(currentDate, 'day')) {
+//             today.push(notif);
+//         } else if (notifDate.isSame(yesterdayDate, 'day')) {
+//             yesterday.push(notif);
+//         } else if (notifDate.isAfter(sevenDaysAgo)) {
+//             last7Days.push(notif);
+//         }
+//     });
+
+//     res.render('./stories/notification.ejs', { 
+//         user,
+//         today,
+//         yesterday,
+//         last7Days
+//     });
+// });
 router.get('/notification', isLoggedIn, async (req, res) => {
     let user = await User.findById(req.user._id).populate({
         path: 'notifications.fromUser',
@@ -90,45 +148,37 @@ router.get('/notification', isLoggedIn, async (req, res) => {
         req.flash("error", "User not found.");
         return res.redirect("/");
     }
+
+    // Mark all notifications as read
     user.notifications.forEach(notif => notif.read = true);
-    const notifications = user.notifications.reverse(); // Latest notifications pehle show ho
+    await user.save();  // Save the updated read status
 
-    // Date filters
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Group notifications
+    let today = [];
+    let yesterday = [];
+    let last7Days = [];
+    
+    let currentDate = moment().startOf('day');
+    let yesterdayDate = moment().subtract(1, 'days').startOf('day');
+    let sevenDaysAgo = moment().subtract(7, 'days').startOf('day');
 
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(0, 0, 0, 0);
+    user.notifications.forEach(notif => {
+        let notifDate = moment(notif.timeStamp);
 
-    const last7Days = new Date();
-    last7Days.setDate(last7Days.getDate() - 7);
-
-    // Categorizing notifications
-    let todayNotifications = [];
-    let yesterdayNotifications = [];
-    let last7DaysNotifications = [];
-    let olderNotifications = [];
-
-    notifications.forEach(notif => {
-        const notifDate = new Date(notif.timeStamp);
-        if (notifDate >= today) {
-            todayNotifications.push(notif);
-        } else if (notifDate >= yesterday) {
-            yesterdayNotifications.push(notif);
-        } else if (notifDate >= last7Days) {
-            last7DaysNotifications.push(notif);
-        } else {
-            olderNotifications.push(notif);
+        if (notifDate.isSame(currentDate, 'day')) {
+            today.push(notif);
+        } else if (notifDate.isSame(yesterdayDate, 'day')) {
+            yesterday.push(notif);
+        } else if (notifDate.isAfter(sevenDaysAgo)) {
+            last7Days.push(notif);
         }
     });
 
     res.render('./stories/notification.ejs', { 
-        todayNotifications, 
-        yesterdayNotifications, 
-        last7DaysNotifications,
-        olderNotifications,
-        user
+        user,
+        today,
+        yesterday,
+        last7Days
     });
 });
 
@@ -197,36 +247,120 @@ router.put('/dashbord/:id',isLoggedIn, upload.single('dashbord[image]'), async (
 
 
 //profile banner edit
-router.put('/profile/:id/banner', isLoggedIn,upload.single('image'), async (req, res) => {
-    let { id } = req.params
-    let user = await User.findById(id)
+// router.put('/profile/:id/banner', isLoggedIn,upload.single('image'), async (req, res) => {
+//     let { id } = req.params
+//     let user = await User.findById(id)
 
-    if (typeof req.file !== 'undefined') {
-        let url = req.file.path
-        let filename = req.file.originalname
-        user.banner = { url, filename }
-        await user.save()
+//     if (typeof req.file !== 'undefined') {
+//         let url = req.file.path
+//         let filename = req.file.originalname
+//         user.banner = { url, filename }
+//         await user.save()
+//     }
+//     res.redirect(`/profile`)
+
+// })
+// Update your banner route to handle the filtered and cropped image
+router.put('/profile/:id/banner', isLoggedIn, upload.single('image'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+        
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        // Check if this is an XHR request (from our JavaScript)
+        const isXHR = req.headers['x-requested-with'] === 'XMLHttpRequest';
+        
+        if (typeof req.file !== 'undefined') {
+            const url = req.file.path;
+            const filename = req.file.originalname;
+            
+            user.banner = { url, filename };
+            await user.save();
+            
+            // If it's an XHR request, send JSON response
+            if (isXHR) {
+                return res.json({ 
+                    success: true, 
+                    message: 'Banner image updated successfully',
+                    imageUrl: url
+                });
+            }
+        }
+        
+        // Regular form submission response
+        res.redirect('/profile');
+    } catch (error) {
+        console.error('Error updating banner image:', error);
+        
+        // Handle errors based on request type
+        if (req.headers['x-requested-with'] === 'XMLHttpRequest') {
+            return res.status(500).json({ error: 'Failed to update banner image' });
+        }
+        
+        res.redirect('/profile');
     }
-    res.redirect(`/profile`)
-
-})
-
+});
 
 // profile picture edit
-router.put('/profile/:id/image',isLoggedIn, upload.single('prof-image'), async (req, res) => {
-    let { id } = req.params
-    let user = await User.findById(id)
+// router.put('/profile/:id/image',isLoggedIn, upload.single('prof-image'), async (req, res) => {
+//     let { id } = req.params
+//     let user = await User.findById(id)
 
-    if (typeof req.file !== 'undefined') {
-        let url = req.file.path
-        let filename = req.file.originalname
-        user.image = { url, filename }
-        await user.save()
+//     if (typeof req.file !== 'undefined') {
+//         let url = req.file.path
+//         let filename = req.file.originalname
+//         user.image = { url, filename }
+//         await user.save()
+//     }
+//     res.redirect(`/profile`)
+// })
+
+// Update your route to handle the filtered and cropped image
+router.put('/profile/:id/image', isLoggedIn, upload.single('prof-image'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+        
+        if (!user) {npm
+            return res.status(404).json({ error: 'User not found' });
+        }
+        
+        // Check if this is an XHR request (from our JavaScript)
+        const isXHR = req.headers['x-requested-with'] === 'XMLHttpRequest';
+        
+        if (typeof req.file !== 'undefined') {
+            const url = req.file.path;
+            const filename = req.file.originalname;
+            
+            user.image = { url, filename };
+            await user.save();
+            
+            // If it's an XHR request, send JSON response
+            if (isXHR) {
+                return res.json({ 
+                    success: true, 
+                    message: 'Profile image updated successfully',
+                    imageUrl: url
+                });
+            }
+        }
+        
+        // Regular form submission response
+        res.redirect('/profile');
+    } catch (error) {
+        console.error('Error updating profile image:', error);
+        
+        // Handle errors based on request type
+        if (req.headers['x-requested-with'] === 'XMLHttpRequest') {
+            return res.status(500).json({ error: 'Failed to update profile image' });
+        }
+        
+        res.redirect('/profile');
     }
-    res.redirect(`/profile`)
-})
-
-
+});
 router.put('/profile/:id/delete',isLoggedIn,async(req,res)=>{
     let {id}=req.params
     console.log(id)

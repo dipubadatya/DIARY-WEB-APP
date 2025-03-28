@@ -3,623 +3,899 @@
 
 <head>
     <meta charset="UTF-8">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         <%=pageTitle %>
     </title>
-    <link rel="stylesheet" href="/css/storyRead.css">
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
+    
+    <style>
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
+        .dark body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .light body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .story-text {
+            font-family: 'Merriweather', serif;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-size: 1.1rem;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .dropdown-menu {
+            opacity: 0;
+            transform: translateY(-10px);
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu.show {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .story-container {
+            max-width: 800px;
+            margin: 0 auto;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .dark .story-container {
+            background-color: #000000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .light .story-container {
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .comment-form {
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .dark  .comment-form textarea{
+            
+            color: black;
+        }
+
+        /* .comment-form:focus-within {
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+        } */
+
+        .comment-card {
+            transition: all 0.2s ease;
+        }
+
+        .comment-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .dark .comment-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .light .comment-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .fab-button {
+            transition: all 0.3s ease;
+        }
+
+        .fab-button:hover {
+            transform: scale(1.05);
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(to right, #3b82f6, #60a5fa);
+            z-index: 1000;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* Dark mode toggle switch */
+        .theme-toggle {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .theme-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .theme-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .theme-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.theme-toggle-slider {
+            background-color: #3b82f6;
+        }
+
+        input:checked+.theme-toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Dark mode color adjustments */
+        .dark .bg-white {
+            background-color: #2a2a2a;
+        }
+
+        .dark .bg-gray-50 {
+            background-color: #333;
+        }
+
+        .dark .text-gray-800 {
+            color: #e0e0e0;
+        }
+
+        .dark .text-gray-700 {
+            color: #d0d0d0;
+        }
+
+        .dark .text-gray-600 {
+            color: #b0b0b0;
+        }
+
+        .dark .text-gray-500 {
+            color: #a0a0a0;
+        }
+
+        .dark .border-gray-200 {
+            border-color: #3a3a3a;
+        }
+
+        .dark .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .dark .hover\:bg-gray-100:hover {
+            background-color: #3a3a3a;
+        }
+
+        .dark .hover\:text-gray-700:hover {
+            color: #ffffff;
+        }
+
+        .dark .username {
+            color: white;
+        }
+
+        .dark .comment {
+            color: white;
+        }
+
+        .dark .story-stats {
+            color: white;
+        }
+
+        .dark .author-username {
+            color: white;
+        }
+
+        .dark .nav-content a {
+            color: white;
+        }
+    
+    </style>
 </head>
 
-<body>
-
-    <div id="container" style="position: relative;">
-
-        <div id="navbar">
-
-            <div id="nav-logo">
-
-                <h3>Diary</h3>
-            </div>
-
-            <div id="nav-elements">
-                <a href="/search"><i class="ri-search-line"></i></a> <a href="/stories">STORIES</a><a
-                    href="/stories/newWrite"><i class="ri-pen-nib-fill"></i></a>
-            </div>
-            <div id="nav-profile">
-                <!-- ,<div class="signup"><a href=""><h5>Signup/Login</h5></a></div>  -->
-                <% if(!currUser){%>
-                    <a href="/login">
-                        <h1>SIGN-IN</h1>
-                    </a>
-                    <%}else{%>
-
-
-
-
-
-
-
-
-
-                        <img src="<%=user.image.url%>" alt="Profile">
-                        <div class="Profile-card-list">
-
-
-                            <div class="Profile-card-list-top">
-                                <ul>
-                                    <li>
-                                        <h5>
-                                            <%=user.name%>
-                                        </h5>
-                                    </li>
-
-                                    <li>
-                                        <h5>
-                                            <%=user.username%>
-                                        </h5>
-                                    </li>
-                                </ul>
-
-
-                            </div>
-
-                            <div class="Profile-card-list-mid">
-                                <ul>
-                                    <!-- <li> <a href="/profile">
-                                            <h6>Profile</h6>
-                                        </a></li>
-                                    <li><a href="/dashbord">
-                                            <h6>Dashbord</h6>
-                                        </a></li>
-                                    <li> <a href="/stories/newWrite">
-                                            <h6>Write</h6>
-                                        </a></li> -->
-
-
-                                    <li>
-                                        <a href="/profile"
-                                            class="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-gray-700">
-                                            <i class="ri-account-circle-fill"></i>
-
-                                            <span class="text-sm font-medium"> Profile </span>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="/dashbord"
-                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                                            <i class="ri-dashboard-fill te"></i>
-
-                                            <span class="text-sm font-medium"> Dashbord</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/notification"
-                                            class="flex items-center gap-2 rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                                            <i class="ri-notification-fill"></i>
+<body class="bg-gray-50">
+  
     
-                                            <span class="text-sm font-medium">Notification</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="/stories/newWrite"
-                                            class="flex items-center gap-2 rounded-lg px-4 py-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
-                                            <i class="fa-solid fa-pen-nib"></i>
+    <div class="scroll-indicator" id="scroll-indicator"></div>
 
-                                            <span class="text-sm font-medium">Write</span>
-                                        </a>
-                                    </li>
-
-
-                                </ul>
-
-                            </div>
-
-                            <div class="Profile-card-list-btm" style="background-color: black;">
-                                <a href="/logout" style="color: white; display: flex;align-items: center;justify-content: center;gap: 10px;">
-                                    <h5 style="color: whitesmoke;"> Log out</h5>
-                                    <i style="color: white;" class="ri-logout-circle-r-line"></i>
-
-                                </a>
-                            </div>
-
-                        </div>
-                        <%}%>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex justify-between h-16">
+            
+            <div class="flex items-center justify-between">
+           
+              <div class="flex-shrink-0 flex items-center">
+                <a href="/stories">
+                <span class="text-2x1 font-bold">
+                    <i class="fa-solid fa-feather"></i> Diary
+                </span>
+              </a>
+              </div>
+              
+              <!-- Desktop Navigation Links -->
+              <div class="hidden md:ml-8 md:flex md:space-x-8">
+                <a href="/stories" class="flex items-center username h-16 px-2 text-sm font-medium text-gray-900 border-b-2 border-accent">
+                  <i class="fas fa-book text-accent mr-2"></i>
+                  <span>Stories</span>
+                </a>
+                <a href="/stories/newWrite" class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
+                  <i class="fas fa-feather-alt text-primary-500 mr-2"></i>
+                  <span>Write</span>
+                </a>
+              </div>
             </div>
+            
+            <div class="flex items-center">
+              <button id="theme-toggle" class="p-2 rounded-full  ">
+                <i id="theme-icon" class="ri-sun-line text-gray-800 dark:text-gray-700"></i>
+            </button>
 
-        </div>
-        <div class="flex items-center justify-center">
-            <% if(success && success.length){%>
-                <div id="toast-success" 
-                    class="flex items-center w-full max-w-xs p-4 mb-4 text-gray-900 bg-white rounded-lg shadow"
-                    role="alert">
-                    <div
-                        class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500  rounded-lg  dark:text-black-200">
-                        <i class="ri-chat-check-line"></i>
-                        <span class="sr-only">Check icon</span>
+              <!-- Search button -->
+              <div class="flex-shrink-0 mr-2">
+                <a href="/search">
+                <button class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
+                  <i class="fas fa-search"></i>
+                </button>
+              </a>
+              </div>
+           
+              <!-- Notification bell -->
+              <div class="flex-shrink-0 mr-2 relative">
+                <a href="/notification">
+                  <button onclick="markNotificationsSeen()" class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
+                    <i class="fas fa-bell"></i>
+                    <!-- Make sure the red dot has the correct ID -->
+                    <span id="red-dot" class="red-dot absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-xs font-bold text-red-700 hidden">
+                      5 <!-- This number is dynamic, based on unread notifications -->
+                    </span>
+                  </button>
+                </a>
+              </div>
+              
+              <!-- Profile dropdown -->
+              <div class="ml-3 relative">
+                <div>
+                  <button id="profile-menu-button" type="button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" aria-expanded="false" aria-haspopup="true">
+                    <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400" src="<%=user.image.url  %>" alt="User profile">
+                  </button>
+                </div>
+                
+                <!-- Dropdown menu -->
+                <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
+                  <div class="px-4 py-3 border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                      <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400" src="<%=user.image.url  %>" alt="User profile">
+                      <div>
+                        <p class="text-sm font-semibold text-gray-800"><%=user.name%></p>
+                        <p class="text-xs text-gray-500">@<%=user.username%></p>
+                      </div>
                     </div>
-                    <div class="ml-3 text-sm font-normal">
-                        <%=success %>
-                    </div>
-                    <!-- <button type="button" id="flash-cls"
-                        class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white  dark:hover:bg-gray-400"
-                        >
-                        <span class="sr-only">Close</span>
-                        <i class="ri-close-fill"></i>
-                    </button> -->
-
-                </div>
-                <% } %>
-        </div>
-        <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
-            <!-- Modal Container -->
-            <div class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/3 p-6">
-                <!-- Modal Header -->
-                <div class="flex justify-between items-center border-b pb-3">
-                    <h3 class="text-lg font-semibold text-gray-900">Ready to say goodbye?</h3>
-                    <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <!-- Modal Body -->
-                <div class="mt-4">
-                    <p class="text-gray-700">
-                        Once deleted, it’s gone forever. No going back.</p>
-                </div>
-                <!-- Modal Footer -->
-                <div class="mt-6 flex justify-end space-x-3">
-                    <button id="cancelBtn" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Cancel</button>
-                    <form action="/stories/<%=story._id%>/delete?_method=DELETE" method="post">
-                    <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
-                </form>
-                </div>
-            </div>
-        </div>
-        <div id="page1">
-
-            <div class="story-paper">
-
-                <div class="pg1-story-ppr-header">
-
-                    <h3 style="text-align: center;">
-
-                        <%=story.title.toUpperCase()%>
-                            <img style="width: 50%;height: 50%;" src="
-                        <%=story.image.url%>" alt="">
-
-                    </h3>
-
-                    <a href="/profile/<%=story.owner._id%>">
-                        <h5 class=" text-white rounded-full " href="#" style="color: white;">
-                            <%=story.owner.username%>
-                        </h5>
+                  </div>
+                  <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
+                    <i class="fas fa-chart-line mr-2 text-primary-500"></i> Dashboard
+                  </a>
+                  <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
+                    <i class="fas fa-user mr-2 text-primary-500"></i> Profile
+                  </a>
+                  <a href="/stories/newWrite" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
+                    <i class="fas fa-pen-fancy mr-2 text-primary-500"></i> Write
+                  </a>
+                  <div class="border-t border-gray-100 mt-1">
+                    <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200" role="menuitem">
+                      <i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Sign out
                     </a>
+                  </div>
                 </div>
-                <!-- <div class="pg1-story-ppr-lines">
-                       <p id="story-container" data-story="<%=story.story%>" id="story-content-<%= story._id %>">
-                        <pre>  <%=story.story  %></pre>
-                    </p>
-                </div> -->
-                <div class="pg1-story-ppr-lines">
-                    <p id="story-container" data-story="<%=story.story%>" id="story-content-<%= story._id %>">
-                    <pre class="story-text"><%= story.story %></pre>
-                    </p>
-
-
-                </div>
-
-
-
-
-                <div class=" fixed bottom-6 right-24 z-10 ">
-                    <div id="option-list" style="display: none;"
-                        class="flex  flex-col justify-end py-1 sm mb-4 space-y-2 bg-white border border-gray-100 rounded-lg shadow-sm  dark:bg-white">
-                        <ul class="text-sm text-gray-900 dark:text-gray-900">
-                            <li>
-                                <% if (story.owner._id.equals(currUser._id)) {%>
-                                    <a href="/stories/<%=story._id%>/edit"
-                                        class="flex items-center gap-2.5 px-5 py-2  dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white ">
-                                        <i class="ri-pencil-line"></i>
-                                        <span class="text-sm font-medium">EDIT</span>
-                                    </a>
-                                    <%}%>
-                            </li>
-                            <li>
-                                <% if (story.owner._id.equals(currUser._id)) {%>
-                                    <a href="#" id="openModalBtn"
-                                        class="flex items-center gap-2.5 px-5 py-2   dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white">
-                                        <i class="ri-delete-bin-6-line"></i>
-                                        <!-- <form action="/stories/<%=story._id%>/delete?_method=DELETE" method="post">
-
-                                            <button> <span class="text-sm font-medium">DELETE</span></button>
-
-
-
-                                        </form> -->
-                                        <button > <span class="text-sm font-medium">DELETE</span></button>
-                                        
-                                    </a>
-                                    <%}%>
-                            </li>
-                            <li>
-                                <a href="/stories/download/<%=story._id%>"
-                                    class="flex items-center gap-2.5 px-5 py-2  dark:hover:bg-gray-900 hover:text-gray-900 dark:hover:text-white">
-                                    <i class="ri-download-cloud-line"></i>
-
-                                    <span class="text-sm font-medium">download</span>
-
-                                </a>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <button id="option" type="button"
-                        class="flex items-center justify-center ml-auto text-white bg-blue-700 rounded-full w-14 h-14 ">
-                        <i class="ri-function-line"></i>
-
-                    </button>
-                </div>
-
+              </div>
+             
+              <!-- Mobile menu button -->
+              <div class="md:hidden ml-2">
+                <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-primary-500 hover:text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" aria-controls="mobile-menu" aria-expanded="false">
+                  <i class="fas fa-bars text-lg"></i>
+                </button>
+              </div>
             </div>
-
-
-
-
+          </div>
         </div>
-
-
-
-
-
-
-
-
-        <div id="page2">
-
-
-            <div id="like-container">
-                <div id="like-form">
-                    <div id="like">
-                        <form action="/stories/<%=story._id%>/likes">
-
-                            <% if(story.likedBy.includes(currUser.id)) {%>
-
-                                <button onclick="refreshPage()"><i class="ri-heart-3-fill"></i></button>
-
-
-                                <%}else{%>
-
-
-                                    <button><i class="ri-heart-add-2-line"></i></button>
-
-
-
-
-
-                                    <%}%>
-
-
-                        </form>
-                    </div>
-                    <h1>
-                        <%=story.likesCounts%>
-                    </h1>
-                </div>
-            </div>
-
-
-
-
-
-
-            <div id="gif-container" style="display: none;">
-
-                <form id="comment-form" action="/gif/<%=story._id%>" method="post">
-
-                    <!-- GIF Search Bar -->
-                    <div class="max-w-lg mx-auto bg-white rounded-xl shadow-md mt-1.5 overflow-hidden md:max-w-2xl "
-                        style="height: 700px;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;">
-                        <div class="p-8">
-                            <span id="gif-cls" class="mt-3"> <i class="ri-close-large-line"></i></span>
-
-                            <div class="flex items-center justify-between">
-                                <input type="text" id="gif-search" placeholder="Search for GIFs.." required
-                                    class="w-full px-4 mr-2 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                <button type="button" onclick="searchGIFs()"
-                                    class="ml-4 px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Search</button>
-                            </div>
-                        </div>
-                        <!-- GIF Results -->
-                        <div id="gif-results"
-                            class="mt-4 p-2 gap-4 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
-                            style="max-height: 400px;">
-                            <!-- GIFs will be dynamically inserted here -->
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="gif" id="selected-gif">
-                    <button type="submit"></button>
-                </form>
-            </div>
-
-
-
-
-            <div id="comment-section-container" style="margin-top: 30px">
-
-                <div id="comment-input">
-
-                    <form action="/comment/<%=story._id%>" method="post">
-
-                        <textarea  name="comment[comment]" placeholder="write your comments" required></textarea>
-
-
-
-                        <div class="flex items-center justify-between gap-1.5 w-full h-20 mt-1">
-                            <div class="flex items-center space-x-2">
-                                <button id="gif-btn" type="button"
-                                    style="font-size: larger; color: rgb(14, 14, 14);background-color: antiquewhite;"
-                                    class="p-2 rounded-full hover:bg-white-200 transition duration-200">
-                                    <i class="ri-file-gif-line"></i>
-                                </button>
-
-                            </div>
-                            <div class="flex items-center space-x-2">
-
-                                <button type="submit"
-                                    class="bg-blue-500  text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-200">
-                                    Comment
-                                </button>
-                            </div>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-
-
-
-                <div id="comment-msg-boxs" style="border-top:1px solid rgb(129, 7, 7);">
-                    <h1>
-                        <%=story.comments.length %> COMMENTS
-                    </h1>
-                    <hr>
-                    <% for (review of story.comments) { %>
-                        <div class="comment-card">
-                            <div class="comment-profile">
-                                <div class="comment-user-img">
-                                    <img src="<%=review.author.image.url%>" alt="user">
-                                </div>
-                                <div class="comment-user-info">
-                                    <a href="/comment/<%=review.author._id%>">
-                                        <h4>
-                                            <%=review.author.username%>
-                                        </h4>
-                                    </a>
-
-
-                                    <span>
-
-                                        <p id="lastEdited-<%= review._id %>">
-                                            <%= review.timeStamp.toISOString() %>
-                                        </p> %></p>
-
-
-
-                                    </span>
-
-
-                                </div>
-                            </div>
-                            <div class="comment-content">
-                                <p>
-                                    <%=review.comment%>.
-                                        <% if (review.gif) { %>
-                                            <img src="<%= review.gif %>" width="200">
-                                            <% } %>
-                                </p>
-                            </div>
-
-                            <% if (review.author._id.equals(currUser._id)) {%>
-                                <div class="inline-flex items-center rounded-md shadow-sm mt-3 ">
-
-                                    <form
-                                        class="text-slate-800  text-sm bg-red-400   rounded-l-lg  font-medium px-4 py-2 inline-flex space-x-1 items-center"" action="
-                                        /comment/<%=story._id%>/review/<%=review._id%>?_method=DELETE"
-                                            method="post">
-                                            <button>
-                                                <span><i class="ri-delete-bin-7-line"></i>
-                                                </span>
-                                                <span class=" md:inline-block">Delete</span>
-                                            </button>
-                                    </form>
-                                    <form
-                                        class="text-slate-800 hover:text-blue-600 text-sm   border-y font-medium px-4 py-2 inline-flex space-x-1 items-center"
-                                        action="/comment/<%=story._id%>/review/<%=review._id%>" method="get">
-
-                                        <button>
-
-                                            <span>
-                                                <i class="ri-chat-settings-line"></i>
-                                            </span>
-                                            <span class=" md:inline-block">Edit</span>
-                                        </button>
-                                    </form>
-
-                                </div>
-                                <% } %>
-
-                        </div>
-                        <%}%>
-
-
-
-
-
-
-
-                </div>
-
-            </div>
         
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+          <div class="py-3 space-y-1 px-4">
+            <a href="#" class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 font-medium">
+              <i class="fas fa-book mr-3 text-primary-600"></i>
+              <span>Stories</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gradient-to-r hover:from-accent-light/10 hover:to-primary-100 hover:text-primary-700 font-medium transition-all duration-200">
+              <i class="fas fa-feather-alt mr-3 text-accent"></i>
+              <span>Write</span>
+            </a>
+          </div>
         </div>
+      </nav>
 
+  
+
+    <!-- Toast Notifications -->
+    <div class="fixed top-5 right-5 z-50">
+        <% if(success && success.length) { %>
+            <div id="toast-success" class="flex items-center p-4 mb-4 bg-white rounded-lg shadow animate-fadeIn"
+                role="alert">
+                <div
+                    class="inline-flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg bg-green-100 text-green-500">
+                    <i class="ri-check-line"></i>
+                </div>
+                <div class="ml-3 text-sm font-normal text-gray-800">
+                    <%=success %>
+                </div>
+                <button type="button"
+                    class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg p-1.5 hover:bg-gray-100 inline-flex h-8 w-8"
+                    id="close-toast">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <% } %>
     </div>
 
+    <!-- Delete Modal -->
+    <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div
+            class="bg-white rounded-lg shadow-lg w-11/12 md:w-1/3 p-6 transform transition-all duration-300 ease-in-out">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-semibold text-gray-900">Delete Story</h3>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="mt-4">
+                <p class="text-gray-700">Are you sure you want to delete this story? This action cannot be undone.</p>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button id="cancelBtn"
+                    class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors">Cancel</button>
+                <form action="/stories/<%=story._id%>/delete?_method=DELETE" method="post">
+                    <button
+                        class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <!-- Story Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Story Content -->
+            <div class="w-full lg:w-2/3">
+                <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                    <!-- Story Header -->
+                    <div class="bg-gradient-to-r from-black-500 to-indigo-600 px-6 py-8 text-black">
+                        <h1 class="text-3xl font-bold text-center mb-4 username">
+                            <%=story.title.toUpperCase()%>
+                        </h1>
+                        <div class="flex justify-center">
+                            <img src="<%=story.image.url%>" alt="<%=story.title%>"
+                                class="h-72 w-full object-cover rounded-lg shadow-md">
+                        </div>
+                        <!-- <div class="flex items-center justify-center mt-4">
+                            <a href="/profile/<%=story.owner._id%>" class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <img class="h-8 w-8 rounded-full" src="<%=story.owner.image.url%>" alt="<%=story.owner.username%>">
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-white"><%=story.owner.username%></p>
+                                </div>
+                            </a>
+                        </div> -->
+                    </div>
+
+                    <!-- Story Content -->
+                    <div class="px-4 py-8">
+                        <div class="story-text">
+                            <%= story.story %>
+                        </div>
+                    </div>
+
+                    <!-- Story Actions -->
+                    <div class="border-t border-gray-200 px-6 py-4">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <form action="/stories/<%=story._id%>/likes" class="flex items-center">
+                                    <button type="submit"
+                                        class="text-gray-400 hover:text-red-500 focus:outline-none transition-colors">
+                                        <% if(story.likedBy.includes(currUser.id)) { %>
+                                            <i class="ri-heart-3-fill text-red-500 text-xl"></i>
+                                            <% } else { %>
+                                                <i class="ri-heart-add-2-line text-xl"></i>
+                                                <% } %>
+                                    </button>
+                                    <span class="ml-2 text-gray-600 font-medium">
+                                        <%=story.likesCounts%>
+                                    </span>
+                                </form>
+
+                                <div class="ml-4 text-gray-600">
+                                    <i class="ri-chat-3-line text-xl"></i>
+                                    <span class="ml-1">
+                                        <%=story.comments.length%>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="relative">
+                                <button id="options-menu"
+                                    class=" p-2 ">
+                                    <i class="ri-more-2-fill"></i>
+                                </button>
+                                <div id="story-option" style="display: none;"
+                                    class=" absolute  right-0 bottom-10 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                    <% if (story.owner._id.equals(currUser._id)) { %>
+                                        <a href="/stories/<%=story._id%>/edit"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="ri-pencil-line mr-2"></i> Edit
+                                        </a>
+                                        <button id="openModalBtn"
+                                            class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="ri-delete-bin-6-line mr-2"></i> Delete
+                                        </button>
+                                        <% } %>
+                                            <a href="/stories/download/<%=story._id%>"
+                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                <i class="ri-download-cloud-line mr-2"></i> Download
+                                            </a>
+                                            <button>share</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="mt-8 bg-white shadow-sm rounded-lg overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800">Comments (<%=story.comments.length%>)</h2>
+                    </div>
+
+                    <!-- Comment Form -->
+                    <div class="p-6 border-b border-gray-200">
+                        <form action="/comment/<%=story._id%>" method="post" class="comment-form">
+                            <textarea name="comment[comment]" placeholder="Share your thoughts..." required
+                                class="w-full px-4 py-3 rounded-lg border border-gray-300 resize-none"></textarea>
+                            <div class="flex items-center justify-between mt-4">
+                                <button id="gif-btn" type="button"
+                                    class="flex items-center text-gray-600 hover:text-gray-800 transition-colors">
+                                    <i class="ri-file-gif-line text-xl mr-1"></i>
+                                    <span>Add GIF</span>
+                                </button>
+                                <button type="submit" class="btn-primary px-6 py-2 rounded-lg font-medium">
+                                    Post Comment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- GIF Picker -->
+                    <div id="gif-container" class="hidden p-6 border-b border-gray-200">
+                        <form id="comment-form" action="/gif/<%=story._id%>" method="post">
+                            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                                <div class="p-4 border-b border-gray-200">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-medium text-gray-800">Select a GIF</h3>
+                                        <button type="button" id="gif-cls" class="text-gray-400 hover:text-gray-600">
+                                            <i class="ri-close-line text-xl"></i>
+                                        </button>
+                                    </div>
+                                    <div class="flex items-center mt-4">
+                                        <input type="text" id="gif-search" placeholder="Search for GIFs..."
+                                            class="w-full px-4 py-2 rounded-lg border dark:text-black border-gray-300 ">
+                                        <button type="button" onclick="searchGIFs()"
+                                            class="ml-2 btn-primary px-4 py-2 rounded-lg font-medium">Search</button>
+                                    </div>
+                                </div>
+                                <div id="gif-results"
+                                    class="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 max-h-64 overflow-y-auto">
+                                    <!-- GIFs will be displayed here -->
+                                </div>
+                            </div>
+                            <input type="hidden" name="gif" id="selected-gif">
+                        </form>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div class="divide-y divide-gray-200">
+                        <% for (review of story.comments) { %>
+                            <div class="p-6 comment-card">
+                                <div class="flex">
+                                    <div class="flex-shrink-0 mr-4">
+                                        <img class="h-10 w-10 rounded-full object-cover" src="<%=review.author.image.url%>"
+                                            alt="<%=review.author.username%>">
+                                    </div>
+                                    <div class="flex-grow">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <a href="/comment/<%=review.author._id%>"
+                                                    class="font-medium username  text-gray-900 hover:underline">
+                                                    <%=review.author.username%>
+                                                </a>
+                                                <p class="text-xs text-gray-500" id="lastEdited-<%= review._id %>">
+                                                    <%= review.timeStamp.toISOString() %>
+                                                </p>
+                                            </div>
+                                            <% if (review.author._id.equals(currUser._id)) { %>
+                                                <div class="flex space-x-2">
+                                                    <a href="/comment/<%=story._id%>/review/<%=review._id%>"
+                                                        class="text-sm text-gray-500 hover:text-gray-700">
+                                                        <i class="ri-edit-line"></i>
+                                                    </a>
+                                                    <form
+                                                        action="/comment/<%=story._id%>/review/<%=review._id%>?_method=DELETE"
+                                                        method="post">
+                                                        <button type="submit"
+                                                            class="text-sm text-gray-500 hover:text-red-500">
+                                                            <i class="ri-delete-bin-line"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                                <% } %>
+                                        </div>
+                                        <div class="mt-2 comment text-gray-700">
+                                            <p>
+                                                <%=review.comment%>
+                                            </p>
+                                            <% if (review.gif) { %>
+                                                <div class="mt-2 ">
+                                                    <img src="<%= review.gif %>" alt="GIF" class="rounded-lg max-w-60">
+                                                </div>
+                                                <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="w-full lg:w-1/3 mt-6 lg:mt-0">
+                <div class="bg-white shadow-sm rounded-lg overflow-hidden  sticky top-20">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h2 class="text-xl font-semibold text-gray-800">About the Author</h2>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <img class="h-10 w-10 rounded-full object-cover" src="<%=story.owner.image.url%>"
+                                    alt="<%=story.owner.username%>">
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-lg author-username font-medium text-gray-900">
+                                    <%=story.owner.username%>
+                                </h3>
+                                <a href="/profile/<%=story.owner._id%>"
+                                    class="text-blue-600 hover:text-blue-800 text-sm">View Profile</a>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <h4 class="text-md story-stats font-medium text-gray-900">Story Stats</h4>
+                            <div class="mt-2 grid grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-500">Likes</div>
+                                    <div class="text-xl font-semibold">
+                                        <%=story.likesCounts%>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg">
+                                    <div class="text-sm text-gray-500">Comments</div>
+                                    <div class="text-xl font-semibold">
+                                        <%=story.comments.length%>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Back to top button -->
+    <button id="back-to-top"
+        class="fixed bottom-6 right-6 bg-blue-600 text-white p-2 rounded-full shadow-lg opacity-0 invisible transition-all duration-300">
+        <i class="ri-arrow-up-line text-xl"></i>
+    </button> 
 
     <script>
+        // Toast notification
         setTimeout(() => {
-            document.getElementById('toast-success').style.display = "none"
-        
-            location.reload()
+            const toast = document.getElementById('toast-success');
+            if (toast) {
+                toast.classList.add('opacity-0');
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 300);
+            }
         }, 3000);
 
-        // document.getElementById('flash-cls').addEventListener('click', () => {
-        //     document.getElementById('toast-success').style.display = "none"
+        document.getElementById('close-toast')?.addEventListener('click', () => {
+            const toast = document.getElementById('toast-success');
+            toast.classList.add('opacity-0');
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 300);
+        });
 
-        // })
-    </script>
+        
+ 
+    
 
-    <script>
-
-
-//for story delete  modal
-const openModalBtn = document.getElementById('openModalBtn');
+        // Delete modal
+        const openModalBtn = document.getElementById('openModalBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const cancelBtn = document.getElementById('cancelBtn');
         const modal = document.getElementById('modal');
 
-        openModalBtn.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-        });
-
-        closeModalBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
-
-        cancelBtn.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
-        //for GIF search
-        async function searchGIFs() {
-            const query = document.getElementById('gif-search').value;
-            const response = await fetch(`/search-gif?q=${query}`);
-            const gifs = await response.json();
-
-            const gifResultsDiv = document.getElementById('gif-results');
-            gifResultsDiv.innerHTML = '';
-
-            gifs.forEach(gif => {
-
-                const img = document.createElement('img');
-                img.src = gif.images.fixed_height.url;
-                img.style.cursor = 'pointer';
-                img.onclick = () => {
-                    document.getElementById('selected-gif').value = gif.images.fixed_height.url;
-                    gifResultsDiv.innerHTML = `<img src="${gif.images.fixed_height.url}" >`;
-                    document.getElementById('comment-form').submit();
-
-                };
-                gifResultsDiv.appendChild(img);
-
-
+        if (openModalBtn && modal) {
+            openModalBtn.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.querySelector('div').classList.add('scale-100');
+                }, 10);
             });
-
         }
 
-
-
-        //for gif container open /close
-        let gifContainer = document.getElementById('gif-container')
-        document.getElementById('gif-btn').addEventListener('click', () => {
-            if (gifContainer.style.display = "none") {
-                gifContainer.style.display = "block"
-            } else {
-                gifContainer.style.display = "none"
-
-            }
-        })
-        document.getElementById('gif-cls').addEventListener('click', () => {
-            if (gifContainer.style.display = "bloack") {
-                gifContainer.style.display = "none"
-                document.getElementById('gif-results').value = ""
-                document.getElementById('gif-search').value = ""
-
-            } else {
-                gifContainer.style.display = "none"
-
-            }
-        })
-
-
-
-        // FOR DROPDOWNS
-
-        //for profile dropdown
-        document.addEventListener('DOMContentLoaded', function () {
-            const profileImg = document.querySelector('#nav-profile img');
-            const dropdownMenu = document.querySelector('.Profile-card-list');
-
-            profileImg.addEventListener('click', function (e) {
-                e.stopPropagation();
-                dropdownMenu.classList.toggle('show');
+        if (closeModalBtn && modal) {
+            closeModalBtn.addEventListener('click', () => {
+                modal.querySelector('div').classList.remove('scale-100');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
             });
+        }
 
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function (event) {
-                if (!profileImg.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                    dropdownMenu.classList.remove('show');
+        if (cancelBtn && modal) {
+            cancelBtn.addEventListener('click', () => {
+                modal.querySelector('div').classList.remove('scale-100');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            });
+        }
+
+        // GIF search
+        async function searchGIFs() {
+            const query = document.getElementById('gif-search').value;
+            if (!query) return;
+
+            const resultsContainer = document.getElementById('gif-results');
+            resultsContainer.innerHTML = '<div class="col-span-3 text-center py-4"><i class="ri-loader-4-line animate-spin text-2xl text-gray-400"></i></div>';
+
+            try {
+                const response = await fetch(`/search-gif?q=${query}`);
+                const gifs = await response.json();
+
+                resultsContainer.innerHTML = '';
+
+                if (gifs.length === 0) {
+                    resultsContainer.innerHTML = '<div class="col-span-3 text-center py-4">No GIFs found. Try another search.</div>';
+                    return;
                 }
-                dropdownMenu.classList.remove('show');
 
-            });
-        });
+                gifs.forEach(gif => {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'border rounded-lg overflow-hidden cursor-pointer hover:border-blue-500 transition-colors';
 
+                    const img = document.createElement('img');
+                    img.src = gif.images.fixed_height.url;
+                    img.className = 'w-full h-auto';
+                    img.alt = 'GIF';
 
-        //for story edit options
-        let option = document.getElementById('option-list')
+                    imgContainer.appendChild(img);
+                    imgContainer.onclick = () => {
+                        document.getElementById('selected-gif').value = gif.images.fixed_height.url;
+                        document.getElementById('comment-form').submit();
+                    };
 
-        document.getElementById('option').addEventListener('click', () => {
-            if (option.style.display === "none") {
-                option.style.display = "block"
-            } else {
-                option.style.display = "none"
+                    resultsContainer.appendChild(imgContainer);
+                });
+            } catch (error) {
+                resultsContainer.innerHTML = '<div class="col-span-3 text-center py-4">Something went wrong. Please try again.</div>';
             }
+        }
 
-        })
+        // GIF button toggle
+        const gifBtn = document.getElementById('gif-btn');
+        const gifContainer = document.getElementById('gif-container');
+        const gifCloseBtn = document.getElementById('gif-cls');
 
+        if (gifBtn && gifContainer) {
+            gifBtn.addEventListener('click', () => {
+                gifContainer.classList.toggle('hidden');
+                if (!gifContainer.classList.contains('hidden')) {
+                    document.getElementById('gif-search').focus();
+                }
+            });
+        }
 
-        // for track current time 
+        if (gifCloseBtn && gifContainer) {
+            gifCloseBtn.addEventListener('click', () => {
+                gifContainer.classList.add('hidden');
+                document.getElementById('gif-search').value = '';
+                document.getElementById('gif-results').innerHTML = '';
+            });
+        }
+
+        // Format timestamps
         document.querySelectorAll('[id^="lastEdited-"]').forEach(el => {
-            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
-            el.innerText = ` ${moment(rawDate).fromNow()}`;
+            const rawDate = new Date(el.innerText.trim());
+            el.innerText = moment(rawDate).fromNow();
         });
-
-
-        //     document.querySelectorAll('[data-story]').forEach(el => {
-        //     el.innerHTML = el.getAttribute('data-story');
-        // });
-        //     const storyContainer = document.getElementById('story-container');
-
-
-        //     storyContainer.innerHTML = storyContainer.getAttribute('data-story');
-        //     storyContainer.style.cssText = textElement.getAttribute('data-story');
 
     </script>
-    
-   
+    <script>
+       
 
+        const optionsMenu = document.getElementById('options-menu');
+        const storyOption = document.getElementById('story-option');
+        optionsMenu.addEventListener('click', () => {
+
+            if (storyOption.style.display === "block") {
+
+                storyOption.style.display = "none";
+            } else {
+
+                storyOption.style.display = "block";
+            }
+        });
+    </script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+       checkUnreadNotifications(); // Run on page load
+   
+       //  Check for new notifications every 5 seconds
+       setInterval(checkUnreadNotifications, 5000);
+   });
+   
+   // Function to check unread notifications
+   function checkUnreadNotifications() {
+       fetch('/check-unread-notifications')
+           .then(response => response.json())
+           .then(data => {
+               const redDot = document.getElementById("red-dot");
+               if (data.success && data.unreadCount > 0) {
+                   redDot.classList.remove("hidden"); 
+                   redDot.textContent = data.unreadCount; =
+               } else {
+                   redDot.classList.add("hidden"); 
+               }
+           })
+           .catch(error => console.error("Error fetching notifications:", error));
+   }
+   
+   // Function to mark notifications as seen when clicked
+   function markNotificationsSeen() {
+       fetch('/mark-notifications-seen') 
+           .then(() => {
+               document.getElementById("red-dot").classList.add("hidden"); 
+           })
+           .catch(error => console.error("Error marking notifications as seen:", error));
+   }
+   
+           
+      
+   
+        
+        // Dark mode toggle script
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+            themeIcon.classList.replace('ri-sun-line', 'ri-moon-line');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            themeIcon.classList.toggle('ri-sun-line', !isDarkMode);
+            themeIcon.classList.toggle('ri-moon-line', isDarkMode);
+        });
+        
+         // Profile dropdown toggle
+         const profileButton = document.getElementById('profile-menu-button');
+          const profileDropdown = document.getElementById('profile-dropdown');
+          
+          profileButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+          });
+          
+          // Close dropdown when clicking outside
+          window.addEventListener('click', (event) => {
+            if (!profileButton.contains(event.target)) {
+              profileDropdown.classList.add('hidden');
+            }
+          });
+          
+          // Mobile menu toggle
+          const mobileMenuButton = document.getElementById('mobile-menu-button');
+          const mobileMenu = document.getElementById('mobile-menu');
+          
+          mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+          });
+    </script>
+    
+
+     <script>
+        // page refresh keep scrolling position
+        document.addEventListener("DOMContentLoaded", function(event) { 
+            var scrollpos = localStorage.getItem('scrollpos');
+            if (scrollpos) window.scrollTo(0, scrollpos);
+        });
+
+        window.onbeforeunload = function(e) {
+            localStorage.setItem('scrollpos', window.scrollY);
+        };
+    </script>
 </body>
 
 </html>

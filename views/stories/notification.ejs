@@ -25,88 +25,139 @@
 
                 </div>
 
-     <!-- Today Notifications -->
-     <% if (todayNotifications.length > 0) { %>
-        <h3 class="text-lg font-semibold mt-6 text-gray-700">Today</h3>
-        <% todayNotifications.forEach(notif => { %>
-       
-    
+              
+                                          
 
-                <% user.notifications.reverse().forEach(notif=> { %>
-                    <% if (notif.type==="like" ) { %>
-                        <div class="w-full p-3 mt-8 bg-white rounded flex ">
-                            <div tabindex="0" aria-label="heart icon" role="img"
-                                class="focus:outline-none w-8 h-8 border rounded-full border-gray-200 flex items-center justify-center">
-                                <i class="ri-heart-2-fill text-amber-800"></i>
-                            </div>
-                            <a class="flex justify-center  " href="/stories/<%= notif.storyId %>"> 
-                                <div class="pl-3 ">
-                                    <p class="focus:outline-none text-sm leading-none "><span class="text-indigo-700">
-                                            <%= notif.fromUser.username %>
-                                        </span> liked your <span class="text-indigo-700">story</span></p>
-                                    <p id="like"
-                                        class="focus:outline-none text-xs leading-3 pt-1 text-gray-500 flex items-center justify-between w-full">
-                                        <%= notif.timeStamp %>
+            
+                    <!-- TODAY NOTIFICATIONS -->
+                    <% if (today.length > 0) { %>
+                        <h2 class="text-lg font-semibold text-gray-700 mb-2 mt-10">Today</h2>
+                        <% today.forEach(notif => { %>
+                            <div class="w-full p-4 bg-gray-50 rounded-lg flex items-center shadow-sm mb-3">
+                                <!-- ICON -->
+                                <div class="w-10 h-10 border rounded-full flex  items-center justify-center bg-white">
+                                    <% if (notif.type === "like") { %>
 
-                                    </p>
+                                        <img class=" rounded-full w-full h-full object-cover " src="<%=notif.fromUser.image.url%>" alt="">
 
+                                    <% } else if (notif.type === "follow") { %>
+                                   <img  class="rounded-full w-full h-full object-cover " src="<%=notif.fromUser.image.url%>" alt="">
+                                    <% } %>
                                 </div>
-
-                                <div
-                                    class="focus:outline-none cursor-pointer flex justify-center gap-1.5">
-                                    <form action="/notification/<%=notif._id%>?_method=DELETE" method="post">
-
-
-                                        <button>
-                                            <i class="ri-close-line"></i>
-                                        </button>
-
-                                    </form>
-                                </div>
-
-                            </a>
-                        </div>
-                        <% } else if (notif.type==="follow" ) { %>
-                            <div class="w-full p-3 mt-4 bg-white rounded shadow flex flex-shrink-0">
-                                <div tabindex="0" aria-label="group icon" role="img"
-                                    class="focus:outline-none w-8 h-8 border rounded-full border-gray-200 flex flex-shrink-0 items-center justify-center">
-                                    <i class="ri-user-follow-fill"></i>
-                                </div>
-                                <div class="pl-3 w-full">
-                                    <a href="/profile/<%= notif.fromUser._id %>">
-
-                                        <div class="flex items-center justify-between w-full">
-                                            <p tabindex="0" class="focus:outline-none text-sm leading-none"><span
-                                                    class="text-indigo-700">
-                                                    <%=notif.fromUser.username%>
-                                                </span> Follwoing you</p>
-                                            <div  
-                                                class="focus:outline-none cursor-pointer">
-                                                <form action="/notification/<%=notif._id%>?_method=DELETE" method="post">
-
-
-                                                    <button>
-                                                        <i class="ri-close-line"></i>
-
-                                                    </button>
-
-                                                </form>
-                                            </div>
-                                        </div>
+                                <!-- MESSAGE -->
+                                <div class="ml-4 flex-1">
+                                    <% if (notif.type === "like") { %>
+                                        <a href="/stories/<%= notif.storyId %>" class="text-blue-600">
+                                        <p class="text-gray-800">
+                                            <span class="font-semibold text-indigo-700"><%= notif.fromUser.username %></span> liked your 
+                                            story.
+                                        </p>
                                     </a>
-                                    <p id="follow" class="focus:outline-none text-xs leading-3 pt-1 text-gray-500">
-                                        <%= notif.timeStamp%>
-                                    </p>
+                                    <% } else if (notif.type === "follow") { %>
+                                        <a href="/profile/<%= notif.fromUser._id %>" class="text-blue-600">
+                                        <p class="text-gray-800">
+                                            <span class="font-semibold text-indigo-700"><%= notif.fromUser.username %></span> started following you.
+                                        </p>
+                                </a>
+                                    <% } %>
+                                    <p  id="like" class="text-xs text-gray-500"><%= notif.timeStamp %></p>
                                 </div>
-
+                                <!-- DELETE BUTTON -->
+                                <form action="/notification/<%= notif._id %>?_method=DELETE" method="post">
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <i class="ri-close-line text-lg"></i>
+                                    </button>
+                                </form>
                             </div>
-                            <% } %>
-
-                                <% }) %>
-                                <% }) %>
-                                <% } %>
+                        <% }) %>
+                    <% } %>
+            
+                    <!-- YESTERDAY NOTIFICATIONS -->
+                    <% if (yesterday.length > 0) { %>
+                        <h2 class="text-lg font-semibold text-gray-700 mt-6 mb-2">Yesterday</h2>
+                        <% yesterday.forEach(notif => { %>
+                            <div class="w-full p-4 bg-gray-50 rounded-lg flex items-center shadow-sm mb-3">
+                                <div class="w-10 h-10 border rounded-full flex items-center justify-center bg-white">
+                                    <% if (notif.type === "like") { %>
+                                        <img class="rounded-full  w-full h-full object-cover"  src="<%=notif.fromUser.image.url%>" alt="">
+                                    <% } else if (notif.type === "follow") { %>
+                                        <img class="rounded-full  w-full h-full object-cover "  src="<%=notif.fromUser.image.url%>" alt="">
+                                    <% } %>
+                                </div>
+                                <div class="ml-4 flex-1">
+                                    <% if (notif.type === "like") { %>
+                                     
+                                        <p class="text-gray-800">
+                                            <a href="/stories/<%= notif.storyId %>" class="text-blue-600">
+                                            <span class="font-semibold text-indigo-700"><%= notif.fromUser.username %></span> liked your 
+                                            story.
+                                        </a>
+                                        </p>
+                                 
+                                    <% } else if (notif.type === "follow") { %>
+                                        <a href="/profile/<%= notif.fromUser._id %>" class="text-blue-600">
+                                        <p class="text-gray-800">
+                                            <span class="font-semibold text-indigo-700"><%= notif.fromUser.username %></span> started following you.
+                                        </p>
+                                        </a>
+                                    <% } %>
+                                    <p id="like" class="text-xs text-gray-500"><%= notif.timeStamp %></p>
+                                </div>
+                                <form action="/notification/<%= notif._id %>?_method=DELETE" method="post">
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <i class="ri-close-line text-lg"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        <% }) %>
+                    <% } %>
+            
+                    <!-- LAST 7 DAYS NOTIFICATIONS -->
+                    <% if (last7Days.length > 0) { %>
+                        <h2 class="text-lg font-semibold text-gray-700 mt-6 mb-2">Last 7 Days</h2>
+                        <% last7Days.forEach(notif => { %>
+                            <div class="w-full p-4 bg-gray-50 rounded-lg flex items-center shadow-sm mb-3">
+                                <div class="w-10 h-10 border rounded-full flex items-center justify-center bg-white">
+                                    <% if (notif.type === "like") { %>
+                                        <img class="rounded-full  w-full h-full object-cover "  src="<%=notif.fromUser.image.url%>" alt="">
+                                    <% } else if (notif.type === "follow") { %>
+                                        <img class="rounded-full  w-full h-full object-cover "  src="<%=notif.fromUser.image.url%>" alt="">
+                                    <% } %>
+                                </div>
+                                <div class="ml-4 flex-1">
+                                    <% if (notif.type === "like") { %>
+                                        <p class="text-gray-800">
+                                            <span class="font-semibold text-indigo-700"><%= notif.fromUser.username %></span> liked your 
+                                            <a href="/stories/<%= notif.storyId %>" class="text-blue-600">story</a>.
+                                        </p>
+                                    <% } else if (notif.type === "follow") { %>
+                                        <a href="/profile/<%= notif.fromUser._id %>" class="text-blue-600">
+                                        <p class="text-gray-800">
+                                            <span class="font-semibold text-indigo-700"><%= notif.fromUser.username %></span> started following you.
+                                        </p>
+                                        </a>
+                                    <% } %>
+                                    <p id="like" class="text-xs text-gray-500"><%= notif.timeStamp %></p>
+                                </div>
+                                <form action="/notification/<%= notif._id %>?_method=DELETE" method="post">
+                                    <button class="text-gray-500 hover:text-gray-700">
+                                        <i class="ri-close-line text-lg"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        <% }) %>
+                    <% } %>
+            
+                    <!-- NO NOTIFICATIONS -->
+                    <% if (today.length === 0 && yesterday.length === 0 && last7Days.length === 0) { %>
+                        <p class="text-center text-gray-600  mt-52">No notifications to show.</p>
+                    <% } %>
+            
+            
+                                
             </div>
-          
+        
+            
         </div>
    
         

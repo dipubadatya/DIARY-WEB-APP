@@ -41,18 +41,39 @@ router.get('/username/:username', async (req, res) => {
 });
 
 // Fetch all stories
+// router.get('/stories', async (req, res) => {
+//     try {
+
+
+//       let user=req.user
+      
+//         const storyData = await Stories.find()
+//             .sort({ timeStamp: -1 })
+//             .populate({ path: 'comments', populate: { path: 'author' } })
+//             .populate('owner')
+//             .exec();
+//         res.render('./stories/storyList.ejs', { storyData,user});
+//     } catch (error) {
+//         handleError(res, error, 'Problem fetching stories');
+//     }
+// });
 router.get('/stories', async (req, res) => {
     try {
+        let user = req.user;
+        let searchQuery = req.query.search || ''; // Get search query from request
 
+        let filter = {};
+        if (searchQuery) {
+            filter.title = { $regex: searchQuery, $options: 'i' }; // Case-insensitive search
+        }
 
-      let user=req.user
-      
-        const storyData = await Stories.find()
+        const storyData = await Stories.find(filter)
             .sort({ timeStamp: -1 })
             .populate({ path: 'comments', populate: { path: 'author' } })
             .populate('owner')
             .exec();
-        res.render('./stories/storyList.ejs', { storyData,user});
+
+        res.render('./stories/storyList.ejs', { storyData, user });
     } catch (error) {
         handleError(res, error, 'Problem fetching stories');
     }

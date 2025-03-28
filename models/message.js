@@ -7,8 +7,8 @@ const messageSchema = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now },
     status: {
         type: String,
-        enum: ["pending", "delivered", "seen"],  // WhatsApp-like statuses
-        default: "pending"
+        enum: ["sent", "delivered", "seen"],  // WhatsApp-like statuses
+        default: "sent"
     },
 });
 

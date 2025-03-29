@@ -664,6 +664,7 @@
     <script>
         // Toast notification
         setTimeout(() => {
+
             const toast = document.getElementById('toast-success');
             if (toast) {
                 toast.classList.add('opacity-0');
@@ -672,6 +673,13 @@
                 }, 300);
             }
         }, 3000);
+
+        setTimeout(() => {
+            document.getElementById('toast-success').style.display = "none"
+        
+           location.reload()
+        }, 2000);
+
 
         document.getElementById('close-toast')?.addEventListener('click', () => {
             const toast = document.getElementById('toast-success');

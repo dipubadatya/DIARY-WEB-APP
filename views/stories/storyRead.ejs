@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="<%=pageDescription%>">
     <title>
         <%=pageTitle %>
     </title>
@@ -11,12 +12,31 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
-    
+
     <style>
-        
         body {
             font-family: 'Inter', sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .share-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .share-options {
+            margin-top: 10px;
+        }
+
+        .share-options a {
+            text-decoration: none;
+            margin-right: 8px;
+            color: #007bff;
         }
 
         .dark body {
@@ -85,8 +105,9 @@
             border-radius: 8px;
             transition: all 0.3s ease;
         }
-        .dark  .comment-form textarea{
-            
+
+        .dark .comment-form textarea {
+
             color: black;
         }
 
@@ -246,132 +267,156 @@
         .dark .nav-content a {
             color: white;
         }
-    
     </style>
 </head>
 
 <body class="bg-gray-50">
-  
-    
+
+
     <div class="scroll-indicator" id="scroll-indicator"></div>
 
     <!-- Navbar -->
     <nav class="bg-white shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16">
-            
-            <div class="flex items-center justify-between">
-           
-              <div class="flex-shrink-0 flex items-center">
-                <a href="/stories">
-                <span class="text-2x1 font-bold">
-                    <i class="fa-solid fa-feather"></i> Diary
-                </span>
-              </a>
-              </div>
-              
-              <!-- Desktop Navigation Links -->
-              <div class="hidden md:ml-8 md:flex md:space-x-8">
-                <a href="/stories" class="flex items-center username h-16 px-2 text-sm font-medium text-gray-900 border-b-2 border-accent">
-                  <i class="fas fa-book text-accent mr-2"></i>
-                  <span>Stories</span>
-                </a>
-                <a href="/stories/newWrite" class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
-                  <i class="fas fa-feather-alt text-primary-500 mr-2"></i>
-                  <span>Write</span>
-                </a>
-              </div>
-            </div>
-            
-            <div class="flex items-center">
-              <button id="theme-toggle" class="p-2 rounded-full  ">
-                <i id="theme-icon" class="ri-sun-line text-gray-800 dark:text-gray-700"></i>
-            </button>
+            <div class="flex justify-between h-16">
 
-              <!-- Search button -->
-              <div class="flex-shrink-0 mr-2">
-                <a href="/search">
-                <button class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
-                  <i class="fas fa-search"></i>
-                </button>
-              </a>
-              </div>
-           
-              <!-- Notification bell -->
-              <div class="flex-shrink-0 mr-2 relative">
-                <a href="/notification">
-                  <button onclick="markNotificationsSeen()" class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
-                    <i class="fas fa-bell"></i>
-                    <!-- Make sure the red dot has the correct ID -->
-                    <span id="red-dot" class="red-dot absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-xs font-bold text-red-700 hidden">
-                      5 <!-- This number is dynamic, based on unread notifications -->
-                    </span>
-                  </button>
-                </a>
-              </div>
-              
-              <!-- Profile dropdown -->
-              <div class="ml-3 relative">
-                <div>
-                  <button id="profile-menu-button" type="button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" aria-expanded="false" aria-haspopup="true">
-                    <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400" src="<%=user.image.url  %>" alt="User profile">
-                  </button>
-                </div>
-                
-                <!-- Dropdown menu -->
-                <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
-                  <div class="px-4 py-3 border-b border-gray-100">
-                    <div class="flex items-center space-x-3">
-                      <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400" src="<%=user.image.url  %>" alt="User profile">
-                      <div>
-                        <p class="text-sm font-semibold text-gray-800"><%=user.name%></p>
-                        <p class="text-xs text-gray-500">@<%=user.username%></p>
-                      </div>
+                <div class="flex items-center justify-between">
+
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/stories">
+                            <span class="text-2x1 font-bold">
+                                <i class="fa-solid fa-feather"></i> Diary
+                            </span>
+                        </a>
                     </div>
-                  </div>
-                  <a href="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
-                    <i class="fas fa-chart-line mr-2 text-primary-500"></i> Dashboard
-                  </a>
-                  <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
-                    <i class="fas fa-user mr-2 text-primary-500"></i> Profile
-                  </a>
-                  <a href="/stories/newWrite" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
-                    <i class="fas fa-pen-fancy mr-2 text-primary-500"></i> Write
-                  </a>
-                  <div class="border-t border-gray-100 mt-1">
-                    <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200" role="menuitem">
-                      <i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Sign out
-                    </a>
-                  </div>
+
+                    <!-- Desktop Navigation Links -->
+                    <div class="hidden md:ml-8 md:flex md:space-x-8">
+                        <a href="/stories"
+                            class="flex items-center username h-16 px-2 text-sm font-medium text-gray-900 border-b-2 border-accent">
+                            <i class="fas fa-book text-accent mr-2"></i>
+                            <span>Stories</span>
+                        </a>
+                        <a href="/stories/newWrite"
+                            class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
+                            <i class="fas fa-feather-alt text-primary-500 mr-2"></i>
+                            <span>Write</span>
+                        </a>
+                    </div>
                 </div>
-              </div>
-             
-              <!-- Mobile menu button -->
-              <div class="md:hidden ml-2">
-                <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-primary-500 hover:text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" aria-controls="mobile-menu" aria-expanded="false">
-                  <i class="fas fa-bars text-lg"></i>
-                </button>
-              </div>
+
+                <div class="flex items-center">
+                    <button id="theme-toggle" class="p-2 rounded-full  ">
+                        <i id="theme-icon" class="ri-sun-line text-gray-800 dark:text-gray-700"></i>
+                    </button>
+
+                    <!-- Search button -->
+                    <div class="flex-shrink-0 mr-2">
+                        <a href="/search">
+                            <button
+                                class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </a>
+                    </div>
+
+                    <!-- Notification bell -->
+                    <div class="flex-shrink-0 mr-2 relative">
+                        <a href="/notification">
+                            <button onclick="markNotificationsSeen()"
+                                class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
+                                <i class="fas fa-bell"></i>
+                                <!-- Make sure the red dot has the correct ID -->
+                                <span id="red-dot"
+                                    class="red-dot absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-xs font-bold text-red-700 hidden">
+                                    5 <!-- This number is dynamic, based on unread notifications -->
+                                </span>
+                            </button>
+                        </a>
+                    </div>
+
+                    <!-- Profile dropdown -->
+                    <div class="ml-3 relative">
+                        <div>
+                            <button id="profile-menu-button" type="button"
+                                class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                                aria-expanded="false" aria-haspopup="true">
+                                <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400"
+                                    src="<%=user.image.url  %>" alt="User profile">
+                            </button>
+                        </div>
+
+                        <!-- Dropdown menu -->
+                        <div id="profile-dropdown"
+                            class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
+                            <div class="px-4 py-3 border-b border-gray-100">
+                                <div class="flex items-center space-x-3">
+                                    <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400"
+                                        src="<%=user.image.url  %>" alt="User profile">
+                                    <div>
+                                        <p class="text-sm font-semibold text-gray-800">
+                                            <%=user.name%>
+                                        </p>
+                                        <p class="text-xs text-gray-500">@<%=user.username%>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="/dashbord"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
+                                role="menuitem">
+                                <i class="fas fa-chart-line mr-2 text-primary-500"></i> Dashboard
+                            </a>
+                            <a href="/profile"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
+                                role="menuitem">
+                                <i class="fas fa-user mr-2 text-primary-500"></i> Profile
+                            </a>
+                            <a href="/stories/newWrite"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
+                                role="menuitem">
+                                <i class="fas fa-pen-fancy mr-2 text-primary-500"></i> Write
+                            </a>
+                            <div class="border-t border-gray-100 mt-1">
+                                <a href="/logout"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
+                                    role="menuitem">
+                                    <i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Sign out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden ml-2">
+                        <button id="mobile-menu-button" type="button"
+                            class="inline-flex items-center justify-center p-2 rounded-md text-primary-500 hover:text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                            aria-controls="mobile-menu" aria-expanded="false">
+                            <i class="fas fa-bars text-lg"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-        
+
         <!-- Mobile menu -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
-          <div class="py-3 space-y-1 px-4">
-            <a href="#" class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 font-medium">
-              <i class="fas fa-book mr-3 text-primary-600"></i>
-              <span>Stories</span>
-            </a>
-            <a href="#" class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gradient-to-r hover:from-accent-light/10 hover:to-primary-100 hover:text-primary-700 font-medium transition-all duration-200">
-              <i class="fas fa-feather-alt mr-3 text-accent"></i>
-              <span>Write</span>
-            </a>
-          </div>
+            <div class="py-3 space-y-1 px-4">
+                <a href="#"
+                    class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 font-medium">
+                    <i class="fas fa-book mr-3 text-primary-600"></i>
+                    <span>Stories</span>
+                </a>
+                <a href="#"
+                    class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gradient-to-r hover:from-accent-light/10 hover:to-primary-100 hover:text-primary-700 font-medium transition-all duration-200">
+                    <i class="fas fa-feather-alt mr-3 text-accent"></i>
+                    <span>Write</span>
+                </a>
+            </div>
         </div>
-      </nav>
+    </nav>
 
-  
+
 
     <!-- Toast Notifications -->
     <div class="fixed top-5 right-5 z-50">
@@ -479,8 +524,7 @@
                             </div>
 
                             <div class="relative">
-                                <button id="options-menu"
-                                    class=" p-2 ">
+                                <button id="options-menu" class=" p-2 ">
                                     <i class="ri-more-2-fill"></i>
                                 </button>
                                 <div id="story-option" style="display: none;"
@@ -499,7 +543,13 @@
                                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                                 <i class="ri-download-cloud-line mr-2"></i> Download
                                             </a>
-                                            <button>share</button>
+                                            <a
+                                                class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                onclick="shareStory('<%= story._id %>')">
+
+                                                <i class="ri-share-line mr-2"></i>   Share
+                                        </a>
+
                                 </div>
                             </div>
                         </div>
@@ -563,8 +613,8 @@
                             <div class="p-6 comment-card">
                                 <div class="flex">
                                     <div class="flex-shrink-0 mr-4">
-                                        <img class="h-10 w-10 rounded-full object-cover" src="<%=review.author.image.url%>"
-                                            alt="<%=review.author.username%>">
+                                        <img class="h-10 w-10 rounded-full object-cover"
+                                            src="<%=review.author.image.url%>" alt="<%=review.author.username%>">
                                     </div>
                                     <div class="flex-grow">
                                         <div class="flex items-center justify-between">
@@ -659,7 +709,7 @@
     <button id="back-to-top"
         class="fixed bottom-6 right-6 bg-blue-600 text-white p-2 rounded-full shadow-lg opacity-0 invisible transition-all duration-300">
         <i class="ri-arrow-up-line text-xl"></i>
-    </button> 
+    </button>
 
     <script>
         // Toast notification
@@ -676,8 +726,8 @@
 
         setTimeout(() => {
             document.getElementById('toast-success').style.display = "none"
-        
-           location.reload()
+
+            location.reload()
         }, 2000);
 
 
@@ -689,9 +739,9 @@
             }, 300);
         });
 
-        
- 
-    
+
+
+
 
         // Delete modal
         const openModalBtn = document.getElementById('openModalBtn');
@@ -797,7 +847,45 @@
 
     </script>
     <script>
-       
+        function shareStory(storyId) {
+            const storyUrl = `${window.location.origin}/stories/${storyId}`; // Adjust URL based on your route
+
+            if (navigator.share) {
+                navigator.share({
+                    title: "Check out this story!",
+                    text: "Read this amazing story on Diary.",
+                    url: storyUrl
+                }).then(() => {
+                    console.log("Story shared successfully!");
+                }).catch((error) => {
+                    console.error("Error sharing:", error);
+                });
+            } else {
+                const shareLinks = {
+                    whatsapp: `https://api.whatsapp.com/send?text=Read%20this%20story%20${encodeURIComponent(storyUrl)}`,
+                    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(storyUrl)}`,
+                    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(storyUrl)}&text=Read%20this%20story`,
+                    linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(storyUrl)}&title=Amazing%20Story`,
+                    telegram: `https://t.me/share/url?url=${encodeURIComponent(storyUrl)}&text=Read%20this%20story`
+                };
+
+                let shareOptions = `
+                    <div class="share-options">
+                        <a href="${shareLinks.whatsapp}" target="_blank">WhatsApp</a> |
+                        <a href="${shareLinks.facebook}" target="_blank">Facebook</a> |
+                        <a href="${shareLinks.twitter}" target="_blank">Twitter</a> |
+                        <a href="${shareLinks.linkedin}" target="_blank">LinkedIn</a> |
+                        <a href="${shareLinks.telegram}" target="_blank">Telegram</a>
+                    </div>
+                `;
+
+                document.querySelector(".px-4.py-8").insertAdjacentHTML("beforeend", shareOptions);
+            }
+        }
+    </script>
+
+    <script>
+
 
         const optionsMenu = document.getElementById('options-menu');
         const storyOption = document.getElementById('story-option');
@@ -812,44 +900,45 @@
             }
         });
     </script>
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-       checkUnreadNotifications(); // Run on page load
-   
-       //  Check for new notifications every 5 seconds
-       setInterval(checkUnreadNotifications, 5000);
-   });
-   
-   // Function to check unread notifications
-   function checkUnreadNotifications() {
-       fetch('/check-unread-notifications')
-           .then(response => response.json())
-           .then(data => {
-               const redDot = document.getElementById("red-dot");
-               if (data.success && data.unreadCount > 0) {
-                   redDot.classList.remove("hidden"); 
-                   redDot.textContent = data.unreadCount; =
-               } else {
-                   redDot.classList.add("hidden"); 
-               }
-           })
-           .catch(error => console.error("Error fetching notifications:", error));
-   }
-   
-   // Function to mark notifications as seen when clicked
-   function markNotificationsSeen() {
-       fetch('/mark-notifications-seen') 
-           .then(() => {
-               document.getElementById("red-dot").classList.add("hidden"); 
-           })
-           .catch(error => console.error("Error marking notifications as seen:", error));
-   }
-   
-           
-      
-   
-        
+            checkUnreadNotifications(); // Run on page load
+
+            //  Check for new notifications every 5 seconds
+            setInterval(checkUnreadNotifications, 5000);
+        });
+
+        // Function to check unread notifications
+        function checkUnreadNotifications() {
+            fetch('/check-unread-notifications')
+                .then(response => response.json())
+                .then(data => {
+                    const redDot = document.getElementById("red-dot");
+                    if (data.success && data.unreadCount > 0) {
+                        redDot.classList.remove("hidden");
+                        redDot.textContent = data.unreadCount; =
+                    } else {
+                        redDot.classList.add("hidden");
+                    }
+                })
+                .catch(error => console.error("Error fetching notifications:", error));
+        }
+
+        // Function to mark notifications as seen when clicked
+        function markNotificationsSeen() {
+            fetch('/mark-notifications-seen')
+                .then(() => {
+                    document.getElementById("red-dot").classList.add("hidden");
+                })
+                .catch(error => console.error("Error marking notifications as seen:", error));
+        }
+
+
+    </script>
+    <script>
+
+
         // Dark mode toggle script
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-icon');
@@ -867,40 +956,40 @@
             themeIcon.classList.toggle('ri-sun-line', !isDarkMode);
             themeIcon.classList.toggle('ri-moon-line', isDarkMode);
         });
-        
-         // Profile dropdown toggle
-         const profileButton = document.getElementById('profile-menu-button');
-          const profileDropdown = document.getElementById('profile-dropdown');
-          
-          profileButton.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-          });
-          
-          // Close dropdown when clicking outside
-          window.addEventListener('click', (event) => {
-            if (!profileButton.contains(event.target)) {
-              profileDropdown.classList.add('hidden');
-            }
-          });
-          
-          // Mobile menu toggle
-          const mobileMenuButton = document.getElementById('mobile-menu-button');
-          const mobileMenu = document.getElementById('mobile-menu');
-          
-          mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-          });
-    </script>
-    
 
-     <script>
+        // Profile dropdown toggle
+        const profileButton = document.getElementById('profile-menu-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+
+        profileButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (event) => {
+            if (!profileButton.contains(event.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+
+
+    <script>
         // page refresh keep scrolling position
-        document.addEventListener("DOMContentLoaded", function(event) { 
+        document.addEventListener("DOMContentLoaded", function (event) {
             var scrollpos = localStorage.getItem('scrollpos');
             if (scrollpos) window.scrollTo(0, scrollpos);
         });
 
-        window.onbeforeunload = function(e) {
+        window.onbeforeunload = function (e) {
             localStorage.setItem('scrollpos', window.scrollY);
         };
     </script>

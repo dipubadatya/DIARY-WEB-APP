@@ -11,7 +11,8 @@ const port = process.env.PORT || 4000;
 const path = require('path');
 const methodOverride = require('method-override');
 const mongoose = require('mongoose');
-
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const userRoutes = require('./routes/user.js');
 const storiesRoutes = require('./routes/stories');
 const commentRoutes = require('./routes/comment');
@@ -44,6 +45,7 @@ app.use(cors())
 app.engine('ejs', ejsMate);
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
+  
 // Session setup
 const store = MongoStore.create({
     // mongoUrl: process.env.MONGO_LOCAL,
@@ -58,6 +60,8 @@ const sessionOption = {
     resave: false,
     saveUninitialized: true,
     cookie: {
+        secure:true,
+        httpOnly:true,
         expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,

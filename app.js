@@ -7,6 +7,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 const cors = require('cors')
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+
 const port = process.env.PORT || 4000;
 const path = require('path');
 const methodOverride = require('method-override');
@@ -43,7 +46,7 @@ app.use(methodOverride("_method"));
 app.use(cors())
 app.engine('ejs', ejsMate);
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
-
+app.use(helmet());
 // Session setup
 const store = MongoStore.create({
     // mongoUrl: process.env.MONGO_LOCAL,
@@ -120,6 +123,14 @@ io.on("connection", (socket) => {
 });
 
 
+// Apply rate limiting to all requests
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+  message: "Too many requests, please try again later."
+});
+
+app.use(limiter);
 // Routes
 app.use('/', userRoutes);
 app.use("/chat", chatRoutes);

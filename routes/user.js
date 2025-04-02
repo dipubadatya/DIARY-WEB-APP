@@ -496,6 +496,8 @@ router.post('/check-email', async (req, res) => {
 });
 
 
+
+
 //user registration
 router.post('/signup', async (req, res, next) => {
     try {
@@ -521,6 +523,8 @@ router.post('/signup', async (req, res, next) => {
         res.redirect('/signup');
     }
 });
+
+
 
 // login form
 router.get("/login", (req, res) => {

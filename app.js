@@ -7,6 +7,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 const cors = require('cors')
+
+
 const port = process.env.PORT || 4000;
 const path = require('path');
 const methodOverride = require('method-override');
@@ -45,7 +47,7 @@ app.use(cors())
 app.engine('ejs', ejsMate);
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
-  
+
 // Session setup
 const store = MongoStore.create({
     // mongoUrl: process.env.MONGO_LOCAL,
@@ -122,6 +124,7 @@ io.on("connection", (socket) => {
         console.log("A user disconnected");
     });
 });
+
 
 
 // Routes

@@ -48,12 +48,15 @@ app.engine('ejs', ejsMate);
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
 
-// Session setup
+
 const store = MongoStore.create({
-    // mongoUrl: process.env.MONGO_LOCAL,
     mongoUrl: process.env.MONGO_ATLAS,
     crypto: { secret: process.env.SESSION_CRYPTO_SECRET },
     touchAfter: 24 * 3600
+});
+
+store.on('error', (err) => {
+    console.log('Session store error:', err);
 });
 
 const sessionOption = {
@@ -70,22 +73,15 @@ const sessionOption = {
     },
 };
 
-
-store.on('error', () => {
-    console.log('session error', err);
-});
-
-passport.use(passport.initialize());
-passport.use(passport.session());
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
 app.use(session(sessionOption));
 app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // Middleware for flash messages and current user
 app.use((req, res, next) => {

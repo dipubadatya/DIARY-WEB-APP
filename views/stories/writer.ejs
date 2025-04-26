@@ -53,7 +53,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Writte</title>
+    <title>Write</title>
     <link rel="stylesheet" href="/css/writer.css">
     <link
     href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
@@ -61,66 +61,8 @@
 />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Improved styling for voice button and controls */
-        .voice-controls {
-            display: flex;
-            align-items: center;
-            margin: 15px 0;
-            padding: 10px;
-            background-color: #f8fafc;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        
-        .voice-button {
-            background-color: #1e293b;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        .voice-button:hover {
-            background-color: #334155;
-            transform: translateY(-2px);
-        }
-        
-        .voice-button:active {
-            transform: translateY(1px);
-        }
-        
-        .voice-button.active {
-            background-color: #dc2626;
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-            70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-        }
-        
-        .voice-status {
-            margin-left: 15px;
-            font-size: 15px;
-            color: #475569;
-            flex-grow: 1;
-            padding-right: 10px;
-        }
-        
-        .voice-instructions {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-top: 5px;
-        }
-        
+
+
         .writer-text textarea {
             width: 100%;
             min-height: 300px;
@@ -157,7 +99,8 @@
            
 
             width: 100%;
-        height: 200px;
+        height: 200px;`
+        margin-bottom: 2px;
             border-radius: 8px;
             box-shadow: 0 1px 5px rgba(0,0,0,0.1);
             object-fit: contain;
@@ -188,185 +131,20 @@
                 </div>
                 <!-- Improved voice control section -->
                 <div class="voice-controls">
-                    <button type="button" id="voice-button" class="voice-button" title="Start/Stop Voice Input">
-                        <i class="ri-user-voice-line"></i>
-                    </button>
-                    <div>
-                        <div id="voice-status" class="voice-status">Click microphone to start voice input</div>
-                        <!-- <div class="voice-instructions ml-2">Speak clearly and your words will appear where the cursor is positioned</div>////////////////////// -->
-                    </div>
+                  
                    
                 </div>
              
                 <div class="writer-text">
-                    <textarea  name="story" id="story-textarea" placeholder="write your story..."></textarea>
+                    <textarea  name="story" id="story-textarea my-editor" placeholder="write your story..."></textarea>
                 </div>
+                
             </form>
         </div>
     </div>
+    
+    <script src="/tinymce/tinymce.min.js"></script>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const voiceButton = document.getElementById('voice-button');
-            const voiceStatus = document.getElementById('voice-status');
-            const storyTextarea = document.getElementById('story-textarea');
-            const titleInput = document.getElementById('my-editor');
-            
-            // Check if browser supports speech recognition
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                voiceStatus.textContent = "Voice input not supported in your browser";
-                voiceButton.disabled = true;
-                return;
-            }
-            
-            // Initialize speech recognition
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-            
-            // Configure recognition
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.lang = 'en-US';
-        
-            let isListening = false;
-            
-            // Handle recognition results
-            recognition.onresult = function(event) {
-                let interimTranscript = '';
-                let finalTranscript = '';
-                
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    const transcript = event.results[i][0].transcript;
-                    
-                    if (event.results[i].isFinal) {
-                        finalTranscript += transcript + ' ';
-                    } else {
-                        interimTranscript += transcript;
-                    }
-                }
-                
-                // Show interim results
-                if (interimTranscript) {
-                    voiceStatus.textContent = "Listening: " + interimTranscript;
-                }
-                
-                // Insert final transcript into the focused element or default to story textarea
-                if (finalTranscript) {
-                    const activeElement = document.activeElement;
-                    
-                    if (activeElement === titleInput) {
-                        // Insert into title input
-                        const currentValue = titleInput.value;
-                        const cursorPosition = titleInput.selectionStart;
-                        titleInput.value = currentValue.substring(0, cursorPosition) + 
-                                           finalTranscript + 
-                                           currentValue.substring(titleInput.selectionEnd);
-                        
-                        // Move cursor to end of inserted text
-                        titleInput.selectionStart = cursorPosition + finalTranscript.length;
-                        titleInput.selectionEnd = cursorPosition + finalTranscript.length;
-                    } else {
-                        // Default to story textarea
-                        const currentValue = storyTextarea.value;
-                        const cursorPosition = storyTextarea.selectionStart;
-                        storyTextarea.value = currentValue.substring(0, cursorPosition) + 
-                                              finalTranscript + 
-                                              currentValue.substring(storyTextarea.selectionEnd);
-                        
-                        // Move cursor to end of inserted text
-                        storyTextarea.selectionStart = cursorPosition + finalTranscript.length;
-                        storyTextarea.selectionEnd = cursorPosition + finalTranscript.length;
-                        
-                        // Ensure the textarea is focused
-                        storyTextarea.focus();
-                    }
-                }
-            };
-            
-            // Handle recognition errors
-            recognition.onerror = function(event) {
-                console.error('Speech recognition error:', event.error);
-                
-                if (event.error === 'no-speech') {
-                    voiceStatus.textContent = "No speech detected. Try again.";
-                } else if (event.error === 'audio-capture') {
-                    voiceStatus.textContent = "No microphone detected. Please connect a microphone.";
-                } else if (event.error === 'not-allowed') {
-                    voiceStatus.textContent = "Microphone access denied. Please allow microphone access.";
-                } else {
-                    voiceStatus.textContent = "Error: " + event.error;
-                }
-                
-                // Try to restart if we were listening
-                if (isListening) {
-                    try {
-                        recognition.stop();
-                        setTimeout(() => {
-                            if (isListening) recognition.start();
-                        }, 1000);
-                    } catch (e) {
-                        console.error('Error restarting recognition:', e);
-                    }
-                }
-            };
-            
-            // Handle end of recognition
-            recognition.onend = function() {
-                if (isListening) {
-                    // Restart if we're supposed to be listening
-                    try {
-                        recognition.start();
-                    } catch (e) {
-                        console.error('Error restarting recognition:', e);
-                        isListening = false;
-                        voiceButton.classList.remove('active');
-                        voiceStatus.textContent = "Voice input stopped due to error";
-                    }
-                } else {
-                    voiceButton.classList.remove('active');
-                    voiceStatus.textContent = "Voice input stopped";
-                }
-            };
-            
-            // Toggle voice recognition
-            function toggleVoiceRecognition() {
-                if (isListening) {
-                    // Stop listening
-                    recognition.stop();
-                    isListening = false;
-                    voiceButton.classList.remove('active');
-                    voiceStatus.textContent = "Voice input stopped";
-                } else {
-                    // Start listening
-                    try {
-                        recognition.start();
-                        isListening = true;
-                        voiceButton.classList.add('active');
-                        voiceStatus.textContent = "Listening...";
-                        
-                        // Focus the story textarea if nothing is focused
-                        if (document.activeElement !== titleInput) {
-                            storyTextarea.focus();
-                        }
-                    } catch (e) {
-                        console.error('Error starting recognition:', e);
-                        voiceStatus.textContent = "Error starting voice input. Try again.";
-                    }
-                }
-            }
-            
-            // Click event listener
-            voiceButton.addEventListener('click', toggleVoiceRecognition);
-            
-            // Keyboard shortcut (Alt+V)
-            document.addEventListener('keydown', function(event) {
-                if (event.altKey && event.key === 'v') {
-                    event.preventDefault();
-                    toggleVoiceRecognition();
-                }
-            });
-        });
-    </script>
        <script>
         // JavaScript for image preview
         const imageInput = document.getElementById('image-input');
@@ -387,5 +165,7 @@
             }
         });
     </script>
+    
 </body>
 </html>
+

@@ -7,7 +7,111 @@
     <title>Document</title>
     <link rel="stylesheet" href="/css/writer.css">
 </head>
+<style>
+    /* Improved styling for voice button and controls */
+    .voice-controls {
+        display: flex;
+        align-items: center;
+        margin: 15px 0;
+        padding: 10px;
+        background-color: #f8fafc;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .voice-button {
+        background-color: #1e293b;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    .voice-button:hover {
+        background-color: #334155;
+        transform: translateY(-2px);
+    }
+    
+    .voice-button:active {
+        transform: translateY(1px);
+    }
+    
+    .voice-button.active {
+        background-color: #dc2626;
+        animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+        70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+    
+    .voice-status {
+        margin-left: 15px;
+        font-size: 15px;
+        color: #475569;
+        flex-grow: 1;
+        padding-right: 10px;
+    }
+    
+    .voice-instructions {
+        font-size: 13px;
+        color: #94a3b8;
+        margin-top: 5px;
+    }
+    
+    .writer-text textarea {
+        width: 100%;
+        min-height: 300px;
+        padding: 15px;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.5rem;
+        outline: none;
+        font-size: 16px;
+        line-height: 1.6;
+        transition: border-color 0.3s ease;
+    }
+    
+    .writer-text textarea:focus {
+        /* border-color: #64748b; */
+        box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
+    }
+    
+    /* Keyboard shortcut display */
+    .keyboard-shortcut {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e2e8f0;
+        color: #475569;
+        border-radius: 4px;
+        padding: 2px 6px;
+        font-size: 12px;
+        margin-left: 10px;
+    }
 
+        /* Style for image preview */
+        .image-preview {
+      
+       
+
+        width: 100%;
+    height: 200px;
+        border-radius: 8px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        object-fit: contain;
+        object-position: center;
+    }
+
+</style>
 <body>
     <div id="main">
         <div id="writer-container">
@@ -20,12 +124,15 @@
                     <div class="wrtr-hd-input">
                         <input type="text" name="title" value="<%=editStory.title%>" placeholder=" story title"
                             class="story-title">
-                        <input type="file" name="editStory[image]" value="<%=editStory.image%>" id="img"
+                        <input type="file" name="editStory[image]" value="<%=editStory.image%>" id="image-input"
                             placeholder="storie image" class="story-img">
     
                     </div>
                     <button>SAVE</button>
 
+                </div>
+                <div id="image-preview-container" style="display:none; ">
+                    <img id="image-preview" class="image-preview" src="" alt="Image preview">
                 </div>
                 <!-- <div class="writer-text">
 
@@ -68,5 +175,25 @@
 
 
     </script> -->
+    <script>
+        // JavaScript for image preview
+        const imageInput = document.getElementById('image-input');
+        const imagePreviewContainer = document.getElementById('image-preview-container');
+        const imagePreview = document.getElementById('image-preview');
+
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreviewContainer.style.display = 'block'; // Show preview
+                    imagePreview.src = e.target.result; // Set the image source to the file result
+                };
+                reader.readAsDataURL(file); // Read the file as data URL
+            } else {
+                imagePreviewContainer.style.display = 'none'; // Hide preview if the file isn't an image
+            }
+        });
+    </script>
 </body>
 </html>

@@ -493,7 +493,7 @@
                     <!-- Story Content -->
                     <div class="px-4 py-8">
                         <div class="story-text">
-                            <%= story.story %>
+                            <%=story.story%>
                         </div>
                     </div>
 
@@ -543,12 +543,11 @@
                                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                                 <i class="ri-download-cloud-line mr-2"></i> Download
                                             </a>
-                                            <a
-                                                class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            <a class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                 onclick="shareStory('<%= story._id %>')">
 
-                                                <i class="ri-share-line mr-2"></i>   Share
-                                        </a>
+                                                <i class="ri-share-line mr-2"></i> Share
+                                            </a>
 
                                 </div>
                             </div>
@@ -993,6 +992,23 @@
             localStorage.setItem('scrollpos', window.scrollY);
         };
     </script>
-</body>
+    <script src="https://unpkg.com/lenis@1.2.3/dist/lenis.min.js"></script>
 
-</html>
+
+    <script>// Initialize Lenis
+        const lenis = new Lenis({
+            duration: 2
+        });
+
+        // Use requestAnimationFrame to continuously update the scroll
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);</script>
+    <script>
+
+</body >
+
+</html >

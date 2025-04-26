@@ -285,6 +285,21 @@
     </div>
   
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://unpkg.com/lenis@1.2.3/dist/lenis.min.js"></script> 
+
+
+    <script>// Initialize Lenis
+        const lenis = new Lenis({
+            duration: 2
+        });
+        
+        // Use requestAnimationFrame to continuously update the scroll
+        function raf(time) {
+          lenis.raf(time);
+          requestAnimationFrame(raf);
+        }
+        
+        requestAnimationFrame(raf);</script>
     <script>
        
         var swiper = new Swiper(".mySwiper", {

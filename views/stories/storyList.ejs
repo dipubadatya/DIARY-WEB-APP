@@ -10,9 +10,9 @@
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
 
-   <!-- <link rel="stylesheet" href="/css/navbar.css"> -->
-   <!-- <link rel="stylesheet" href="/css/card.css"> -->
+
    <script src="https://cdn.tailwindcss.com"></script>
 
    <style>
@@ -31,7 +31,10 @@
       height: 200px;
       object-fit: cover;
     }
-
+.navbar{
+   font-family: "Pacifico";
+   font-size: large;
+}
    </style>
 </head>
 <body>
@@ -40,16 +43,17 @@
   <div id="container" class="w-full h-full">
     
      <!-- Navbar -->
-  <nav class="bg-white shadow-lg sticky top-0 z-50">
+  <nav class="bg-white shadow-lg sticky top-0 z-50 ">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <!-- Left side - Logo and navigation links -->
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between navbar">
           <!-- Logo -->
           <div class="flex-shrink-0 flex items-center">
             <a href="/stories">
-            <span class="text-2xl font-bold">
-              <i class="fas fa-book-open mr-2"></i>Diary
+            <span class=" diary">
+                  <i class="fas fa-feather-alt mr-3 text-accent"></i>
+ Diary
             </span>
           </a>
           </div>
@@ -57,11 +61,11 @@
           <!-- Desktop Navigation Links -->
           <div class="hidden md:ml-8 md:flex md:space-x-8">
             <a href="/stories" class="flex items-center h-16 px-2 text-sm font-medium text-gray-900 border-b-2 border-accent">
-              <i class="fas fa-book text-accent mr-2"></i>
+           
               <span>Stories</span>
             </a>
             <a href="/stories/newWrite" class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
-              <i class="fas fa-feather-alt text-primary-500 mr-2"></i>
+              
               <span>Write</span>
             </a>
           </div>
@@ -102,7 +106,7 @@
               </a>
               <% } else { %>
             <div>
-              <button id="profile-menu-button" type="button" class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" aria-expanded="false" aria-haspopup="true">
+              <button id="profile-menu-button" type="button" class="flex items-center text-sm  ">
                 <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400" src="<%=user.image.url  %>" alt="User profile">
               </button>
             </div>
@@ -120,47 +124,35 @@
                 </div>
               </div>
               <a href="/dashbord" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
-                <i class="fas fa-chart-line mr-2 text-primary-500"></i> Dashboard
+               <i class="ri-dashboard-line"></i>  Dashboard
               </a>
               <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
-                <i class="fas fa-user mr-2 text-primary-500"></i> Profile
+              <i class="ri-user-line"></i>  Profile
+              </a>
+               </a>
+                <a href="/stories" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
+               <i class="ri-stack-line"></i> Stories
               </a>
               <a href="/stories/newWrite" class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200" role="menuitem">
-                <i class="fas fa-pen-fancy mr-2 text-primary-500"></i> Write
-              </a>
+               <i class="ri-edit-2-line"></i> Write
+             
               <div class="border-t border-gray-100 mt-1">
                 <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200" role="menuitem">
-                  <i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Sign out
+                 <i class="ri-logout-box-r-line"></i> Sign out
                 </a>
               </div>
             </div>
             <%}%>
           </div>
-          <!-- Mobile menu button -->
+        
            
-          <div class="md:hidden ml-2">
-            <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-primary-500 hover:text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500" aria-controls="mobile-menu" aria-expanded="false">
-              <i class="fas fa-bars text-lg"></i>
-            </button>
-          </div>
+         
      
         </div>
       </div>
     </div>
 
-    <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
-      <div class="py-3 space-y-1 px-4">
-        <a href="#" class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 font-medium">
-          <i class="fas fa-book mr-3 text-primary-600"></i>
-          <span>Stories</span>
-        </a>
-        <a href="#" class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gradient-to-r hover:from-accent-light/10 hover:to-primary-100 hover:text-primary-700 font-medium transition-all duration-200">
-          <i class="fas fa-feather-alt mr-3 text-accent"></i>
-          <span>Write</span>
-        </a>
-      </div>
-    </div>
+
     
 
   </nav>
@@ -212,6 +204,31 @@
                     placeholder="Search for stories..." />
                 </div>
 
+<!-- Category Filter -->
+<div class="mt-4 md:mt-0 md:ml-4 w-full md:w-64">
+  <select id="categoryFilter" class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+      
+                      <option value="">-- Select Genre --</option>
+                        <option value="">all genre </option>
+
+    <option value="fantasy">Fantasy</option>
+    <option value="random-thoughts">Random Thoughts</option>
+    <option value="poetry">Poetry / Poems</option>
+    <option value="sci-fi">Science Fiction</option>
+    <option value="romance">Romance</option>
+    <option value="mystery">Mystery / Thriller</option>
+    <option value="horror">Horror</option>
+    <option value="drama">Drama</option>
+    <option value="adventure">Adventure</option>
+    <option value="historical">Historical</option>
+    <option value="comedy">Comedy</option>
+    <option value="ya">Young Adult</option>
+    <option value="children">Children</option>
+    <option value="fanfiction">Fanfiction</option>
+    <option value="fanfiction"> Other</option>
+    <!-- Add more categories here -->
+  </select>
+</div>
 
 
               
@@ -240,7 +257,7 @@
           <div class="bg-white text-white container mx-auto px-4  ">
             <h2 class="text-2xl text-black font-semibold mb-6"> Stories</h2>
 
-            <div class="grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               <!-- Story Card 1 -->
 
 
@@ -252,15 +269,15 @@
                     <img src="<%=stories.image.url  %>" alt="Story cover" class="story-image w-full">
                     <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-80"></div>
                     <div class="absolute bottom-0 left-0 p-3">
-                      <h3 class="font-bold text-lg text-white ">
+                      <h3 class="font-bold text-lg sm:text-xl text-white  ">
                         <%=stories.title %>
                       </h3>
                       <div class="flexitems-center space-x-2 text-sm mt-1">
                         <span class=" text-white ">
-                          @ <%=stories.owner.username %>
+                          <i class="ri-user-line"></i> <%=stories.owner.username %>
                         </span>
                         <span class=" text-white ">•</span>
-                        <span class=" text-white "> <%=stories.timeStamp.toLocaleDateString('en-IN')%> %></span>
+                        <span id="date" class=" text-white"> <%=stories.timeStamp%></span>
                       </div>
                     </div>
                     <div class="absolute top-2 right-2  text-white  bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
@@ -275,11 +292,14 @@
 
 
           </div>
+
+
         </div>
         <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
-        
+  
+
         <script>
          
         
@@ -329,14 +349,11 @@
         </script>
 
         <script>
-         document.querySelectorAll('#like').forEach(el => {
+         document.querySelectorAll('#date').forEach(el => {
             const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
             el.innerText = moment(rawDate).fromNow();
         });
-        document.querySelectorAll('#follow').forEach(el => {
-            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
-            el.innerText = moment(rawDate).fromNow();
-        });
+    
         </script>
 
 
@@ -355,10 +372,10 @@ function checkUnreadNotifications() {
         .then(data => {
             const redDot = document.getElementById("red-dot");
             if (data.success && data.unreadCount > 0) {
-                redDot.classList.remove("hidden"); // ✅ Show red dot if there are unread notifications
-                redDot.textContent = data.unreadCount; // Update the unread count on the red dot
+                redDot.classList.remove("hidden"); 
+                redDot.textContent = data.unreadCount;
             } else {
-                redDot.classList.add("hidden"); // ✅ Hide red dot if no unread notifications
+                redDot.classList.add("hidden"); 
             }
         })
         .catch(error => console.error("Error fetching notifications:", error));
@@ -368,7 +385,7 @@ function checkUnreadNotifications() {
 function markNotificationsSeen() {
     fetch('/mark-notifications-seen') // Assuming you have an endpoint for this
         .then(() => {
-            document.getElementById("red-dot").classList.add("hidden"); // ✅ Hide red dot when clicked
+            document.getElementById("red-dot").classList.add("hidden"); 
         })
         .catch(error => console.error("Error marking notifications as seen:", error));
 }
@@ -377,36 +394,96 @@ function markNotificationsSeen() {
    
 
         </script>
-        <script>
-            document.getElementById("searchInput").addEventListener("input", function() {
-                let searchValue = this.value.trim();
-            
-                fetch(`/stories?search=${encodeURIComponent(searchValue)}`)
-                    .then(response => response.text())
-                    .then(html => {
-                        let parser = new DOMParser();
-                        let doc = parser.parseFromString(html, "text/html");
-                        let newStoryList = doc.querySelector(".grid");
-                        document.querySelector(".grid").innerHTML = newStoryList.innerHTML;
-                    })
-                    .catch(error => console.error("Error fetching stories:", error));
-            });
-            </script>
         <!-- <script>
-             document.querySelectorAll('[data-story]').forEach(el => {
-                el.innerHTML = el.getAttribute('data-story');
-            });
-                const storyContainer = document.getElementById('story-container');
-        
-        
-                storyContainer.innerHTML = storyContainer.getAttribute('data-story');
-                storyContainer.style.cssText = textElement.getAttribute('data-story');
-                //     const storyContainers = document.getElementById('story-container');
-        
-        
-        
-        
-        </script> -->
+            // document.getElementById("searchInput").addEventListener("input", function() {
+            //     let searchValue = this.value.trim();
+            
+            //     fetch(`/stories?search=${encodeURIComponent(searchValue)}`)
+            //         .then(response => response.text())
+            //         .then(html => {
+            //             let parser = new DOMParser();
+            //             let doc = parser.parseFromString(html, "text/html");
+            //             let newStoryList = doc.querySelector(".grid");
+            //             document.querySelector(".grid").innerHTML = newStoryList.innerHTML;
+            //         })
+            //         .catch(error => console.error("Error fetching stories:", error));
+            // });
+         
+  const searchInput = document.getElementById("searchInput");
+  const categoryFilter = document.getElementById("categoryFilter");
+
+
+  function updateStories() {
+    const search = searchInput.value.trim();
+    const category = categoryFilter.value;
+
+
+    const query = new URLSearchParams({
+      search: search,
+      category: category,
+     
+    });
+
+    fetch(`/stories?${query.toString()}`)
+      .then(response => response.text())
+      .then(html => {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(html, "text/html");
+        let newStoryList = doc.querySelector(".grid");
+        document.querySelector(".grid").innerHTML = newStoryList.innerHTML;
+      })
+      .catch(error => console.error("Error fetching stories:", error));
+  }
+
+  searchInput.addEventListener("input", updateStories);
+  categoryFilter.addEventListener("change", updateStories);
+  sortStories.addEventListener("change", updateStories);
+</script> -->
+
+            
+     
+<script>
+  const searchInput = document.getElementById("searchInput");
+  const categoryFilter = document.getElementById("categoryFilter");
+  const sortStories = document.getElementById("sortStories"); // make sure this exists
+
+  function updateDateFormatting() {
+    document.querySelectorAll('#date').forEach(el => {
+      const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+      el.innerText = moment(rawDate).fromNow();
+    });
+  }
+
+  function updateStories() {
+    const search = searchInput?.value.trim() || '';
+    const category = categoryFilter?.value || '';
+    const sort = sortStories?.value || '';
+
+    const query = new URLSearchParams({
+      search: search,
+      category: category,
+      sort: sort
+    });
+
+    fetch(`/stories?${query.toString()}`)
+      .then(response => response.text())
+      .then(html => {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(html, "text/html");
+        let newStoryList = doc.querySelector(".grid");
+        document.querySelector(".grid").innerHTML = newStoryList.innerHTML;
+
+        updateDateFormatting();
+      })
+      .catch(error => console.error("Error fetching stories:", error));
+  }
+
+  searchInput?.addEventListener("input", updateStories);
+  categoryFilter?.addEventListener("change", updateStories);
+  sortStories?.addEventListener("change", updateStories);
+
+  updateDateFormatting();
+</script>
 
 
 

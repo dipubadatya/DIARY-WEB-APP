@@ -348,13 +348,6 @@
           }
         </script>
 
-        <script>
-         document.querySelectorAll('#date').forEach(el => {
-            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
-            el.innerText = moment(rawDate).fromNow();
-        });
-    
-        </script>
 
 
         <script>
@@ -411,7 +404,12 @@ function markNotificationsSeen() {
          
   const searchInput = document.getElementById("searchInput");
   const categoryFilter = document.getElementById("categoryFilter");
-
+ function updateDateFormatting() {
+    document.querySelectorAll('#date').forEach(el => {
+      const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+      el.innerText = moment(rawDate).fromNow();
+    });
+  }
 
   function updateStories() {
     const search = searchInput.value.trim();
@@ -438,6 +436,7 @@ function markNotificationsSeen() {
   searchInput.addEventListener("input", updateStories);
   categoryFilter.addEventListener("change", updateStories);
   sortStories.addEventListener("change", updateStories);
+updateDateFormatting()
 </script> -->
 
             

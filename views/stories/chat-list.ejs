@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <style>
+        .conversation-item:hover {
+            background-color: #f3f4f6;
+        }
+        .unread-count {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            padding: 0.15rem 0.4rem;
+        }
+        .online-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #10b981;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-md mx-auto bg-white h-screen flex flex-col">
+        <!-- Header -->
+        <div class="bg-gray-50 p-4 border-b border-gray-200 flex items-center justify-between">
+            <h1 class="text-xl font-semibold">Chats</h1>
+            <div class="flex items-center space-x-3">
+              
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="p-3 border-b border-gray-200">
+            <div class="relative">
+                <input type="text" placeholder="Search" class="w-full bg-gray-100 rounded-lg py-2 px-4 pl-10 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Conversations List -->
+        <div class="flex-1 overflow-y-auto">
+       
+            <% conversations.forEach(conversation => { %>
+                <a href="/chat/<%= conversation.user._id %>" onclick="markMessagesSeen()" class="conversation-item flex items-center p-3 border-b border-gray-100"   data-userid="<%= conversation.user._id %>">
+                    <div class="relative">
+                        <img src="<%= conversation.user.image.url %>" alt="<%= conversation.user.username %>" class="w-12 h-12 rounded-full object-cover">
+                    
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <div class="flex justify-between items-center">
+                            <span class="font-semibold"><%= conversation.user.username %></span>
+                            <span class="text-xs text-gray-500"><%= moment(conversation.lastMessage.timestamp).fromNow() %></span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <p class="text-sm text-gray-500 truncate max-w-xs">
+                                <% if (conversation.lastMessage.sender.equals(user._id)) { %>
+                                    You: <%= conversation.lastMessage.message %>
+                                <% } else { %>
+                                    <%= conversation.lastMessage.message %>
+                                <% } %>
+                            </p>
+                            <% if (conversation.unreadCount > 0) { %>
+                                <span class="unread-count" id="message-dot"></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </a>
+            <% }) %>
+        </div>
+    </div>
+  
+
+    
+
+ <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            // Initialize both checkers
+            checkUnreadNotifications();
+            checkUnreadMessages();
+
+            // Set intervals for both
+            setInterval(checkUnreadNotifications, 3000);
+            setInterval(checkUnreadMessages, 1000);
+          });
+
+          // Notification functions (keep your existing ones)
+          function checkUnreadNotifications() {
+            fetch('/check-unread-notifications')
+              .then(response => response.json())
+              .then(data => {
+                const dot = document.getElementById("notification-dot");
+                if (data.success && data.unreadCount > 0) {
+                  dot.classList.remove("hidden");
+                  dot.textContent = data.unreadCount;
+                } else {
+                  dot.classList.add("hidden");
+                }
+              })
+              .catch(error => console.error("Error:", error));
+          }
+
+          function markNotificationsSeen() {
+            fetch('/mark-notifications-seen')
+              .then(() => {
+                document.getElementById("notification-dot").classList.add("hidden");
+              })
+              .catch(error => console.error("Error:", error));
+          }
+
+          // New Message functions
+          function checkUnreadMessages() {
+            fetch('/check-unread-messages')
+              .then(response => response.json())
+              .then(data => {
+                const dot = document.getElementById("message-dot");
+                if (data.success && data.unreadCount > 0) {
+                  dot.classList.remove("hidden");
+                  dot.textContent = data.unreadCount;
+                } else {
+                  dot.classList.add("hidden");
+                }
+              })
+              .catch(error => console.error("Error checking messages:", error));
+          }
+
+          function markMessagesSeen() {
+            fetch('/mark-messages-seen')
+              .then(() => {
+                document.getElementById("message-dot").classList.add("hidden");
+              })
+              .catch(error => console.error("Error marking messages as seen:", error));
+          }
+        </script>
+</body>
+</html>

@@ -1,199 +1,139 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Write</title>
     <link rel="stylesheet" href="/css/writer.css">
-</head>
-<style>
-    /* Improved styling for voice button and controls */
-    .voice-controls {
-        display: flex;
-        align-items: center;
-        margin: 15px 0;
-        padding: 10px;
-        background-color: #f8fafc;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    
-    .voice-button {
-        background-color: #1e293b;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    
-    .voice-button:hover {
-        background-color: #334155;
-        transform: translateY(-2px);
-    }
-    
-    .voice-button:active {
-        transform: translateY(1px);
-    }
-    
-    .voice-button.active {
-        background-color: #dc2626;
-        animation: pulse 1.5s infinite;
-    }
-    
-    @keyframes pulse {
-        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-        70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
-    }
-    
-    .voice-status {
-        margin-left: 15px;
-        font-size: 15px;
-        color: #475569;
-        flex-grow: 1;
-        padding-right: 10px;
-    }
-    
-    .voice-instructions {
-        font-size: 13px;
-        color: #94a3b8;
-        margin-top: 5px;
-    }
-    
-    .writer-text textarea {
-        width: 100%;
-        min-height: 300px;
-        padding: 15px;
-        border: 1px solid #e2e8f0;
-        border-radius: 0.5rem;
-        outline: none;
-        font-size: 16px;
-        line-height: 1.6;
-        transition: border-color 0.3s ease;
-    }
-    
-    .writer-text textarea:focus {
-        /* border-color: #64748b; */
-        box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
-    }
-    
-    /* Keyboard shortcut display */
-    .keyboard-shortcut {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background-color: #e2e8f0;
-        color: #475569;
-        border-radius: 4px;
-        padding: 2px 6px;
-        font-size: 12px;
-        margin-left: 10px;
-    }
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .writer-text textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            outline: none;
+            font-size: 16px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+        }
+
+        .writer-text textarea:focus {
+            /* border-color: #64748b; */
+            box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
+        }
+
+        /* Keyboard shortcut display */
+        .keyboard-shortcut {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e2e8f0;
+            color: #475569;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
 
         /* Style for image preview */
         .image-preview {
-      
-       
 
-        width: 100%;
-    height: 200px;
-        border-radius: 8px;
-        box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-        object-fit: contain;
-        object-position: center;
-    }
 
-</style>
+
+            width: 100%;
+            height: 200px;
+            margin-bottom: 2px;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+            object-fit: contain;
+            object-position: center;
+        }
+    </style>
+</head>
+
 <body>
     <div id="main">
         <div id="writer-container">
-            <form action="/stories/<%=editStory._id%>?_method=PUT" method="post" enctype="multipart/form-data">
-
+            <form action="/stories/<%=editStory._id%>?_method=PUT" method="post" enctype="multipart/form-data" >
                 <div class="writer-header">
-                    <a href="landing.html">
+                    <a href="/stories">
                         <h1>Diary</h1>
                     </a>
                     <div class="wrtr-hd-input">
-                        <input type="text" name="title" value="<%=editStory.title%>" placeholder=" story title"
-                            class="story-title">
-                        <input type="file" name="editStory[image]" value="<%=editStory.image%>" id="image-input"
+                        <input type="text" name="title" value="<%=editStory.title%>" placeholder="story title" class="story-title" id="my-editor"
+                            required>
+               <input type="file" name="editStory[image]"  value="<%=editStory.image.url%>"  id="image-input"
                             placeholder="storie image" class="story-img">
-    
+
                     </div>
+
                     <button>SAVE</button>
-
                 </div>
-                <div id="image-preview-container" style="display:none; ">
-                    <img id="image-preview" class="image-preview" src="" alt="Image preview">
-                </div>
-                <!-- <div class="writer-text">
 
-                    <textarea id="story"  name="story" data-story="<%=editStory.story%>"
-                        placeholder="write your story..." ><pre><%=editStory.story%></pre></textarea>
-                </div> -->
+                <div id="image-preview-container" >
+                    <img id="image-preview" class="image-preview" src="<%=editStory.image.url %>" alt="Image preview">
+                </div>
+                <!-- Improved voice control section -->
+                <div class="voice-controls">
+
+                    <select id="categoryFilter" name="category" required
+                        class="text-sm w-full p-2 border border-gray-500 mt-1 mb-1">
+
+                        <option value="<%=editStory.category  %>"><%=editStory.category  %></option>
+                        <option value="fantasy">Fantasy </option>
+                        <option value="random-thoughts">random-thoughts</option>
+                        <option value="poetry">Poetry</option>
+                        <option value="sci-fi">Sci-Fi</option>
+                        <option value="romance">Romance</option>
+                        <option value="mystery">Mystery</option>
+                        <option value="horror">Horror</option>
+                        <option value="drama">adventure</option>
+                        <option value="historical">Historical</option>
+                        <option value="comedy">Comedy</option>
+                        <option value="ya">Young / Adult</option>
+                        <option value="children">Children</option>
+                        <option value="fanfiction">Fanfiction</option>
+                        <option value="other">Other</option>
+
+                    </select>
+                </div>
+
                 <div class="writer-text">
-                    <textarea id="story" name="story" placeholder="Write your story..."><%=  editStory.story %></textarea>
+                    <textarea name="story" id="story-textarea my-editor" placeholder="write your story..."><%=editStory.story   %></textarea>
                 </div>
-                
-
-
 
             </form>
         </div>
     </div>
+
     <script src="/tinymce/tinymce.min.js"></script>
-    <script src="/path/to/your/tinymce-config.js"></script>
 
-
-    <!-- <script>
-
-    tinymce.init({
-            selector: 'textarea#my-editor',
-            height: 800,
-            width: 1000,
-     
-
-        });
-        const storyContainer = document.getElementById('story-container');
-
-        storyContainer.forEach(element => {
-            element.innerHTML = storyContainer.getAttribute('data-story');
-            storyContainer.style.cssText = textElement.getAttribute('data-story');
-
-        });
-        storyContainer.innerHTML = storyContainer.getAttribute('data-story');
-        storyContainer.dataset.story = storyContainer.getAttribute('data-story');
-
-
-
-    </script> -->
     <script>
-        // JavaScript for image preview
+        //  image preview
         const imageInput = document.getElementById('image-input');
         const imagePreviewContainer = document.getElementById('image-preview-container');
         const imagePreview = document.getElementById('image-preview');
 
-        imageInput.addEventListener('change', function(event) {
+        imageInput.addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreviewContainer.style.display = 'block'; // Show preview
-                    imagePreview.src = e.target.result; // Set the image source to the file result
+                reader.onload = function (e) {
+                    imagePreviewContainer.style.display = 'block';
+                    imagePreview.src = e.target.result; 
                 };
-                reader.readAsDataURL(file); // Read the file as data URL
+                reader.readAsDataURL(file);
             } else {
-                imagePreviewContainer.style.display = 'none'; // Hide preview if the file isn't an image
+                imagePreviewContainer.style.display = 'none'; 
             }
         });
     </script>
+
 </body>
+
 </html>

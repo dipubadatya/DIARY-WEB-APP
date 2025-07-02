@@ -1,6 +1,6 @@
 const mongoose =require('mongoose')
 
-const Stories=require('../models/stories')
+const Message=require('../models/message')
 
 
 
@@ -15,7 +15,7 @@ async function init() {
       console.log('Connected to MongoDB');
   
       // 2. Then perform deletion
-      const result = await Stories.deleteMany({});
+      const result = await Message.deleteMany({});
       console.log(`Deleted ${result.deletedCount} users`);
   
     } catch (err) {

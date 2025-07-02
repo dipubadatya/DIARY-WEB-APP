@@ -1,68 +1,15 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Writte</title>
-    <link rel="stylesheet" href="/css/writer.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-</head>
-
-<body>
-    <div id="main">
-        <div id="writer-container">
-            <form action="/stories" method="post" enctype="multipart/form-data" ">
-
-                <div class=" writer-header">
-                <a href="/stories">
-                    <h1>Diary</h1>
-                </a>
-                <div class="wrtr-hd-input">
-                    <input type="text" name="title" placeholder=" story title" class="story-title" id="my-editor"
-                        required>
-
-                    <input type="file" name="image" accept="image/jpeg, image/png, image/jpg" placeholder="story cover img" class="story-img" required>
-
-                </div>
-                <button
-                    class="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">publish</button>
-
-        </div>
-        <div class="writer-text" class="min-h-[300px] border border-gray-300 p-4 rounded-lg focus:outline-none">
-            <textarea name="story" placeholder="write your story..."></textarea>
-        </div>
-
-
-
-        </form>
-
-
-    </div>
-
-    
-
- 
-
-</body>
-
-</html> -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Write</title>
     <link rel="stylesheet" href="/css/writer.css">
-    <link
-    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
-    rel="stylesheet"
-/>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-
-
         .writer-text textarea {
             width: 100%;
             min-height: 300px;
@@ -74,12 +21,12 @@
             line-height: 1.6;
             transition: border-color 0.3s ease;
         }
-        
+
         .writer-text textarea:focus {
             /* border-color: #64748b; */
             box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
         }
-        
+
         /* Keyboard shortcut display */
         .keyboard-shortcut {
             display: inline-flex;
@@ -93,22 +40,22 @@
             margin-left: 10px;
         }
 
-            /* Style for image preview */
-            .image-preview {
-          
-           
+        /* Style for image preview */
+        .image-preview {
+
+
 
             width: 100%;
-        height: 200px;`
-        margin-bottom: 2px;
+            height: 200px;
+            margin-bottom: 2px;
             border-radius: 8px;
-            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
             object-fit: contain;
             object-position: center;
         }
-
     </style>
 </head>
+
 <body>
     <div id="main">
         <div id="writer-container">
@@ -118,54 +65,75 @@
                         <h1>Diary</h1>
                     </a>
                     <div class="wrtr-hd-input">
-                        <input type="text" name="title" placeholder="story title" class="story-title" id="my-editor" required>
-                        <input type="file" name="image" accept="image/jpeg, image/png, image/jpg" placeholder="story cover img" id="image-input"  class="story-img" required>
+                        <input type="text" name="title" placeholder="story title" class="story-title" id="my-editor"
+                            required>
+                        <input type="file" name="image" accept="image/jpeg, image/png, image/jpg"
+                            placeholder="story cover img" id="image-input" class="story-img" required>
                     </div>
-                   
-                    <button class="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">publish</button>
-                   
+
+                    <button
+                        class="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">publish</button>
+
                 </div>
-              
+
                 <div id="image-preview-container" style="display:none; ">
                     <img id="image-preview" class="image-preview" src="" alt="Image preview">
                 </div>
-                <!-- Improved voice control section -->
+            
                 <div class="voice-controls">
-                  
-                   
+
+                    <select id="categoryFilter" name="category" required
+                        class="text-sm w-full p-2 border border-gray-500 mt-1 mb-1">
+
+                        <option value="fantasy">Fantasy </option>
+                        <option value="random-thoughts">random-thoughts</option>
+                        <option value="poetry">Poetry</option>
+                        <option value="sci-fi">Sci-Fi</option>
+                        <option value="romance">Romance</option>
+                        <option value="mystery">Mystery</option>
+                        <option value="horror">Horror</option>
+                        <option value="drama">adventure</option>
+                        <option value="historical">Historical</option>
+                        <option value="comedy">Comedy</option>
+                        <option value="ya">Young / Adult</option>
+                        <option value="children">Children</option>
+                        <option value="fanfiction">Fanfiction</option>
+                        <option value="other">Other</option>
+
+                    </select>
                 </div>
-             
+
                 <div class="writer-text">
-                    <textarea  name="story" id="story-textarea my-editor" placeholder="write your story..."></textarea>
+                    <textarea name="story" id="story-textarea my-editor" placeholder="write your story..."></textarea>
                 </div>
-                
+
             </form>
         </div>
     </div>
-    
-    <script src="/tinymce/tinymce.min.js"></script>
 
-       <script>
-        // JavaScript for image preview
+  
+
+    <script>
+        // image preview
         const imageInput = document.getElementById('image-input');
         const imagePreviewContainer = document.getElementById('image-preview-container');
         const imagePreview = document.getElementById('image-preview');
 
-        imageInput.addEventListener('change', function(event) {
+        imageInput.addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (file && file.type.startsWith('image/')) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     imagePreviewContainer.style.display = 'block'; // Show preview
-                    imagePreview.src = e.target.result; // Set the image source to the file result
+                    imagePreview.src = e.target.result; 
                 };
-                reader.readAsDataURL(file); // Read the file as data URL
+                reader.readAsDataURL(file); 
             } else {
-                imagePreviewContainer.style.display = 'none'; // Hide preview if the file isn't an image
+                imagePreviewContainer.style.display = 'none'; 
             }
         });
     </script>
-    
-</body>
-</html>
 
+</body>
+
+</html>

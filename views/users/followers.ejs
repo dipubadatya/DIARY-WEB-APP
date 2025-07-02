@@ -3,47 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-   <script src="https://cdn.tailwindcss.com"></script>
-
-
+    <title>Followers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-black-100 p-1 flex justify-center min-h-screen" >
-   
-
-    <div class="bg-white shadow-md  rounded-xl p-6 w-full max-w-md" style="box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;">
-      <h2 class="text-xl font-bold text-gray-800 mb-4">Followers</h2>
-      
-      <div class="space-y-4">
-        <% if (profile.followers && profile.followers.length > 0) { %>
-          <% for (const followers of profile.followers) { %>
-              <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <a class="flex items-center space-x-3" href="/profile/<%=followers._id%>">
-
-                      <img class="h-12 w-12 rounded-full object-cover" src="<%= followers.image.url %>" alt="User">
-                      <div>
-                          <p class="font-semibold text-gray-800"><%= followers.username %></p>
-                          <p class="text-gray-500 text-sm"><%= followers.name %></p>
-                      </div>
-                      </a>
-                  </div>
-      
-                 
-              </div>
-          <% } %>
-      <% } else { %>
-          <p>No followers found.</p>
-      <% } %>
-      
-      </div>
-  </div>
-
-
-
-  
-
-  
+<body class="bg-gray-50 p-4 md:p-8 flex justify-center items-start min-h-screen">
+    <div class="bg-white rounded-lg shadow-sm p-6 w-full max-w-2xl border border-gray-100">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-semibold text-gray-900">Followers</h2>
+            <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                <%= profile.followers ? profile.followers.length : 0 %> followers
+            </span>
+        </div>
+        
+        <div class="divide-y divide-gray-100">
+            <% if (profile.followers && profile.followers.length > 0) { %>
+                <% for (const follower of profile.followers) { %>
+                    <div class="py-4 first:pt-0 last:pb-0">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <a href="/profile/<%=follower._id%>" class="flex items-center space-x-4 group">
+                                    <div class="relative">
+                                        <img class="h-12 w-12 rounded-full object-cover border border-gray-200" 
+                                             src="<%= follower.image.url %>" 
+                                             alt="<%= follower.username %>"
+                                             onerror="this.src='https://ui-avatars.com/api/?name=<%= follower.username %>&background=random'">
+                                    
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+                                            <%= follower.username %>
+                                        </p>
+                                        <p class="text-sm text-gray-500"><%= follower.name %></p>
+                                    </div>
+                                </a>
+                            </div>
+                      
+                        </div>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div class="py-8 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <h3 class="mt-2 text-lg font-medium text-gray-900">No followers yet</h3>
+                    <p class="mt-1 text-gray-500">When someone follows you, they'll appear here.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
 </body>
-
 </html>

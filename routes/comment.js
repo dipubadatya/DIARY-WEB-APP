@@ -7,14 +7,14 @@ const { render } = require('ejs');
 const giphy = require('giphy-api')(process.env.GIPHY_API_KEY);
 
 //comment route
-router.post('/comment/:id', async (req, res) => {
+ router.post('/comment/:id', async (req, res) => {
     try {
         const  {id} = req.params;
         const story = await Stories.findById(id);    
         let newComment= new Comments(req.body.comment)
             
             newComment.author=req.user._id
-            console.log(newComment.author)
+           
             
                 story.comments.push(newComment) 
             await newComment.save()
@@ -30,27 +30,47 @@ router.post('/comment/:id', async (req, res) => {
 });
 
 
+
 //gif route
 router.post('/gif/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const story = await Stories.findById(id);
-      
+        const story = await Stories.findById(id).populate('owner');
+        const userId = req.user._id;
         
+        if (!req.body.gif) {
+            req.flash('error', 'GIF URL is required');
+            return res.redirect(`/stories/${id}`);
+        }
+
         let newComment = new Comments({
-         
-            gif: req.body.gif || '', // Store GIF URL
-            author: req.user._id
+            gif: req.body.gif,
+            author: userId
         });
 
         story.comments.push(newComment);
         await newComment.save();
+        
+        // Send notification to story author if it's not their own GIF
+        if (!story.owner._id.equals(userId)) {
+            story.owner.notifications.push({
+                type: "comment",
+                fromUser: userId,
+                storyId: story._id,
+                storyTitle: story.title,
+                commentId: newComment._id,
+                commentText: "sent a GIF"
+            });
+            await story.owner.save();
+        }
+
         await story.save();
-       req.flash('success','gif added!')
+        req.flash('success', 'GIF added!');
         res.redirect(`/stories/${id}`);
     } catch (error) {
-        console.error('Error commenting on story:', error);
-        res.status(500).send('Internal Server Error');
+        console.error('Error adding GIF:', error);
+        req.flash('error', 'Failed to add GIF');
+        res.redirect(`/stories/${id}`);
     }
 });
 

@@ -38,7 +38,10 @@ const userSchema=mongoose.Schema({
             filname:{
                 type:String,
                 default:'profile_iamge'
-            }
+            },
+               publicId:{
+            type:String,
+           }
         },
         bio:{
             type:String,
@@ -60,11 +63,12 @@ const userSchema=mongoose.Schema({
             ref: "User",
         },
     ],
-    status: { type: String, enum: ['online', 'offline'], default: 'offline' },
+        isOnline: { type: Boolean, default: false },
+    lastSeen: { type: Date, default: Date.now },
     notifications: [
         {
             type: {
-                type: String, // "like" or "follow"
+                type: String,  
                 enum: ["like", "follow","comment"],
                 required: true
             },
@@ -73,7 +77,7 @@ const userSchema=mongoose.Schema({
             timeStamp:{
                 type: Date,
                 default: Date.now
-                // default: () => new Date() 
+
              },
             read: { type: Boolean, default: false }
         }

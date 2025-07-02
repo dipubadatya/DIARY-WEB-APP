@@ -6,13 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<%=pageDescription%>">
     <title>
-        <%=pageTitle %>
+        <%=pageTitle %> | Diary
     </title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
+    <script>
 
+        tailwind.config = {
+            darkMode: 'class',
+
+        }
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -267,39 +273,46 @@
         .dark .nav-content a {
             color: white;
         }
+.dark .success{
+    color: white;
+}
+        .navbar {
+            font-family: "Pacifico";
+            font-size: large;
+        }
     </style>
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 dark:bg-[#121212]">
 
 
     <div class="scroll-indicator" id="scroll-indicator"></div>
 
     <!-- Navbar -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <nav class="bg-white dark:bg-[#121212] shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
 
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between navbar">
 
                     <div class="flex-shrink-0 flex items-center">
                         <a href="/stories">
-                            <span class="text-2x1 font-bold">
-                                <i class="fa-solid fa-feather"></i> Diary
+                            <span class="text-2x1 ">
+                                <i class="fas fa-feather-alt mr-3 text-accent"></i> Diary
                             </span>
                         </a>
                     </div>
 
                     <!-- Desktop Navigation Links -->
-                    <div class="hidden md:ml-8 md:flex md:space-x-8">
+                    <div class="hidden md:ml-8 md:flex md:space-x-8 r">
                         <a href="/stories"
                             class="flex items-center username h-16 px-2 text-sm font-medium text-gray-900 border-b-2 border-accent">
-                            <i class="fas fa-book text-accent mr-2"></i>
+
                             <span>Stories</span>
                         </a>
                         <a href="/stories/newWrite"
                             class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 hover:text-gray-900 border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
-                            <i class="fas fa-feather-alt text-primary-500 mr-2"></i>
+
                             <span>Write</span>
                         </a>
                     </div>
@@ -307,7 +320,7 @@
 
                 <div class="flex items-center">
                     <button id="theme-toggle" class="p-2 rounded-full  ">
-                        <i id="theme-icon" class="ri-sun-line text-gray-800 dark:text-gray-700"></i>
+                        <i id="theme-icon" class="ri-sun-line text-gray-800 dark:text-[#B3B3B3]"></i>
                     </button>
 
                     <!-- Search button -->
@@ -321,25 +334,25 @@
                     </div>
 
                     <!-- Notification bell -->
-                    <div class="flex-shrink-0 mr-2 relative">
+                    <!-- <div class="flex-shrink-0 mr-2 relative">
                         <a href="/notification">
                             <button onclick="markNotificationsSeen()"
                                 class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
                                 <i class="fas fa-bell"></i>
-                                <!-- Make sure the red dot has the correct ID -->
+                             
                                 <span id="red-dot"
                                     class="red-dot absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-xs font-bold text-red-700 hidden">
-                                    5 <!-- This number is dynamic, based on unread notifications -->
+                                   
                                 </span>
                             </button>
                         </a>
-                    </div>
+                    </div> -->
 
                     <!-- Profile dropdown -->
                     <div class="ml-3 relative">
                         <div>
                             <button id="profile-menu-button" type="button"
-                                class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                                class="flex items-center text-sm rounded-full "
                                 aria-expanded="false" aria-haspopup="true">
                                 <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400"
                                     src="<%=user.image.url  %>" alt="User profile">
@@ -365,79 +378,73 @@
                             <a href="/dashbord"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
                                 role="menuitem">
-                                <i class="fas fa-chart-line mr-2 text-primary-500"></i> Dashboard
+                                <i class="ri-dashboard-line"></i> Dashboard
                             </a>
                             <a href="/profile"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
                                 role="menuitem">
-                                <i class="fas fa-user mr-2 text-primary-500"></i> Profile
+                                <i class="ri-user-line"></i> Profile
+                            </a>
+                            </a>
+                            <a href="/stories"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
+                                role="menuitem">
+                                <i class="ri-stack-line"></i> Stories
                             </a>
                             <a href="/stories/newWrite"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
                                 role="menuitem">
-                                <i class="fas fa-pen-fancy mr-2 text-primary-500"></i> Write
-                            </a>
-                            <div class="border-t border-gray-100 mt-1">
-                                <a href="/logout"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
-                                    role="menuitem">
-                                    <i class="fas fa-sign-out-alt mr-2 text-red-500"></i> Sign out
-                                </a>
-                            </div>
+                                <i class="ri-edit-2-line"></i> Write
+
+                                <div class="border-t border-gray-100 mt-1">
+                                    <a href="/logout"
+                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
+                                        role="menuitem">
+                                        <i class="ri-logout-box-r-line"></i> Sign out
+                                    </a>
+                                </div>
                         </div>
                     </div>
 
-                    <!-- Mobile menu button -->
-                    <div class="md:hidden ml-2">
-                        <button id="mobile-menu-button" type="button"
-                            class="inline-flex items-center justify-center p-2 rounded-md text-primary-500 hover:text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
-                            aria-controls="mobile-menu" aria-expanded="false">
-                            <i class="fas fa-bars text-lg"></i>
-                        </button>
-                    </div>
+
                 </div>
             </div>
         </div>
 
-        <!-- Mobile menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
-            <div class="py-3 space-y-1 px-4">
-                <a href="#"
-                    class="flex items-center px-3 py-2 rounded-lg bg-gradient-to-r from-primary-50 to-primary-100 text-primary-700 font-medium">
-                    <i class="fas fa-book mr-3 text-primary-600"></i>
-                    <span>Stories</span>
-                </a>
-                <a href="#"
-                    class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gradient-to-r hover:from-accent-light/10 hover:to-primary-100 hover:text-primary-700 font-medium transition-all duration-200">
-                    <i class="fas fa-feather-alt mr-3 text-accent"></i>
-                    <span>Write</span>
-                </a>
-            </div>
-        </div>
+
     </nav>
 
 
 
     <!-- Toast Notifications -->
-    <div class="fixed top-5 right-5 z-50">
-        <% if(success && success.length) { %>
-            <div id="toast-success" class="flex items-center p-4 mb-4 bg-white rounded-lg shadow animate-fadeIn"
-                role="alert">
-                <div
-                    class="inline-flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg bg-green-100 text-green-500">
-                    <i class="ri-check-line"></i>
-                </div>
-                <div class="ml-3 text-sm font-normal text-gray-800">
-                    <%=success %>
-                </div>
-                <button type="button"
-                    class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg p-1.5 hover:bg-gray-100 inline-flex h-8 w-8"
-                    id="close-toast">
-                    <i class="ri-close-line"></i>
-                </button>
-            </div>
-            <% } %>
+<% if(success && success.length){ %>
+  <div class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end z-50" id="toast-success">
+    <div class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden transition-all duration-300 transform translate-y-0 opacity-100">
+      <div class="p-4">
+        <div class="flex items-start">
+          <div class="flex-shrink-0">
+            <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div class="ml-3 w-0 flex-1 pt-0.5">
+            <p class="text-sm font-medium success text-gray-900">
+              <%= success %>
+            </p>
+          </div>
+          <div class="ml-4 flex-shrink-0 flex">
+            <button class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
+              <span class="sr-only">Close</span>
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+  <% } %>
 
     <!-- Delete Modal -->
     <div id="modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
@@ -464,30 +471,21 @@
     </div>
 
     <!-- Story Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 dark:bg-[#121212]">
         <div class="flex flex-col lg:flex-row gap-6">
             <!-- Story Content -->
             <div class="w-full lg:w-2/3">
-                <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+                <div class="bg-white dark:bg-[#121212] dark:text-[#B3B3B3]  shadow-sm rounded-lg overflow-hidden">
                     <!-- Story Header -->
-                    <div class="bg-gradient-to-r from-black-500 to-indigo-600 px-6 py-8 text-black">
-                        <h1 class="text-3xl font-bold text-center mb-4 username">
+                    <div class="bg-gradient-to-r from-black-500 to-indigo-600 px-6 py-8 dark:text-[#B3B3B3] text-black">
+                        <h1 class="text-3xl dark:text-[#B3B3B3] font-bold text-center mb-4 username">
                             <%=story.title.toUpperCase()%>
                         </h1>
                         <div class="flex justify-center">
                             <img src="<%=story.image.url%>" alt="<%=story.title%>"
                                 class="h-72 w-full object-cover rounded-lg shadow-md">
                         </div>
-                        <!-- <div class="flex items-center justify-center mt-4">
-                            <a href="/profile/<%=story.owner._id%>" class="flex items-center">
-                                <div class="flex-shrink-0">
-                                    <img class="h-8 w-8 rounded-full" src="<%=story.owner.image.url%>" alt="<%=story.owner.username%>">
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium text-white"><%=story.owner.username%></p>
-                                </div>
-                            </a>
-                        </div> -->
+                      
                     </div>
 
                     <!-- Story Content -->
@@ -556,7 +554,7 @@
                 </div>
 
                 <!-- Comments Section -->
-                <div class="mt-8 bg-white shadow-sm rounded-lg overflow-hidden">
+                <div class="mt-8 bg-white dark:bg-[#121212] shadow-sm rounded-lg overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h2 class="text-xl font-semibold text-gray-800">Comments (<%=story.comments.length%>)</h2>
                     </div>
@@ -618,7 +616,7 @@
                                     <div class="flex-grow">
                                         <div class="flex items-center justify-between">
                                             <div>
-                                                <a href="/comment/<%=review.author._id%>"
+                                                <a href="/profile/<%=review.author._id%>"
                                                     class="font-medium username  text-gray-900 hover:underline">
                                                     <%=review.author.username%>
                                                 </a>
@@ -703,7 +701,7 @@
             </div>
         </div>
     </main>
-
+ 
     <!-- Back to top button -->
     <button id="back-to-top"
         class="fixed bottom-6 right-6 bg-blue-600 text-white p-2 rounded-full shadow-lg opacity-0 invisible transition-all duration-300">
@@ -711,37 +709,14 @@
     </button>
 
     <script>
-        // Toast notification
         setTimeout(() => {
-
-            const toast = document.getElementById('toast-success');
-            if (toast) {
-                toast.classList.add('opacity-0');
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 300);
-            }
+          const toast = document.getElementById('toast-success');
+          if (toast) {
+            toast.style.display = "none";
+            location.reload();
+          }
         }, 3000);
-
-        setTimeout(() => {
-            document.getElementById('toast-success').style.display = "none"
-
-            location.reload()
-        }, 2000);
-
-
-        document.getElementById('close-toast')?.addEventListener('click', () => {
-            const toast = document.getElementById('toast-success');
-            toast.classList.add('opacity-0');
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 300);
-        });
-
-
-
-
-
+        
         // Delete modal
         const openModalBtn = document.getElementById('openModalBtn');
         const closeModalBtn = document.getElementById('closeModalBtn');
@@ -847,7 +822,7 @@
     </script>
     <script>
         function shareStory(storyId) {
-            const storyUrl = `${window.location.origin}/stories/${storyId}`; // Adjust URL based on your route
+            const storyUrl = `${window.location.origin}/stories/${storyId}`; 
 
             if (navigator.share) {
                 navigator.share({
@@ -867,7 +842,22 @@
                     linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(storyUrl)}&title=Amazing%20Story`,
                     telegram: `https://t.me/share/url?url=${encodeURIComponent(storyUrl)}&text=Read%20this%20story`
                 };
-
+    // Copy link function
+            const copyLink = () => {
+                navigator.clipboard.writeText(storyUrl).then(() => {
+                    alert('Link copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    // Fallback for older browsers
+                    const textarea = document.createElement('textarea');
+                    textarea.value = storyUrl;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    alert('Link copied to clipboard!');
+                });
+            };
                 let shareOptions = `
                     <div class="share-options">
                         <a href="${shareLinks.whatsapp}" target="_blank">WhatsApp</a> |
@@ -875,6 +865,7 @@
                         <a href="${shareLinks.twitter}" target="_blank">Twitter</a> |
                         <a href="${shareLinks.linkedin}" target="_blank">LinkedIn</a> |
                         <a href="${shareLinks.telegram}" target="_blank">Telegram</a>
+                        <a href="#" onclick="(${copyLink.toString()})(); return false;">Copy Link</a>
                     </div>
                 `;
 
@@ -902,8 +893,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            checkUnreadNotifications(); // Run on page load
-
+            checkUnreadNotifications(); 
             //  Check for new notifications every 5 seconds
             setInterval(checkUnreadNotifications, 5000);
         });
@@ -978,24 +968,14 @@
         mobileMenuButton.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
         });
-    </script>
-
-
-    <script>
-        // page refresh keep scrolling position
-        document.addEventListener("DOMContentLoaded", function (event) {
-            var scrollpos = localStorage.getItem('scrollpos');
-            if (scrollpos) window.scrollTo(0, scrollpos);
-        });
-
-        window.onbeforeunload = function (e) {
-            localStorage.setItem('scrollpos', window.scrollY);
-        };
+  
+       
+      
     </script>
     <script src="https://unpkg.com/lenis@1.2.3/dist/lenis.min.js"></script>
 
 
-    <script>// Initialize Lenis
+    <script>
         const lenis = new Lenis({
             duration: 2
         });
@@ -1007,8 +987,18 @@
         }
 
         requestAnimationFrame(raf);</script>
+    </script>
     <script>
+          document.addEventListener("DOMContentLoaded", function (event) {
+            var scrollpos = localStorage.getItem('scrollpos');
+            if (scrollpos) window.scrollTo(0, scrollpos);
+        });
 
-</body >
+        window.onbeforeunload = function (e) {
+            localStorage.setItem('scrollpos', window.scrollY);
+        };
+    </script>
 
-</html >
+</body>
+
+</html>

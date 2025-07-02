@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/css/signup.css">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -76,7 +75,12 @@
 
                         </label>
                     </div>
-                   
+                      <% if (error && error.length) { %>
+                <div class="error-message active bg-red-50 text-red-600 px-6 py-3 text-sm flex items-start mt-5 mb-5">
+                    <i class="ri-error-warning-line mr-2 mt-0.5"></i>
+                    <span><%= error %></span>
+                </div>
+                <% } %>
                     <button type="submit" 
                         class="w-full shadow-xl py-2.5 px-4 text-sm font-semibold tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all">
                         Register
@@ -97,7 +101,6 @@
             document.getElementById('flash').style.display = "none"
         
         }, 3000);
-
 
     let close = document.getElementById('close').addEventListener('click', () => {
         flash.style.display = "none"
@@ -133,11 +136,9 @@
         const passwordInput = document.getElementById('passwordInput');
         const icon = this;
         
-        // Toggle the type attribute
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
         
-        // Toggle the eye icon
         if (type === 'password') {
             icon.classList.remove('ri-eye-off-line');
             icon.classList.add('ri-eye-line');

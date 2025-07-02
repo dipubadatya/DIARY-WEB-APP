@@ -13,7 +13,7 @@ const storyValidationSchema = Joi.object({
             'string.uri': 'Image URL must be a valid URI',
         }),
         filename: Joi.string().required().messages({
-            'string.empty': 'Image filename is required',
+            'string.empty': 'Image filename is required', 
             'any.required': 'Image filename is required',
         }),
         publicId: Joi.string().required().messages({
@@ -21,15 +21,33 @@ const storyValidationSchema = Joi.object({
             'any.required': 'Image public ID is required',
         }),
     }).optional(), // Image is optional for updates
-    story: Joi.string().required().messages({
+    story: Joi.string().required().messages({ 
         'string.empty': 'Story content is required',
         'any.required': 'Story content is required',
     }),
+    category:Joi.string().valid(
+  'fantasy',
+  'random-thoughts',
+  'poetry',
+  'sci-fi',
+  'romance',
+  'mystery',
+  'horror',
+  'drama',
+  'adventure',
+  'historical',
+  'comedy',
+  'ya',
+  'children',
+  'fanfiction',
+  'other'
+).required(),
+
     timeStamp: Joi.date().default(() => new Date().toISOString()),
     editedAt: Joi.date().optional(),
     owner: Joi.string().regex(/^[0-9a-fA-F]{24}$/).messages({
         'string.pattern.base': 'Owner ID must be a valid ObjectId',
-    }).optional(), // Owner is automatically set in the backend
+    }).optional(), 
     likedBy: Joi.array().items(Joi.string().regex(/^[0-9a-fA-F]{24}$/)).messages({
         'string.pattern.base': 'LikedBy must contain valid ObjectIds',
     }).optional(),

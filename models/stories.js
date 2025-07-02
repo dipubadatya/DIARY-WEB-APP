@@ -1,7 +1,7 @@
 const { timeStamp } = require('console')
 const mongoose = require('mongoose')
 const { type } = require('os')
-const Comment=require('./comment.js')
+const Comment=require('./comment.js') 
 
 
 
@@ -26,12 +26,28 @@ const storySchema = mongoose.Schema({
           },
           editedAt:{
                 type:Date,
-                
-
-
-
           },
-     
+     category:{
+        type:String,
+        enum:[
+            'fantasy',
+            'random-thoughts',
+            'poetry',
+            'sci-fi',
+            'romance',
+            'mystery',
+            'horror',
+            'drama',
+            'adventure',
+            'historical',
+            'comedy',
+            'ya',
+            'children',
+            'fanfiction',
+            'other',
+               
+        ]
+     },
        owner: {
               type: mongoose.Schema.Types.ObjectId,
               ref: "User",
@@ -42,32 +58,26 @@ const storySchema = mongoose.Schema({
             
              
          
-     
+      
        views: [
               {
                   type: mongoose.Schema.Types.ObjectId,
-                  ref: "User", // Reference the User model
+                  ref: "User", 
               }
           ],
           comments: [
               {
                   type: mongoose.Schema.Types.ObjectId,
-                  ref: "Comment", // Reference the User model
+                  ref: "Comment", 
               }
           ],
         
 })
-// storySchema.post('findOneAndDelete', async (Story) => {
-//        if (Story) {
-//            await Comment.deleteMany({ _id: { $in: Story.comments } })
-//        }
-   
-//    })
-   
+
 // Middleware to remove the story reference from the user's stories array
 storySchema.post('findOneAndDelete', async function (story) {
-    if (story) {
-        // Remove the story ID from the user's stories array
+    if (story) {          
+   
         await mongoose.model('User').updateOne(
             { _id: story.owner },
             { $pull: { stories: story._id } }
@@ -78,4 +88,5 @@ storySchema.post('findOneAndDelete', async function (story) {
     }
 });
 
-module.exports = mongoose.model('Story', storySchema)
+module.exports = mongoose.model('Story', storySchema)              
+                            

@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="/css/signup.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
 </head>
@@ -20,6 +19,8 @@
         <div class="relative -mt-40 m-4">
             <form action="/login" method="post"
                 class="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-6 sm:p-8 rounded-2xl">
+             
+        
                 <div class="mb-12">
                     <h3 class="text-gray-800 text-3xl text-center">Sign in</h3>
                 </div>
@@ -34,7 +35,7 @@
                     </div>
                 </div>
 
-                <div class="mt-8">
+                <div class="mt-8 mb-5">
                     <label class="text-gray-800 text-xs block mb-2">Password</label>
                     <div class="relative flex items-center">
                         <input name="password" type="password" required
@@ -43,17 +44,17 @@
                         <i class="ri-eye-line w-4 h-4 text-gray-400 absolute right-2 cursor-pointer" id="togglePassword"></i>
                     </div>
                 </div>
-                <div class="flex items-center mt-8">
-                    <div id="email-message" style="color: red;"></div>
-                    <label id="email-message" class="ml-3 text-red-500 block text-sm">
-
-
-                    </label>
+                   <% if (error && error.length) { %>
+                <div class="error-message active bg-red-50 text-red-600 px-6 py-3 text-sm flex items-start mt-2 mb-2 none " id="error">
+                    <i class="ri-error-warning-line mr-2 mt-0.5"></i>
+                    <span><%= error %></span>
                 </div>
+         
+            <% } %>
 
                 <button
                     class="w-full shadow-xl py-2.5 px-4 text-sm font-semibold tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all">
-                    Register
+                    Login
                 </button>
                 <p class="text-gray-800 text-sm !mt-8 text-center">Don't have an account? <a href="/signup"
                         class="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold">Register here</a></p>
@@ -68,12 +69,11 @@
        document.getElementById('togglePassword').addEventListener('click', function() {
         const passwordInput = document.getElementById('passwordInput');
         const icon = this;
-        
-        // Toggle the type attribute
+
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
         
-        // Toggle the eye icon
+ 
         if (type === 'password') {
             icon.classList.remove('ri-eye-off-line');
             icon.classList.add('ri-eye-line');
@@ -82,5 +82,7 @@
             icon.classList.add('ri-eye-off-line');
         }
     });
+      
+
 </script>
 </html>

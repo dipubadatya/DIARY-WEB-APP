@@ -5,11 +5,20 @@ const messageSchema = new mongoose.Schema({
     sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     receiver: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     timestamp: { type: Date, default: Date.now },
+ isEdited: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
+    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     status: {
         type: String,
-        enum: ["sent", "delivered", "seen"],  // WhatsApp-like statuses
+        enum: ["sent", "delivered", "seen"],  
         default: "sent"
     },
+         
+  
+   
+    isOnline: { type: Boolean, default: false },
+    lastSeen: { type: Date, default: Date.now }
+   
 });
 
 module.exports = mongoose.model("Message", messageSchema);

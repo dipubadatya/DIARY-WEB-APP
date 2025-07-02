@@ -3,65 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern User Search</title>
+    <title>User Search | Connect</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
-    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .search-result-item:hover {
+            background-color: #f8fafc;
+        }
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
 
 
-    <!-- Main Content -->
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6">Find People</h1>
-            
-            <!-- Search Bar -->
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+   
+        <div class="mb-8">
+            <h1 class="text-2xl font-semibold text-gray-900">Find People</h1>
+            <p class="text-gray-500 mt-1">Search by username or name</p>
+        </div>
+        
+        <!-- Search Container -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+       
+            <div class="relative border-b border-gray-200">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="ri-search-line text-gray-400"></i>
                 </div>
                 <input 
                     type="text" 
                     id="searchBar" 
-                    placeholder="Search by username..." 
-                    class="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 text-gray-800"
+                    placeholder="Search by username or name..." 
+                    class="w-full py-4 pl-12 pr-16 focus:outline-none text-gray-700 placeholder-gray-400"
+                    autocomplete="off"
+                    autocorrect="off"
+                    spellcheck="false"
                 />
-                <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <i class="ri-close-line text-gray-400 cursor-pointer hover:text-gray-600 transition-colors" id="clearSearch"></i>
-                </div>
+                <button id="clearSearch" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors hidden">
+                    <i class="ri-close-line"></i>
+                </button>
             </div>
 
             <!-- Search Results -->
-            <div id="userList" class="mt-6 space-y-3"></div>
+            <div id="userList" class="divide-y divide-gray-100">
+             
+                <div id="emptyState" class="py-16 text-center">
+                    <div class="mx-auto w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-4">
+                        <i class="ri-user-search-line text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-700">Search for people</h3>
+                    <p class="text-gray-500 mt-1 max-w-md mx-auto">Find users by their username or name</p>
+                </div>
+            </div>
 
-            <!-- Loading State -->
-            <div id="loadingState" class="hidden mt-6 flex justify-center">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            
+            <div id="loadingState" class="hidden py-8 flex justify-center">
+                <div class="animate-spin rounded-full h-8 w-8 border-2 border-gray-300 border-t-blue-500"></div>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const loadingOverlay = document.getElementById("loadingOverlay");
             const searchBar = document.getElementById("searchBar");
             const userList = document.getElementById("userList");
             const loadingState = document.getElementById("loadingState");
             const clearSearch = document.getElementById("clearSearch");
+            const emptyState = document.getElementById("emptyState");
             let searchTimeout;
 
-         
-            // Clear search input and results
+           
             clearSearch.addEventListener("click", function() {
                 searchBar.value = "";
-                userList.innerHTML = "";
+                userList.innerHTML = '';
+                userList.appendChild(emptyState);
                 clearSearch.classList.add("hidden");
+                searchBar.focus();
             });
 
-            // Toggle clear button visibility
+          
             searchBar.addEventListener("input", function() {
                 if (searchBar.value.trim() === "") {
                     clearSearch.classList.add("hidden");
@@ -70,7 +95,7 @@
                 }
             });
 
-            // Search functionality with debounce
+     
             searchBar.addEventListener("input", function() {
                 const query = searchBar.value.trim();
                 
@@ -78,52 +103,55 @@
                 clearTimeout(searchTimeout);
                 
                 if (query === "") {
-                    userList.innerHTML = "";
+                    userList.innerHTML = '';
+                    userList.appendChild(emptyState);
                     loadingState.classList.add("hidden");
                     return;
                 }
                 
                 // Show loading state
                 loadingState.classList.remove("hidden");
+                userList.innerHTML = '';
                 
-                // Debounce search to avoid too many requests
+              
                 searchTimeout = setTimeout(async function() {
                     try {
-                        const response = await fetch(`/username/${query}`);
+                        const response = await fetch(`/username/${encodeURIComponent(query)}`);
+                        if (!response.ok) throw new Error('Network response was not ok');
                         const users = await response.json();
                         
                         loadingState.classList.add("hidden");
                         
                         if (users.length > 0) {
                             userList.innerHTML = users.map(user => `
-                                <a href="/profile/${user._id}" class="block hover:bg-gray-50 transition-colors rounded-lg">
-                                    <div class="flex items-center p-3">
+                                <a href="/profile/${user._id}" class="block search-result-item">
+                                    <div class="flex items-center p-4">
                                         <div class="flex-shrink-0">
-                                            <img src="${user.image?.url || '/api/placeholder/48/48'}" alt="${user.name || 'User'}" 
-                                                class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm" 
-                                                onerror="this.src='/api/placeholder/48/48'"/>
+                                            <img src="${user.image?.url || 'https://via.placeholder.com/48'}" alt="${user.name || 'User'}" 
+                                                class="w-12 h-12 rounded-full object-cover border border-gray-200" 
+                                                onerror="this.src='https://via.placeholder.com/48'"/>
                                         </div>
-                                        <div class="ml-4 flex-1">
-                                            <div class="font-medium text-gray-900">${user.name || "No Name"}</div>
-                                            <div class="text-sm text-gray-500">@${user.username}</div>
+                                        <div class="ml-4 flex-1 min-w-0">
+                                            <div class="flex items-center">
+                                                <h3 class="text-base font-medium text-gray-900 truncate">${user.name || "No Name"}</h3>
+                                                ${user.verified ? `<span class="ml-1 text-blue-500"><i class="ri-checkbox-circle-fill"></i></span>` : ''}
+                                            </div>
+                                            <p class="text-sm text-gray-500 truncate">@${user.username}</p>
                                         </div>
-                                        <div class="ml-2">
-                                            <button class="px-3 py-1 text-sm rounded-full text-blue-600 font-medium border border-blue-600 hover:bg-blue-50 transition-colors">
-                                                PROFILE
-                                            </button>
+                                        <div class="ml-4">
+                                            <i class="ri-arrow-right-s-line text-gray-400"></i>
                                         </div>
                                     </div>
                                 </a>
-                                <div class="border-b border-gray-100 last:border-b-0"></div>
                             `).join("");
                         } else {
                             userList.innerHTML = `
-                                <div class="text-center py-12">
-                                    <div class="text-gray-400 text-5xl mb-4">
-                                        <i class="ri-user-search-line"></i>
+                                <div class="py-16 text-center">
+                                    <div class="mx-auto w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 mb-4">
+                                        <i class="ri-user-unfollow-line text-2xl"></i>
                                     </div>
-                                    <h3 class="text-lg font-medium text-gray-600">No users found</h3>
-                                    <p class="text-gray-500 mt-1">Try searching with a different username</p>
+                                    <h3 class="text-lg font-medium text-gray-700">No results found</h3>
+                                    <p class="text-gray-500 mt-1">Try different search terms</p>
                                 </div>
                             `;
                         }
@@ -131,19 +159,18 @@
                         console.error("Error fetching users:", error);
                         loadingState.classList.add("hidden");
                         userList.innerHTML = `
-                            <div class="text-center py-8">
-                                <div class="text-red-400 text-4xl mb-3">
-                                    <i class="ri-error-warning-line"></i>
+                            <div class="py-16 text-center">
+                                <div class="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center text-red-400 mb-4">
+                                    <i class="ri-error-warning-line text-2xl"></i>
                                 </div>
-                                <h3 class="text-lg font-medium text-gray-600">Something went wrong</h3>
+                                <h3 class="text-lg font-medium text-gray-700">Search failed</h3>
                                 <p class="text-gray-500 mt-1">Please try again later</p>
                             </div>
                         `;
                     }
-                }, 300); // 300ms debounce
+                }, 350);
             });
 
-            // Focus search bar on load
             searchBar.focus();
         });
     </script>

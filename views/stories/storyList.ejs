@@ -445,7 +445,7 @@
                   </div>
                   <span class="text-xs mt-1 hidden md:block">Message</span>
                 </a>
-             
+
                 <a href="/followers/<%=currUser._id%>"
                   class="text-gray-700 hover:text-blue-600 transition flex flex-col items-center">
                   <i class="ri-group-line text-xl"></i>
@@ -480,7 +480,7 @@
 
         <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-       
+
 
         <script>
           document.addEventListener("DOMContentLoaded", function () {
@@ -542,186 +542,211 @@
           }
         </script>
 
-
-        <script>
+       <script>
 
           function showLoading() {
-            
-            const skeleton = document.getElementById('skeleton-loader');
-            const storiesGrid = document.getElementById('stories-grid');
 
-            // Show skeleton first
-            skeleton.classList.remove('hidden');
-            storiesGrid.classList.add('hidden');
+          const skeleton = document.getElementById('skeleton-loader');
+          const storiesGrid = document.getElementById('stories-grid');
 
-   
-            document.body.style.overflow = 'hidden';
+          // Show skeleton first
+          skeleton.classList.remove('hidden');
+          storiesGrid.classList.add('hidden');
+
+
+          document.body.style.overflow = 'hidden';
           }
 
           function hideLoading() {
-           
-            const skeleton = document.getElementById('skeleton-loader');
-            const storiesGrid = document.getElementById('stories-grid');
 
-            setTimeout(() => {
-              skeleton.classList.add('hidden');
-              storiesGrid.classList.remove('hidden');
-              document.body.style.overflow = '';
-            }, 300);
+          const skeleton = document.getElementById('skeleton-loader');
+          const storiesGrid = document.getElementById('stories-grid');
+
+          setTimeout(() => {
+          skeleton.classList.add('hidden');
+          storiesGrid.classList.remove('hidden');
+          document.body.style.overflow = '';
+          }, 300);
           }
 
           document.addEventListener('DOMContentLoaded', function () {
-            const select = document.getElementById('categoryFilter');
-            const container = document.querySelector('.flex.space-x-2');
+          const select = document.getElementById('categoryFilter');
+          const container = document.querySelector('.flex.space-x-2');
 
-            const iconMap = {};
-
-       
-            const colorMap = {
-              '': 'blue',
-              'fantasy': 'purple',
-              'random-thoughts': 'yellow',
-              'poetry': 'pink',
-              'sci-fi': 'blue',
-              'romance': 'red',
-              'mystery': 'indigo',
-              'horror': 'gray',
-              'adventure': 'green',
-              'historical': 'amber',
-              'comedy': 'yellow',
-              'ya': 'teal',
-              'children': 'orange',
-              'Fanfiction': 'purple',
-              'other': 'gray'
-            };
-
-            // Create buttons for each option
-            Array.from(select.options).forEach(option => {
-              const btn = document.createElement('button');
-              btn.type = 'button';
-              btn.className = 'category-btn';
-              btn.dataset.value = option.value;
+          const iconMap = {};
 
 
-              const text = document.createElement('span');
-              text.textContent = option.text;
-              btn.appendChild(text);
+          const colorMap = {
+          '': 'blue',
+          'fantasy': 'purple',
+          'random-thoughts': 'yellow',
+          'poetry': 'pink',
+          'sci-fi': 'blue',
+          'romance': 'red',
+          'mystery': 'indigo',
+          'horror': 'gray',
+          'adventure': 'green',
+          'historical': 'amber',
+          'comedy': 'yellow',
+          'ya': 'teal',
+          'children': 'orange',
+          'Fanfiction': 'purple',
+          'other': 'gray'
+          };
 
-              if (option.selected) {
-                btn.classList.add('active');
-              }
+          // Create buttons for each option
+          Array.from(select.options).forEach(option => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'category-btn';
+          btn.dataset.value = option.value;
 
-              btn.addEventListener('click', () => {
-                select.value = option.value;
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const event = new Event('change');
-                select.dispatchEvent(event);
-              });
 
-              container.appendChild(btn);
-            });
+          const text = document.createElement('span');
+          text.textContent = option.text;
+          btn.appendChild(text);
 
-            select.addEventListener('change', function () {
-              document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.value === this.value);
-              });
-            });
+          if (option.selected) {
+          btn.classList.add('active');
+          }
+
+          btn.addEventListener('click', () => {
+          select.value = option.value;
+          document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const event = new Event('change');
+          select.dispatchEvent(event);
+          });
+
+          container.appendChild(btn);
+          });
+
+          select.addEventListener('change', function () {
+          document.querySelectorAll('.category-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.value === this.value);
+          });
+          });
           });
 
           setTimeout(() => {
-            const toast = document.getElementById('toast-success');
-            if (toast) {
-              toast.style.display = "none";
-              location.reload();
-            }
+          const toast = document.getElementById('toast-success');
+          if (toast) {
+          toast.style.display = "none";
+          location.reload();
+          }
           }, 3000);
 
           const flashMessage = "<%= success %>";
-          if (flashMessage === 'your story is live!') {
+            if (flashMessage === 'your story is live!') {
             confetti({
-              particleCount: 200,
-              angle: Math.random() * 360,
-              spread: 90 + Math.random() * 90,
-              origin: { x: Math.random(), y: Math.random() },
-              colors: ['#ff6347', '#ff4500', '#32cd32', '#1e90ff', '#ff1493'],
-              shapes: ['circle', 'square', 'triangle'],
-              gravity: 0.3 + Math.random() * 0.5,
-              drift: Math.random() * 1 - 0.5
+            particleCount: 200,
+            angle: Math.random() * 360,
+            spread: 90 + Math.random() * 90,
+            origin: { x: Math.random(), y: Math.random() },
+            colors: ['#ff6347', '#ff4500', '#32cd32', '#1e90ff', '#ff1493'],
+            shapes: ['circle', 'square', 'triangle'],
+            gravity: 0.3 + Math.random() * 0.5,
+            drift: Math.random() * 1 - 0.5
             });
 
             setTimeout(() => {
-              confetti({
-                particleCount: 500,
-                spread: 360,
-                origin: { x: 0.5, y: 0.5 },
-                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00'],
-                shapes: ['circle'],
-                gravity: 0.6,
-                scalar: 1.2
-              });
+            confetti({
+            particleCount: 500,
+            spread: 360,
+            origin: { x: 0.5, y: 0.5 },
+            colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00'],
+            shapes: ['circle'],
+            gravity: 0.6,
+            scalar: 1.2
+            });
             }, 100);
-          }
+            }
 
-          document.querySelectorAll('#date').forEach(el => {
+            document.querySelectorAll('#date').forEach(el => {
             const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
             el.innerText = moment(rawDate).fromNow();
-          });
-
-          document.addEventListener("DOMContentLoaded", function () {
+            });
+     
+            document.addEventListener("DOMContentLoaded", function () {
             checkUnreadNotifications();
             setInterval(checkUnreadNotifications, 5000);
-          });
-
-          function checkUnreadNotifications() {
-            fetch('/check-unread-notifications')
-              .then(response => response.json())
-              .then(data => {
-                const redDot = document.getElementById("red-dot");
-                if (data.success && data.unreadCount > 0) {
-                  redDot.classList.remove("hidden");
-                  redDot.textContent = data.unreadCount;
-                } else {
-                  redDot.classList.add("hidden");
-                }
-              })
-              .catch(error => console.error("Error fetching notifications:", error));
-          }
-
-          function markNotificationsSeen() {
-            fetch('/mark-notifications-seen')
-              .then(() => {
-                document.getElementById("red-dot").classList.add("hidden");
-              })
-              .catch(error => console.error("Error marking notifications as seen:", error));
-          }
-
-          function updateDateFormatting() {
-            document.querySelectorAll('#date').forEach(el => {
-              const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
-              el.innerText = moment(rawDate).fromNow();
             });
-          }
 
-          function updateStories() {
+            function checkUnreadNotifications() {
+            fetch('/check-unread-notifications')
+            .then(response => response.json())
+            .then(data => {
+            const redDot = document.getElementById("red-dot");
+            if (data.success && data.unreadCount > 0) {
+            redDot.classList.remove("hidden");
+            redDot.textContent = data.unreadCount;
+            } else {
+            redDot.classList.add("hidden");
+            }
+            })
+            .catch(error => console.error("Error fetching notifications:", error));
+            }
+
+            function markNotificationsSeen() {
+            fetch('/mark-notifications-seen')
+            .then(() => {
+            document.getElementById("red-dot").classList.add("hidden");
+            })
+            .catch(error => console.error("Error marking notifications as seen:", error));
+            }
+
+            function updateDateFormatting() {
+            document.querySelectorAll('#date').forEach(el => {
+            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+            el.innerText = moment(rawDate).fromNow();
+            });
+            }
+
+            function updateStories() {
             const search = document.getElementById("searchInput")?.value.trim() || '';
             const category = document.getElementById("categoryFilter")?.value || '';
             const sort = document.getElementById("sortStories")?.value || '';
 
             const query = new URLSearchParams({
-              search: search,
-              category: category,
-              sort: sort
+            search: search,
+            category: category,
+            sort: sort
             });
 
             showLoading();
 
             fetch(`/stories?${query.toString()}`)
-              .then(response => response.text())
-              .then(html => {
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(html, "text/html");
-                let newStoryList = doc.querySelector("#stories-grid");
+            .then(response => response.text())
+            .then(html => {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(html, "text/html");
+            let newStoryList = doc.querySelector("#stories-grid");
+
+            </script>
+            <!-- <script>
+            // document.getElementById("searchInput").addEventListener("input", function() {
+            //     let searchValue = this.value.trim();
+            
+            //     fetch(`/stories?search=${encodeURIComponent(searchValue)}`)
+            //         .then(response => response.text())
+            //         .then(html => {
+            //             let parser = new DOMParser();
+            //             let doc = parser.parseFromString(html, "text/html");
+            //             let newStoryList = doc.querySelector(".grid");
+            //             document.querySelector(".grid").innerHTML = newStoryList.innerHTML;
+            //         })
+            //         .catch(error => console.error("Error fetching stories:", error));
+            // });
+         
+  const searchInput = document.getElementById("searchInput");
+  const categoryFilter = document.getElementById("categoryFilter");
+ function updateDateFormatting() {
+    document.querySelectorAll('#date').forEach(el => {
+      const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+      el.innerText = moment(rawDate).fromNow();
+    });
+  }
+
 
                 if (newStoryList.children.length === 0) {
                   document.getElementById("stories-grid").innerHTML = `
@@ -754,22 +779,95 @@
           document.getElementById("categoryFilter")?.addEventListener("change", updateStories);
           document.getElementById("sortStories")?.addEventListener("change", updateStories);
 
-          const profileButton = document.getElementById('profile-menu-button');
-          const profileDropdown = document.getElementById('profile-dropdown');
 
-          profileButton.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-          });
+    fetch(`/stories?${query.toString()}`)
+      .then(response => response.text())
+      .then(html => {
+        let parser = new DOMParser();
+        let doc = parser.parseFromString(html, "text/html");
+        let newStoryList = doc.querySelector(".grid");
+        document.querySelector(".grid").innerHTML = newStoryList.innerHTML;
+      })
+      .catch(error => console.error("Error fetching stories:", error));
+  }
+
+  searchInput.addEventListener("input", updateStories);
+  categoryFilter.addEventListener("change", updateStories);
+  sortStories.addEventListener("change", updateStories);
+updateDateFormatting()
+</script> 
 
 
-          window.addEventListener('click', (event) => {
-            if (!profileButton.contains(event.target)) {
-              profileDropdown.classList.add('hidden');
-            }
-          });
-        </script>
+
+            <script>
+              const searchInput = document.getElementById("searchInput");
+              const categoryFilter = document.getElementById("categoryFilter");
+              const sortStories = document.getElementById("sortStories"); // make sure this exists
+
+              function updateDateFormatting() {
+                document.querySelectorAll('#date').forEach(el => {
+                  const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
+                  el.innerText = moment(rawDate).fromNow();
+                });
+              }
+
+              function updateStories() {
+                const search = searchInput?.value.trim() || '';
+                const category = categoryFilter?.value || '';
+                const sort = sortStories?.value || '';
+
+                const query = new URLSearchParams({
+                  search: search,
+                  category: category,
+                  sort: sort
+                });
+
+                fetch(`/stories?${query.toString()}`)
+                  .then(response => response.text())
+                  .then(html => {
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(html, "text/html");
+                    let newStoryList = doc.querySelector(".grid");
+                    document.querySelector(".grid").innerHTML = newStoryList.innerHTML;
+
+                    updateDateFormatting();
+                  })
+                  .catch(error => console.error("Error fetching stories:", error));
+              }
+
+              searchInput?.addEventListener("input", updateStories);
+              categoryFilter?.addEventListener("change", updateStories);
+              sortStories?.addEventListener("change", updateStories);
+
+              updateDateFormatting();
+            </script>
+
+
+
+            <script>
+              // Profile dropdown toggle
+
+              const profileButton = document.getElementById('profile-menu-button');
+              const profileDropdown = document.getElementById('profile-dropdown');
+
+              profileButton.addEventListener('click', () => {
+                profileDropdown.classList.toggle('hidden');
+              });
+
+
+              window.addEventListener('click', (event) => {
+                if (!profileButton.contains(event.target)) {
+                  profileDropdown.classList.add('hidden');
+                }
+              });
+            </script>
 
   </div>
+</body>
+
+
+</html>
+
 </body>
 
 </html>

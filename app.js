@@ -63,15 +63,19 @@ const sessionOption = {
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
-  secure: process.env.NODE_ENV === "production" ,
+              secure: true,
+
         
         sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000
     },
+      proxy: true
+    
 };
 
 app.use(session(sessionOption));
 app.use(flash());
+app.set("trust proxy", 1);
 
 app.use(passport.initialize());
 app.use(passport.session());

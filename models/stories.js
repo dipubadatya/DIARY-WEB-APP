@@ -21,7 +21,7 @@ const storySchema = mongoose.Schema({
               Required: true
        }, timeStamp:{
               type: Date,
-              default: new Date().toISOString()
+             default: Date.now
 
           },
           editedAt:{

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white max-w-md w-full p-8 rounded-lg shadow-md text-center">
+            <div class="text-green-500 mb-6">
+                <i class="ri-checkbox-circle-line text-5xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Email Verified Successfully!</h1>
+            
+            <p class="text-gray-600 mb-6">
+                Your email address has been successfully verified. You can now log in to your account.
+            </p>
+            
+            <a href="/login" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors">
+                Go to Login
+            </a>
+            
+            <% if (success && success.length) { %>
+                <div class="mt-4 bg-green-50 text-green-600 px-4 py-2 rounded text-sm">
+                    <i class="ri-checkbox-circle-line mr-1"></i> <%= success %>
+                </div>
+            <% } %>
+            
+            <% if (error && error.length) { %>
+                <div class="mt-4 bg-red-50 text-red-600 px-4 py-2 rounded text-sm">
+                    <i class="ri-error-warning-line mr-1"></i> <%= error %>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

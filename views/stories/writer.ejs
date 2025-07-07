@@ -3,10 +3,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Write</title>
-    <link rel="stylesheet" href="/css/writer.css">
+    <link rel="stylesheet" href="/css/writer.css" />
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -23,11 +23,9 @@
         }
 
         .writer-text textarea:focus {
-            /* border-color: #64748b; */
             box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
         }
 
-        /* Keyboard shortcut display */
         .keyboard-shortcut {
             display: inline-flex;
             align-items: center;
@@ -40,11 +38,7 @@
             margin-left: 10px;
         }
 
-        /* Style for image preview */
         .image-preview {
-
-
-
             width: 100%;
             height: 200px;
             margin-bottom: 2px;
@@ -53,39 +47,126 @@
             object-fit: contain;
             object-position: center;
         }
+
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-message {
+            color: white;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
 <body>
     <div id="main">
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Publishing your story...</div>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <div class="success-message" id="successMessage">
+                <i class="ri-checkbox-circle-fill" style="color: #4caf50; font-size: 2rem"></i>
+                <p>Story published successfully!</p>
+            </div>
+        </div>
+
         <div id="writer-container">
-            <form action="/stories" method="post" enctype="multipart/form-data">
+            <form id="storyForm" action="/stories" method="post" enctype="multipart/form-data">
                 <div class="writer-header">
                     <a href="/stories">
                         <h1>Diary</h1>
                     </a>
                     <div class="wrtr-hd-input">
                         <input type="text" name="title" placeholder="story title" class="story-title" id="my-editor"
-                            required>
+                            required />
                         <input type="file" name="image" accept="image/jpeg, image/png, image/jpg"
-                            placeholder="story cover img" id="image-input" class="story-img" required>
+                            placeholder="story cover img" id="image-input" class="story-img" required />
                     </div>
 
-                    <button
-                        class="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">publish</button>
-
+                    <button type="button" id="publishButton"
+                        class="inline-flex h-12 animate-shimmer items-center justify-center rounded-md border border-slate-800 bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] px-6 font-medium text-slate-400 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50">
+                        Publish
+                    </button>
                 </div>
 
-                <div id="image-preview-container" style="display:none; ">
-                    <img id="image-preview" class="image-preview" src="" alt="Image preview">
+                <div id="image-preview-container" style="display: none">
+                    <img id="image-preview" class="image-preview" src="" alt="Image preview" />
                 </div>
-            
+
                 <div class="voice-controls">
-
                     <select id="categoryFilter" name="category" required
                         class="text-sm w-full p-2 border border-gray-500 mt-1 mb-1">
-
-                        <option value="fantasy">Fantasy </option>
+                        <option value="fantasy">Fantasy</option>
                         <option value="random-thoughts">random-thoughts</option>
                         <option value="poetry">Poetry</option>
                         <option value="sci-fi">Sci-Fi</option>
@@ -99,41 +180,70 @@
                         <option value="children">Children</option>
                         <option value="fanfiction">Fanfiction</option>
                         <option value="other">Other</option>
-
                     </select>
                 </div>
 
                 <div class="writer-text">
                     <textarea name="story" id="story-textarea my-editor" placeholder="write your story..."></textarea>
                 </div>
-
             </form>
         </div>
     </div>
 
-  
-
     <script>
         // image preview
-        const imageInput = document.getElementById('image-input');
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-        const imagePreview = document.getElementById('image-preview');
+        const imageInput = document.getElementById("image-input");
+        const imagePreviewContainer = document.getElementById(
+            "image-preview-container"
+        );
+        const imagePreview = document.getElementById("image-preview");
 
-        imageInput.addEventListener('change', function (event) {
+        imageInput.addEventListener("change", function (event) {
             const file = event.target.files[0];
-            if (file && file.type.startsWith('image/')) {
+            if (file && file.type.startsWith("image/")) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    imagePreviewContainer.style.display = 'block'; // Show preview
-                    imagePreview.src = e.target.result; 
+                    imagePreviewContainer.style.display = "block";
+                    imagePreview.src = e.target.result;
                 };
-                reader.readAsDataURL(file); 
+                reader.readAsDataURL(file);
             } else {
-                imagePreviewContainer.style.display = 'none'; 
+                imagePreviewContainer.style.display = "none";
             }
         });
-    </script>
 
+        // Publish button functionality
+        const publishButton = document.getElementById("publishButton");
+        const storyForm = document.getElementById("storyForm");
+        const loadingOverlay = document.getElementById("loadingOverlay");
+        const progressBar = document.getElementById("progressBar");
+        const successMessage = document.getElementById("successMessage");
+
+        publishButton.addEventListener("click", function () {
+            if (!storyForm.checkValidity()) {
+                storyForm.reportValidity();
+                return;
+            }
+
+            loadingOverlay.classList.add("active");
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+
+                    successMessage.classList.add("show");
+
+                    setTimeout(() => {
+                        storyForm.submit();
+                    }, 1000);
+                }
+            }, 50);
+        });
+    </script>
 </body>
 
 </html>

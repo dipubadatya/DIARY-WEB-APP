@@ -428,20 +428,14 @@
               <div
                 class="bg-white shadow-xl md:rounded-full px-6 py-3 flex items-center justify-around md:justify-center md:gap-12 border-t border-gray-200 md:border">
 
-
-
-
-
-                <a href="/chat"
+               <a href="/chat"
                   class="text-gray-700 hover:text-blue-600 transition flex flex-col items-center relative">
                   <div class="relative">
                     <i class="ri-message-3-line text-xl"></i>
-
                     <button onclick="markMessagesAsSeen()">
                       <span id="message-dot"
-                        class="unread-count absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"></span>
+                        class="unread-count absolute -top-2 -right-2 bg-gray-200 text-gray-800 text-xs rounded-full h-5 w-5 flex items-center justify-center"></span>
                     </button>
-
                   </div>
                   <span class="text-xs mt-1 hidden md:block">Message</span>
                 </a>
@@ -458,13 +452,14 @@
                   <span class="text-xs mt-1 hidden md:block">Write</span>
                 </a>
 
+
                 <a href="/notification"
                   class="text-gray-700 hover:text-blue-600 transition flex flex-col items-center relative">
                   <div class="relative">
                     <button onclick="markNotificationsSeen()">
                       <i class="ri-notification-3-line text-xl"></i>
                       <span id="red-dot"
-                        class=" absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        class="absolute -top-2 -right-2 bg-gray-200 text-gray-800 text-xs rounded-full h-5 w-5 flex items-center justify-center">
 
                       </span>
                     </button>

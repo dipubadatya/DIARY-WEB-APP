@@ -1,152 +1,270 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sign Up</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
-
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .fade-out {
+            animation: fadeOut 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 50%;
+            border-top-color: #3b82f6;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
+<body class="bg-gray-50">
+    <div class="font-[sans-serif] relative w-full min-h-screen flex flex-col">
+        <div class="h-[340px] font-[sans-serif]">
+            <img src="https://images.unsplash.com/photo-1581855339095-0c282d58527b?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="Banner Image" class="w-full h-full object-cover" />
+        </div>
 
-<body>
-    <div id="main">
-        <div class="font-[sans-serif] relative w-full">
-            <div class="h-[340px] font-[sans-serif]">
-                <img src="https://images.unsplash.com/photo-1581855339095-0c282d58527b?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="Banner Image" class="w-full h-full object-cover" />
-            </div>
+        <div class="relative -mt-40 m-4 flex-grow">
+            <form id="signupForm" action="/signup" method="post"
+                class="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-6 sm:p-8 rounded-2xl">
+                <div class="mb-8">
+                    <h3 class="text-gray-800 text-3xl font-bold text-center">Register</h3>
+                    <% if (success && success.length) { %>
+                        <div class="flash-message bg-green-50 text-green-600 px-6 py-3 text-sm flex items-start mt-5 mb-5 rounded-lg fade-in">
+                            <i class="ri-checkbox-circle-line mr-2 mt-0.5"></i>
+                            <span><%= success %></span>
+                        </div>
+                    <% } %>
+                    <% if (error && error.length) { %>
+                        <div class="flash-message bg-red-50 text-red-600 px-6 py-3 text-sm flex items-start mt-5 mb-5 rounded-lg fade-in">
+                            <i class="ri-error-warning-line mr-2 mt-0.5"></i>
+                            <span><%= error %></span>
+                        </div>
+                    <% } %>
+                </div>
 
-            <div class="relative -mt-10 m-4">
-                <form action="/signup" method="post"
-                    class="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-6 sm:p-8 rounded-2xl">
-                    <div class="mb-12">
-                        <h3 class="text-gray-800 text-3xl text-center">Register</h3>
-                      
+                <div class="space-y-5">
+                    <div>
+                        <label class="text-gray-800 text-sm font-medium block mb-2">Full Name</label>
+                        <div class="relative flex items-center">
+                            <input name="name" type="text" required
+                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
+                                placeholder="Enter name" value="<%= typeof name !== 'undefined' ? name : '' %>" />
+                            <i class="ri-user-fill text-gray-400 absolute right-3"></i>
+                        </div>
                     </div>
 
                     <div>
-                        <label class="text-gray-800 text-xs block mb-2">Full Name</label>
+                        <label class="text-gray-800 text-sm font-medium block mb-2">Username</label>
                         <div class="relative flex items-center">
-                            <input name="name" type="text" required
-                                class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
-                                placeholder="Enter name" />
-                            <i class="ri-user-fill  w-5 h-4  text-gray-400   absolute right-2 "></i>
+                            <input name="username" id="username" type="text" required
+                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
+                                placeholder="Enter username" 
+                                value="<%= typeof username !== 'undefined' ? username : '' %>"
+                                oninput="checkUsername()" />
+                            <i class="ri-user-fill text-gray-400 absolute right-3"></i>
+                        </div>
+                        <div id="usernameFeedback" class="text-sm mt-1 h-5 flex items-center">
+                            <span id="usernameMessage"></span>
+                            <div id="usernameSpinner" class="loading-spinner ml-2 hidden"></div>
                         </div>
                     </div>
 
-                    <div class="mt-8">
-                        <label class="text-gray-800 text-xs block mb-2">User Name</label>
+                    <div>
+                        <label class="text-gray-800 text-sm font-medium block mb-2">Email</label>
                         <div class="relative flex items-center">
-                            <input name="username" type="text" required
-                                class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
-                                placeholder="Enter username" />
-                            <i class="ri-user-fill  w-5 h-4  text-gray-400   absolute right-2 "></i>
-                        </div>
-                    </div>
-                    <div class="mt-8">
-                        <label class="text-gray-800 text-xs block mb-2">Email</label>
-                        <div class="relative flex items-center">
-                            <input oninput="checkEmailExistence()" name="email" id="email" type="text" required
-                                class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
-                                placeholder="Enter email" />
-                            <i class="ri-mail-line  w-5 h-4  text-gray-400   absolute right-2 "></i>
-                 
-
-                        </div>
-                        <span class="mt-3" id="emailFeedback"></span>
-                    </div>
-
-                    <div class="mt-8">
-                        <label class="text-gray-800 text-xs block mb-2">Password</label>
-                        <div class="relative flex items-center">
-                            <input name="password" type="password" required
-                                class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
-                                placeholder="Enter password" id="passwordInput" />
-                            <i class="ri-eye-line w-4 h-4 text-gray-400 absolute right-2 cursor-pointer" id="togglePassword"></i>
+                            <input name="email" type="email" required
+                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
+                                placeholder="Enter email" 
+                                value="<%= typeof email !== 'undefined' ? email : '' %>" />
+                            <i class="ri-mail-line text-gray-400 absolute right-3"></i>
                         </div>
                     </div>
 
-                    <div class="flex items-center mt-8">
-                        <div id="email-message" style="color: red;"></div>
-                        <label id="email-message" class="ml-3 text-red-500 block text-sm">
-
-
-                        </label>
+                    <div>
+                        <label class="text-gray-800 text-sm font-medium block mb-2">Password (min 6 characters)</label>
+                        <div class="relative flex items-center">
+                            <input name="password" type="password" required minlength="6"
+                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
+                                placeholder="Enter password" id="passwordInput" 
+                                oninput="checkPassword()" />
+                            <i class="ri-eye-line text-gray-400 absolute right-3 cursor-pointer" id="togglePassword"></i>
+                        </div>
+                        <div id="passwordFeedback" class="text-xs mt-1 h-5"></div>
                     </div>
-                      <% if (error && error.length) { %>
-                <div class="error-message active bg-red-50 text-red-600 px-6 py-3 text-sm flex items-start mt-5 mb-5">
-                    <i class="ri-error-warning-line mr-2 mt-0.5"></i>
-                    <span><%= error %></span>
-                </div>
-                <% } %>
-                    <button type="submit" 
-                        class="w-full shadow-xl py-2.5 px-4 text-sm font-semibold tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all">
+
+                    <button type="submit" id="submitBtn"
+                        class="w-full shadow-xl py-3 px-4 text-sm font-semibold tracking-wider rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled>
                         Register
                     </button>
-                    <p class="text-gray-800 text-sm mt-4 text-center">Already have an account? <a href="/login"
-                            class="text-blue-500 font-semibold hover:underline ml-1">Login here</a></p>
-            </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <p class="text-gray-600 text-sm">
+                        Already have an account? 
+                        <a href="/login" class="text-blue-600 hover:underline font-medium">Login here</a>
+                    </p>
+                </div>
             </form>
         </div>
     </div>
 
+    <script>
+        // Password toggle visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('ri-eye-line');
+            this.classList.toggle('ri-eye-off-line');
+        });
 
-
-
-</body>
-<script>
-       setTimeout(() => {
-            document.getElementById('flash').style.display = "none"
-        
-        }, 3000);
-
-    let close = document.getElementById('close').addEventListener('click', () => {
-        flash.style.display = "none"
-    })
-</script>
-<script>
-    async function checkEmailExistence() {
-        const email = document.getElementById('email').value;
-        const feedbackElement = document.getElementById('emailFeedback');
-        
-        if (email) {
-            // Sending request to backend to check email existence
-            const response = await fetch('/check-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email })
-            });
-
-            const result = await response.json();
+        // Check username availability
+        async function checkUsername() {
+            const username = document.getElementById('username').value.trim();
+            const messageElement = document.getElementById('usernameMessage');
+            const spinnerElement = document.getElementById('usernameSpinner');
             
-            if (result.exists) {
-                feedbackElement.textContent = 'Email already exists!';
-                feedbackElement.style.color = 'red';
-            } 
-        } else {
-            feedbackElement.textContent = '';
-        }
-    }
+            if (!username) {
+                messageElement.textContent = '';
+                spinnerElement.classList.add('hidden');
+                updateSubmitButton();
+                return;
+            }
 
-    document.getElementById('togglePassword').addEventListener('click', function() {
-        const passwordInput = document.getElementById('passwordInput');
-        const icon = this;
-        
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        if (type === 'password') {
-            icon.classList.remove('ri-eye-off-line');
-            icon.classList.add('ri-eye-line');
-        } else {
-            icon.classList.remove('ri-eye-line');
-            icon.classList.add('ri-eye-off-line');
-        }
-    });
-</script>
+            // Basic username validation
+            const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+            if (!usernameRegex.test(username)) {
+                messageElement.textContent = '3-20 characters, letters, numbers, underscores only';
+                messageElement.className = 'text-red-500';
+                spinnerElement.classList.add('hidden');
+                updateSubmitButton();
+                return;
+            }
 
+            try {
+                messageElement.textContent = 'Checking...';
+                messageElement.className = 'text-gray-500';
+                spinnerElement.classList.remove('hidden');
+
+                const response = await fetch('/check-username', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                });
+
+                if (!response.ok) throw new Error('Network error');
+                const { exists } = await response.json();
+
+                if (exists) {
+                    messageElement.textContent = 'Username is already taken';
+                    messageElement.className = 'text-red-500';
+                } else {
+                    messageElement.textContent = 'Username is available';
+                    messageElement.className = 'text-green-500';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageElement.textContent = 'Error checking username. Please try again.';
+                messageElement.className = 'text-red-500';
+            } finally {
+                spinnerElement.classList.add('hidden');
+                updateSubmitButton();
+            }
+        }
+
+        // Check password length
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const feedbackElement = document.getElementById('passwordFeedback');
+            
+            if (!password) {
+                feedbackElement.textContent = '';
+                updateSubmitButton();
+                return;
+            }
+
+            if (password.length < 6) {
+                feedbackElement.textContent = 'Password must be at least 6 characters';
+                feedbackElement.className = 'text-xs mt-1 h-5 text-red-500';
+            } else {
+                feedbackElement.textContent = 'Password meets requirements';
+                feedbackElement.className = 'text-xs mt-1 h-5 text-green-500';
+            }
+            
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitBtn');
+            const usernameMessage = document.getElementById('usernameMessage').textContent;
+            const password = document.getElementById('passwordInput').value;
+            const passwordFeedback = document.getElementById('passwordFeedback').textContent;
+            
+            const isUsernameValid = usernameMessage === 'Username is available';
+            const isPasswordValid = password.length >= 6 && passwordFeedback.includes('meets requirements');
+            
+            submitBtn.disabled = !(isUsernameValid && isPasswordValid);
+        }
+
+        // Form submission validation
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            const password = document.getElementById('passwordInput').value;
+            const usernameMessage = document.getElementById('usernameMessage').textContent;
+            
+            if (password.length < 6) {
+                e.preventDefault();
+                const input = document.getElementById('passwordInput');
+                input.classList.add('border-red-500', 'shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                return;
+            }
+            
+            if (usernameMessage !== 'Username is available') {
+                e.preventDefault();
+                const input = document.getElementById('username');
+                input.classList.add('border-red-500', 'shake');
+                setTimeout(() => input.classList.remove('shake'), 500);
+                return;
+            }
+        });
+
+        // Auto-dismiss flash messages
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.flash-message').forEach(message => {
+                setTimeout(() => {
+                    message.classList.add('fade-out');
+                    setTimeout(() => message.remove(), 300);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
 </html>

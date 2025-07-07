@@ -1,88 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <style>
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        .fade-out {
+            animation: fadeOut 0.3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+        .flash-message {
+            display: flex !important;
+            opacity: 1;
+        }
+        .flash-container {
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
 </head>
-
-<body>
-    <div class="font-[sans-serif] relative w-full">
+<body class="bg-gray-50">
+    <div class="font-[sans-serif] relative w-full min-h-screen flex flex-col">
         <div class="h-[340px] font-[sans-serif]">
             <img src="https://images.unsplash.com/photo-1506957833838-96c1e88d394f?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Banner Image" class="w-full h-full object-cover" />
         </div>
 
-        <div class="relative -mt-40 m-4">
+        <div class="relative -mt-40 m-4 flex-grow">
             <form action="/login" method="post"
                 class="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-6 sm:p-8 rounded-2xl">
-             
-        
-                <div class="mb-12">
-                    <h3 class="text-gray-800 text-3xl text-center">Sign in</h3>
+                <div class="mb-8 flash-container">
+                    <h3 class="text-gray-800 text-3xl font-bold text-center">Sign in</h3>
+                    
+                    <% if (success && success.length) { %>
+                        <div class="flash-message bg-green-50 text-green-600 px-6 py-3 text-sm flex items-center mt-5 mb-5 rounded-lg fade-in">
+                            <i class="ri-checkbox-circle-line mr-2"></i>
+                            <span><%= success %></span>
+                            <button class="ml-auto text-lg font-bold hover:text-green-800" onclick="dismissFlash(this.parentElement)">&times;</button>
+                        </div>
+                    <% } %>
+                    
+                    <% if (error && error.length) { %>
+                        <div class="flash-message bg-red-50 text-red-600 px-6 py-3 text-sm flex items-center mt-5 mb-5 rounded-lg fade-in">
+                            <i class="ri-error-warning-line mr-2"></i>
+                            <span><%- error %></span>
+                            <button class="ml-auto text-lg font-bold hover:text-red-800" onclick="dismissFlash(this.parentElement)">&times;</button>
+                        </div>
+                    <% } %>
                 </div>
 
-                <div class="mt-8">
-                    <label class="text-gray-800 text-xs block mb-2">Email</label>
-                    <div class="relative flex items-center">
-                        <input name="email" id="email" type="text" required
-                            class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
-                            placeholder="Enter email" />
-                        <i class="ri-mail-line  w-5 h-4  text-gray-400   absolute right-2 "></i>
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-gray-800 text-sm font-medium block mb-2">Email</label>
+                        <div class="relative flex items-center">
+                            <input name="email" id="email" type="email" required
+                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
+                                placeholder="Enter email" value="<%= typeof email !== 'undefined' ? email : '' %>" />
+                            <i class="ri-mail-line text-gray-400 absolute right-3"></i>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-gray-800 text-sm font-medium block mb-2">Password</label>
+                        <div class="relative flex items-center">
+                            <input name="password" type="password" required
+                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
+                                placeholder="Enter password" id="passwordInput" />
+                            <i class="ri-eye-line text-gray-400 absolute right-3 cursor-pointer" id="togglePassword"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-8 mb-5">
-                    <label class="text-gray-800 text-xs block mb-2">Password</label>
-                    <div class="relative flex items-center">
-                        <input name="password" type="password" required
-                            class="w-full bg-transparent text-sm text-gray-800 border-b border-gray-300 focus:border-blue-500 pl-2 pr-8 py-3 outline-none"
-                            placeholder="Enter password" id="passwordInput" />
-                        <i class="ri-eye-line w-4 h-4 text-gray-400 absolute right-2 cursor-pointer" id="togglePassword"></i>
-                    </div>
-                </div>
-                   <% if (error && error.length) { %>
-                <div class="error-message active bg-red-50 text-red-600 px-6 py-3 text-sm flex items-start mt-2 mb-2 none " id="error">
-                    <i class="ri-error-warning-line mr-2 mt-0.5"></i>
-                    <span><%= error %></span>
-                </div>
-         
-            <% } %>
-
-                <button
-                    class="w-full shadow-xl py-2.5 px-4 text-sm font-semibold tracking-wider rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all">
+                <button type="submit"
+                    class="w-full shadow-xl py-3 px-4 text-sm font-semibold tracking-wider rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all mt-8">
                     Login
                 </button>
-                <p class="text-gray-800 text-sm !mt-8 text-center">Don't have an account? <a href="/signup"
-                        class="text-blue-600 hover:underline ml-1 whitespace-nowrap font-semibold">Register here</a></p>
-
+                
+                <div class="mt-6 text-center space-y-3">
+                    <p class="text-gray-600 text-sm">
+                        Don't have an account? 
+                        <a href="/signup" class="text-blue-600 hover:underline font-medium">Register here</a>
+                    </p>
+                    <p class="text-gray-600 text-sm">
+                        <a href="/forgot-password" class="text-blue-600 hover:underline">Forgot password?</a>
+                    </p>
+                </div>
+            </form>
         </div>
-        </form>
-    </div>
     </div>
 
-</body>
-<script>
-       document.getElementById('togglePassword').addEventListener('click', function() {
-        const passwordInput = document.getElementById('passwordInput');
-        const icon = this;
+    <script>
+        // Password toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('passwordInput');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.classList.toggle('ri-eye-line');
+            this.classList.toggle('ri-eye-off-line');
+        });
 
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
- 
-        if (type === 'password') {
-            icon.classList.remove('ri-eye-off-line');
-            icon.classList.add('ri-eye-line');
-        } else {
-            icon.classList.remove('ri-eye-line');
-            icon.classList.add('ri-eye-off-line');
+        // Flash message handling
+        function dismissFlash(element) {
+            element.classList.add('fade-out');
+            setTimeout(() => element.remove(), 300);
         }
-    });
-      
 
-</script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auto-dismiss flash messages after 5 seconds
+            document.querySelectorAll('.flash-message').forEach(message => {
+                setTimeout(() => {
+                    dismissFlash(message);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
 </html>

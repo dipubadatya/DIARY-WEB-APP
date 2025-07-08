@@ -11,10 +11,22 @@
   <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
+    body.preloader-active {
+      overflow: hidden;
+    }
+
+    #preloader-text {
+      font-size: clamp(2rem, 8vw, 4rem);
+    }
+
+    #line-loader-container {
+      width: min(80vw, 24rem);
+    }
+
     .story-card {
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
@@ -119,15 +131,26 @@
 
 <body>
 
+  <div id="preloader" style="display: none;"
+    class="fixed inset-0 w-full h-full flex flex-col items-center justify-center bg-white z-[9999]">
+    <div class="overflow-hidden px-4 w-full text-center">
+      <h1 id="preloader-text" class="font-bold text-gray-800 mb-6 md:mb-8">
+         WELCOME TO DIARY 
+      </h1>
+    </div>
+    <div id="line-loader-container" class="h-1 bg-gray-200 rounded-full overflow-hidden mx-auto">
+      <div id="line-loader" class="h-full bg-gray-800 rounded-full w-0"></div>
+    </div>
+  </div>
   <div id="container" class="w-full h-full">
 
     <!-- Navbar -->
     <nav class="bg-white shadow-lg sticky top-0 z-50 ">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
-          <!-- Left side - Logo and navigation links -->
+       
           <div class="flex items-center justify-between navbar">
-            <!-- Logo -->
+           
             <div class="flex-shrink-0 flex items-center">
               <a href="/stories">
                 <span class=" diary">
@@ -137,7 +160,7 @@
               </a>
             </div>
 
-            <!-- Desktop Navigation Links -->
+         
             <div class="hidden md:ml-8 md:flex md:space-x-8">
               <a href="/stories"
                 class="flex items-center h-16 px-2 text-sm font-medium text-gray-900 border-b-2 border-accent">
@@ -150,7 +173,7 @@
             </div>
           </div>
 
-          <!-- Right side - Search, notifications, profile -->
+    
           <div class="flex items-center">
             <!-- Search button -->
             <div class="flex-shrink-0 mr-2">
@@ -161,83 +184,70 @@
                 </button>
               </a>
             </div>
-            <% if(currUser) { %>
-              <!-- <div class="flex-shrink-0 mr-2 relative">
-                <a href="/notification">
-                  <button onclick=""
-                    class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
-                    <i class="fas fa-bell"></i>
-                    <span id="red-dot"
-                      class="red-dot absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-xs font-bold text-red-700 hidden">
-                      5
-                    </span>
-                  </button>
+
+            <!-- Profile dropdown -->
+            <div class="ml-3 relative">
+              <% if(!currUser) { %>
+                <a href="/login"
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                  SIGN IN
                 </a>
-              </div> -->
-              <% } %>
-                <!-- Profile dropdown -->
-                <div class="ml-3 relative">
-                  <% if(!currUser) { %>
-                    <a href="/login"
-                      class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-                      SIGN IN
+                <% } else { %>
+                  <div>
+                    <button id="profile-menu-button" type="button" class="flex items-center text-sm  ">
+                      <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400"
+                        src="<%=user.image.url  %>" alt="User profile">
+                    </button>
+                  </div>
+
+                  <!-- Dropdown menu -->
+                  <div id="profile-dropdown"
+                    class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
+                    <div class="px-4 py-3 border-b border-gray-100">
+                      <div class="flex items-center space-x-3">
+                        <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400"
+                          src="<%=user.image.url  %>" alt="User profile">
+                        <div>
+                          <p class="text-sm font-semibold text-gray-800">
+                            <%=user.name%>
+                          </p>
+                          <p class="text-xs text-gray-500">@<%=user.username%>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <a href="/dashbord"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
+                      role="menuitem">
+                      <i class="ri-dashboard-line"></i> Dashboard
                     </a>
-                    <% } else { %>
-                      <div>
-                        <button id="profile-menu-button" type="button" class="flex items-center text-sm  ">
-                          <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400"
-                            src="<%=user.image.url  %>" alt="User profile">
-                        </button>
-                      </div>
+                    <a href="/profile"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
+                      role="menuitem">
+                      <i class="ri-user-line"></i> Profile
+                    </a>
+                    </a>
+                    <a href="/stories"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
+                      role="menuitem">
+                      <i class="ri-stack-line"></i> Stories
+                    </a>
 
-                      <!-- Dropdown menu -->
-                      <div id="profile-dropdown"
-                        class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
-                        <div class="px-4 py-3 border-b border-gray-100">
-                          <div class="flex items-center space-x-3">
-                            <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400"
-                              src="<%=user.image.url  %>" alt="User profile">
-                            <div>
-                              <p class="text-sm font-semibold text-gray-800">
-                                <%=user.name%>
-                              </p>
-                              <p class="text-xs text-gray-500">@<%=user.username%>
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <a href="/dashbord"
-                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                          role="menuitem">
-                          <i class="ri-dashboard-line"></i> Dashboard
-                        </a>
-                        <a href="/profile"
-                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                          role="menuitem">
-                          <i class="ri-user-line"></i> Profile
-                        </a>
-                        </a>
-                        <a href="/stories"
-                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                          role="menuitem">
-                          <i class="ri-stack-line"></i> Stories
-                        </a>
-
-                        <a href="/stories/newWrite"
-                          class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                          role="menuitem">
-                          <i class="ri-edit-2-line"></i> Write
-                        </a>
-                        <div class="border-t border-gray-100 mt-1">
-                          <a href="/logout"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
-                            role="menuitem">
-                            <i class="ri-logout-box-r-line"></i> Sign out
-                          </a>
-                        </div>
-                      </div>
-                      <%}%>
-                </div>
+                    <a href="/stories/newWrite"
+                      class="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
+                      role="menuitem">
+                      <i class="ri-edit-2-line"></i> Write
+                    </a>
+                    <div class="border-t border-gray-100 mt-1">
+                      <a href="/logout"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
+                        role="menuitem">
+                        <i class="ri-logout-box-r-line"></i> Sign out
+                      </a>
+                    </div>
+                  </div>
+                  <%}%>
+            </div>
           </div>
         </div>
       </div>
@@ -292,7 +302,7 @@
           flex-wrap: wrap;">
             <div class="bg-white rounded-lg  p-4 ">
               <div class="flex flex-col gap-3">
-                <!-- Combined Search and Filters Row -->
+        
               </div>
               <section>
                 <button style="display: none;" id="confettiButton">Celebrate!</button>
@@ -306,7 +316,7 @@
                     <p class="mb-8 mt-4 text-center text-sm text-gray-500 sm:text-base md:mb-12 lg:mb-16"> "Discover
                       genuine stories from people navigating overthinking. Share your own journey and find comfort in
                       knowing you're not alone."</p>
-                    <!-- Content -->
+                
                   </div>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-2">
@@ -358,7 +368,7 @@
             </div>
             <h2 class="text-2xl text-black font-semibold mb-6"> Stories</h2>
 
-            <!-- Skeleton Loading Placeholder -->
+       
             <div id="skeleton-loader"
               class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 min-h-[300px] hidden">
               <% for(let i=0; i<10; i++) { %>
@@ -428,7 +438,10 @@
               <div
                 class="bg-white shadow-xl md:rounded-full px-6 py-3 flex items-center justify-around md:justify-center md:gap-12 border-t border-gray-200 md:border">
 
-               <a href="/chat"
+
+
+
+                <a href="/chat"
                   class="text-gray-700 hover:text-blue-600 transition flex flex-col items-center relative">
                   <div class="relative">
                     <i class="ri-message-3-line text-xl"></i>
@@ -439,7 +452,7 @@
                   </div>
                   <span class="text-xs mt-1 hidden md:block">Message</span>
                 </a>
-             
+
                 <a href="/followers/<%=currUser._id%>"
                   class="text-gray-700 hover:text-blue-600 transition flex flex-col items-center">
                   <i class="ri-group-line text-xl"></i>
@@ -451,7 +464,6 @@
                   <i class="fas fa-pen-nib text-xl"></i>
                   <span class="text-xs mt-1 hidden md:block">Write</span>
                 </a>
-
 
                 <a href="/notification"
                   class="text-gray-700 hover:text-blue-600 transition flex flex-col items-center relative">
@@ -475,7 +487,7 @@
 
         <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-       
+
 
         <script>
           document.addEventListener("DOMContentLoaded", function () {
@@ -512,7 +524,7 @@
               .catch(error => console.error("Error:", error));
           }
 
-          // New Message functions
+
           function checkUnreadMessages() {
             fetch('/check-unread-messages')
               .then(response => response.json())
@@ -541,7 +553,7 @@
         <script>
 
           function showLoading() {
-            
+
             const skeleton = document.getElementById('skeleton-loader');
             const storiesGrid = document.getElementById('stories-grid');
 
@@ -549,12 +561,12 @@
             skeleton.classList.remove('hidden');
             storiesGrid.classList.add('hidden');
 
-   
+
             document.body.style.overflow = 'hidden';
           }
 
           function hideLoading() {
-           
+
             const skeleton = document.getElementById('skeleton-loader');
             const storiesGrid = document.getElementById('stories-grid');
 
@@ -571,7 +583,7 @@
 
             const iconMap = {};
 
-       
+
             const colorMap = {
               '': 'blue',
               'fantasy': 'purple',
@@ -763,7 +775,44 @@
             }
           });
         </script>
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+            const preloader = document.getElementById('preloader');
 
+            if (!sessionStorage.getItem('preloaderShown')) {
+              document.body.classList.add('preloader-active');
+              preloader.style.display = 'flex';
+
+              gsap.from("#preloader-text", {
+                y: "100%",
+                duration: 1.2,
+                ease: "power4.out",
+                delay: 0.3
+              });
+
+              gsap.to("#line-loader", {
+                width: "100%",
+                duration: 2.5,
+                ease: "power1.inOut",
+                delay: 0.5
+              });
+
+              gsap.to("#preloader", {
+                opacity: 0,
+                duration: 0.8,
+                delay: 3,
+                onComplete: () => {
+                  preloader.remove();
+                  document.body.classList.remove('preloader-active');
+                }
+              });
+
+              sessionStorage.setItem('preloaderShown', 'true');
+            } else {
+              preloader.remove();
+            }
+          });
+        </script>
   </div>
 </body>
 

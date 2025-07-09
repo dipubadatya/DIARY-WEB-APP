@@ -244,7 +244,6 @@ router.post('/stories', upload.single('image'),validateStory, async (req, res) =
     }
 });
 
-
 router.get('/stories/:id/likes', async (req, res) => {
     try {
         const { id } = req.params;
@@ -259,7 +258,6 @@ router.get('/stories/:id/likes', async (req, res) => {
             post.likedBy.push(userId);
             post.likesCounts += 1;
 
-
             if (!post.owner._id.equals(userId)) {
                 post.owner.notifications.push({
                     type: "like",
@@ -272,15 +270,19 @@ router.get('/stories/:id/likes', async (req, res) => {
 
         await post.save();
 
-        if (!alreadyLiked) {
-            req.flash('success', 'You liked the story!');
-        }
-        
-        res.redirect(`/stories/${id}`);
+        res.status(200).json({
+            success: true,
+            liked: !alreadyLiked,
+            likesCount: post.likesCounts,
+            message: alreadyLiked ? 'You unliked the story' : 'You liked the story!'
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Problem updating likes" });
-    }
+        res.status(500).json({ 
+            success: false,
+            error: "Problem updating likes" 
+        });
+    } 
 });
 
 

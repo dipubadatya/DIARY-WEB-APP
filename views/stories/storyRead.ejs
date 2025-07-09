@@ -499,19 +499,21 @@
                     <div class="border-t border-gray-200 px-6 py-4">
                         <div class="flex justify-between items-center">
                             <div class="flex items-center">
-                                <form action="/stories/<%=story._id%>/likes" class="flex items-center">
-                                    <button type="submit"
-                                        class="text-gray-400 hover:text-red-500 focus:outline-none transition-colors">
-                                        <% if(story.likedBy.includes(currUser.id)) { %>
-                                            <i class="ri-heart-3-fill text-red-500 text-xl"></i>
-                                            <% } else { %>
-                                                <i class="ri-heart-add-2-line text-xl"></i>
-                                                <% } %>
-                                    </button>
-                                    <span class="ml-2 text-gray-600 font-medium">
-                                        <%=story.likesCounts%>
-                                    </span>
-                                </form>
+                                     <form action="/stories/<%=story._id%>/likes" method="GET"
+                                            class="flex items-center like-form" data-story-id="<%=story._id%>">
+                                            <button type="submit"
+                                                class="text-gray-400 hover:text-red-500 focus:outline-none transition-colors">
+                                                <% if(story.likedBy.includes(currUser.id)) { %>
+                                                    <i class="ri-heart-3-fill text-red-500 text-xl like-icon"></i>
+                                                    <% } else { %>
+                                                        <i class="ri-heart-add-2-line text-xl like-icon"></i>
+                                                        <% } %>
+                                            </button>
+                                            <span class="ml-2 text-gray-600 font-medium likes-count">
+                                                <%=story.likesCounts%>
+                                            </span>
+                                        </form>
+
 
                                 <div class="ml-4 text-gray-600">
                                     <i class="ri-chat-3-line text-xl"></i>
@@ -998,7 +1000,42 @@
             localStorage.setItem('scrollpos', window.scrollY);
         };
     </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const likeForms = document.querySelectorAll('.like-form');
 
+                    likeForms.forEach(form => {
+                        form.addEventListener('submit', async function (e) {
+                            e.preventDefault();
+                            const storyId = this.dataset.storyId;
+                            const likeIcon = this.querySelector('.like-icon');
+                            const likesCount = this.querySelector('.likes-count');
+
+                            try {
+                                const response = await fetch(`/stories/${storyId}/likes`);
+                                const data = await response.json();
+
+                                if (data.success) {
+                              
+                                    if (data.liked) {
+                                        likeIcon.className = 'ri-heart-3-fill text-red-500 text-xl like-icon';
+                                    } else {
+                                        likeIcon.className = 'ri-heart-add-2-line text-xl like-icon';
+                                    }
+
+                                    // Update likes count
+                                    likesCount.textContent = data.likesCount;
+                                    console.log(data.message);
+                                } else {
+                                    console.error('Error:', data.error);
+                                }
+                            } catch (error) {
+                                console.error('Error:', error);
+                            }
+                        });
+                    });
+                });
+            </script>
 </body>
 
 </html>

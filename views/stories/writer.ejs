@@ -127,7 +127,7 @@
 
 <body>
     <div id="main">
-        <!-- Loading Overlay -->
+     
         <div class="loading-overlay" id="loadingOverlay">
             <div class="loading-spinner"></div>
             <div class="loading-text">Publishing your story...</div>
@@ -163,22 +163,18 @@
                     <img id="image-preview" class="image-preview" src="" alt="Image preview" />
                 </div>
 
-                <div class="voice-controls">
+                <div class="voice-controls p-2">
                     <select id="categoryFilter" name="category" required
-                        class="text-sm w-full p-2 border border-gray-500 mt-1 mb-1">
+                        class="text-sm sm:w-48 w-full fullscreen:w-full  p-2 border border-gray-500 mt-2">
+                        <option value="">Choose Category</option>
                         <option value="fantasy">Fantasy</option>
                         <option value="random-thoughts">random-thoughts</option>
                         <option value="poetry">Poetry</option>
-                        <option value="sci-fi">Sci-Fi</option>
-                        <option value="romance">Romance</option>
+                        <option value="letter">Letter</option>
                         <option value="mystery">Mystery</option>
-                        <option value="horror">Horror</option>
-                        <option value="drama">adventure</option>
+                        <option value="drama">Adventure</option>
                         <option value="historical">Historical</option>
-                        <option value="comedy">Comedy</option>
-                        <option value="ya">Young / Adult</option>
-                        <option value="children">Children</option>
-                        <option value="fanfiction">Fanfiction</option>
+                        <option value="fiction">Fiction</option>
                         <option value="other">Other</option>
                     </select>
                 </div>
@@ -212,7 +208,6 @@
             }
         });
 
-        // Publish button functionality
         const publishButton = document.getElementById("publishButton");
         const storyForm = document.getElementById("storyForm");
         const loadingOverlay = document.getElementById("loadingOverlay");

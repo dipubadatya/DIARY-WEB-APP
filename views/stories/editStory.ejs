@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +9,79 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        .loading-text {
+            color: white;
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            width: 300px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            width: 0%;
+            background-color: #4caf50;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-message {
+            color: white;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
         .writer-text textarea {
             width: 100%;
             min-height: 300px;
@@ -23,11 +95,10 @@
         }
 
         .writer-text textarea:focus {
-            /* border-color: #64748b; */
             box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
         }
 
-        /* Keyboard shortcut display */
+
         .keyboard-shortcut {
             display: inline-flex;
             align-items: center;
@@ -40,11 +111,8 @@
             margin-left: 10px;
         }
 
-        /* Style for image preview */
+
         .image-preview {
-
-
-
             width: 100%;
             height: 200px;
             margin-bottom: 2px;
@@ -58,53 +126,64 @@
 
 <body>
     <div id="main">
+    
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text"> Updating your story...</div>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <div class="success-message" id="successMessage">
+                <i class="ri-checkbox-circle-fill" style="color: #4caf50; font-size: 2rem"></i>
+                <p>Story updated successfully</p>
+            </div>
+        </div>
+
         <div id="writer-container">
-            <form action="/stories/<%=editStory._id%>?_method=PUT" method="post" enctype="multipart/form-data" >
+            <form id="storyForm" action="/stories/<%=editStory._id%>?_method=PUT" method="post" enctype="multipart/form-data">
                 <div class="writer-header">
                     <a href="/stories">
                         <h1>Diary</h1>
                     </a>
                     <div class="wrtr-hd-input">
-                        <input type="text" name="title" value="<%=editStory.title%>" placeholder="story title" class="story-title" id="my-editor"
-                            required>
-               <input type="file" name="editStory[image]"  value="<%=editStory.image.url%>"  id="image-input"
+                        <input type="text" name="title" value="<%=editStory.title%>" placeholder="story title"
+                            class="story-title" id="my-editor" required>
+                        <input type="file" name="editStory[image]" value="<%=editStory.image.url%>" id="image-input"
                             placeholder="storie image" class="story-img">
 
                     </div>
 
-                    <button>SAVE</button>
+                    <button type="button" id="publishButton">SAVE</button>
                 </div>
 
-                <div id="image-preview-container" >
+                <div id="image-preview-container">
                     <img id="image-preview" class="image-preview" src="<%=editStory.image.url %>" alt="Image preview">
                 </div>
-                <!-- Improved voice control section -->
-                <div class="voice-controls">
+
+                <div class="voice-controls p-2">
 
                     <select id="categoryFilter" name="category" required
-                        class="text-sm w-full p-2 border border-gray-500 mt-1 mb-1">
+                        class="text-sm sm:w-48 w-full fullscreen:w-full p-2 border border-gray-500 mt-2">
 
-                        <option value="<%=editStory.category  %>"><%=editStory.category  %></option>
-                        <option value="fantasy">Fantasy </option>
+                        <option value="<%=editStory.category  %>">
+                            <%=editStory.category %>
+                        </option>
+                        <option value="fantasy">Fantasy</option>
                         <option value="random-thoughts">random-thoughts</option>
                         <option value="poetry">Poetry</option>
-                        <option value="sci-fi">Sci-Fi</option>
-                        <option value="romance">Romance</option>
+                        <option value="letter">Letter</option>
                         <option value="mystery">Mystery</option>
-                        <option value="horror">Horror</option>
-                        <option value="drama">adventure</option>
+                        <option value="drama">Adventure</option>
                         <option value="historical">Historical</option>
-                        <option value="comedy">Comedy</option>
-                        <option value="ya">Young / Adult</option>
-                        <option value="children">Children</option>
-                        <option value="fanfiction">Fanfiction</option>
+                        <option value="fiction">Fiction</option>
                         <option value="other">Other</option>
 
                     </select>
                 </div>
 
                 <div class="writer-text">
-                    <textarea name="story" id="story-textarea my-editor" placeholder="write your story..."><%=editStory.story   %></textarea>
+                    <textarea name="story" id="story-textarea my-editor"
+                        placeholder="write your story..."><%=editStory.story   %></textarea>
                 </div>
 
             </form>
@@ -125,12 +204,44 @@
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     imagePreviewContainer.style.display = 'block';
-                    imagePreview.src = e.target.result; 
+                    imagePreview.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             } else {
-                imagePreviewContainer.style.display = 'none'; 
+                imagePreviewContainer.style.display = 'none';
             }
+        });
+
+      
+        const publishButton = document.getElementById("publishButton");
+        const storyForm = document.getElementById("storyForm");
+        const loadingOverlay = document.getElementById("loadingOverlay");
+        const progressBar = document.getElementById("progressBar");
+        const successMessage = document.getElementById("successMessage");
+
+        publishButton.addEventListener("click", function () {
+            if (!storyForm.checkValidity()) {
+                storyForm.reportValidity();
+                return;
+            }
+
+            loadingOverlay.classList.add("active");
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = `${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+
+                    successMessage.classList.add("show");
+
+                    setTimeout(() => {
+                        storyForm.submit();
+                    }, 1000);
+                }
+            }, 50);
         });
     </script>
 

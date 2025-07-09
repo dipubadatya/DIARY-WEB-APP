@@ -325,32 +325,170 @@ router.put('/stories/:id', upload.single('editStory[image]'),validateStoryUpdate
 // stories pdf download
 router.get('/stories/download/:id', async (req, res) => {
     try {
-        const story = await Stories.findById(req.params.id);
+        const story = await Stories.findById(req.params.id).populate('owner');
         if (!story) {
             return res.status(404).send('Story not found');
         }
 
-        const doc = new PDFDocument();
+        const doc = new PDFDocument({
+            size: 'A5',
+            margins: { 
+                top: 50, 
+                bottom: 50, 
+                left: 50, 
+                right: 50 
+            },
+            layout: 'portrait',
+            info: {
+                Title: story.title,
+                Author: story.owner.username || 'Unknown Author',
+                Creator: 'Your Story App'
+            }
+        });
+        
         const buffers = [];
-
         doc.on('data', buffers.push.bind(buffers));
 
-       
-        doc.font('Helvetica').fontSize(12).text(story.title, { align: 'center', encoding: 'utf-8' }).moveDown();
+    
+        const applyStyles = (type) => {
+            switch(type) {
+                case 'title':
+                    return doc.font('Helvetica-Bold').fontSize(24).fillColor('#333');
+                case 'subtitle':
+                    return doc.font('Helvetica-BoldOblique').fontSize(14).fillColor('#555');
+                case 'body':
+                    return doc.font('Helvetica').fontSize(11).fillColor('#222');
+                case 'caption':
+                    return doc.font('Helvetica-Oblique').fontSize(9).fillColor('#666');
+                default:
+                    return doc.font('Helvetica').fontSize(12).fillColor('#000');
+            }
+        };
 
         
-        const normalizedText = story.story.replace(/\r?\n/g, '\n').trim();
-        doc.fontSize(12).text(normalizedText, { encoding: 'utf-8' });
+        doc.fillColor('#ffffff').rect(0, 0, doc.page.width, doc.page.height).fill();
+        
+    
+
+        applyStyles('title')
+           .text(story.title, 50, doc.y + 30, {
+               width: doc.page.width - 100,
+               align: 'center'
+           });
+
+        if (story.owner.username) {
+            applyStyles('subtitle')
+               .text(`by ${story.owner.username}`, 50, doc.y + 10, {
+                   width: doc.page.width - 100,
+                   align: 'center'
+               });
+        }
+
+
+            doc.addPage();
+
+      
+        const headerHeight = 30;
+        let showTitleInHeader = true; 
+        
+        doc.fillColor('#f5f5f5')
+           .rect(0, 0, doc.page.width, headerHeight)
+           .fill();
+        
+        if (showTitleInHeader) {
+            applyStyles('subtitle')
+               .text(story.title, 50, 15, {
+                   width: doc.page.width - 100,
+                   align: 'center'
+               });
+            showTitleInHeader = false; 
+        }
+
+        // Main content 
+         const normalizedText = story.story.replace(/\r?\n/g, '\n').trim();
+        const paragraphs = normalizedText.split('\n\n');
+        
+        let currentY = headerHeight + 30;
+        const lineHeight = 1.3;
+        const paragraphSpacing = 8;
+
+        // First paragraph with drop cap
+        if (paragraphs.length > 0) {
+            const firstPara = paragraphs[0];
+            const firstChar = firstPara.charAt(0);
+            const remainingText = firstPara.substring(1);
+            
+       
+            applyStyles('body');
+            doc.fontSize(24)
+               .text(firstChar, 50, currentY, {
+                   continued: true,
+                   lineHeight: lineHeight
+               });
+            
+                
+            doc.fontSize(11)
+               .text(remainingText, {
+                   lineHeight: lineHeight,
+                   paragraphGap: paragraphSpacing
+               });
+            
+            currentY = doc.y + paragraphSpacing;
+        }
+
+        // Process remaining paragraphs
+        for (let i = 1; i < paragraphs.length; i++) {
+    
+            if (currentY > doc.page.height - 100) {
+                doc.addPage();
+                currentY = 50;
+                
+                doc.fillColor('#f5f5f5')
+                   .rect(0, 0, doc.page.width, headerHeight)
+                   .fill();
+                
+                currentY = headerHeight + 30;
+            }
+
+            applyStyles('body');
+            doc.text(paragraphs[i], 50, currentY, {
+                width: doc.page.width - 100,
+                indent: 20,
+                lineHeight: lineHeight,
+                paragraphGap: paragraphSpacing
+            });
+            
+            currentY = doc.y + paragraphSpacing;
+        }
+
+        doc.flushPages();
+
+        const totalPages = doc.bufferedPageRange().count;
+        for (let i = 0; i < totalPages; i++) {
+            doc.switchToPage(i);
+            
+ 
+            if (i === 0) continue;
+            
+            applyStyles('caption');
+            doc.text(
+                `Page ${i} of ${totalPages - 1}`,
+                doc.page.width - 100,
+                doc.page.height - 30,
+                { align: 'right' }
+            );
+        }
 
         doc.on('end', () => {
             const pdfData = Buffer.concat(buffers);
             res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', `attachment; filename="${story.title}.pdf"`);
+            res.setHeader('Content-Disposition', `attachment; filename="${story.title.replace(/[^a-z0-9]/gi, '_')}.pdf"`);
             res.send(pdfData);
         });
 
         doc.end();
     } catch (error) {
+        console.error('PDF generation error:', error);
         handleError(res, error, 'Error generating PDF');
     }
 });

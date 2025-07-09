@@ -83,7 +83,6 @@ router.get('/notification', isLoggedIn, async (req, res) => {
     return res.redirect("/");
   }
 
-  // Mark all notifications as read
   user.notifications.forEach(notif => notif.read = true);
   await user.save();
 
@@ -222,7 +221,7 @@ router.put('/profile/:id/banner', isLoggedIn, upload.single('image'), async (req
   }
 });
 
-// Update your route to handle the filtered and cropped image
+// Update profile image
 router.put('/profile/:id/image', isLoggedIn, upload.single('prof-image'), async (req, res) => {
   try {
     const { id } = req.params;
@@ -321,7 +320,7 @@ router.post('/follow/:id', async (req, res) => {
       userToFollow.followers.push(currentUserId);
       currentUser.following.push(userToFollow._id);
 
-      // Send notification to the followed user
+   
       userToFollow.notifications.push({
         type: "follow",
         fromUser: currentUserId
@@ -378,7 +377,7 @@ router.get('/forgot-password', (req, res) => {
   });
 });
 
-// Forgot Password - Handle submission
+// Forgot Password -
 router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
@@ -576,7 +575,7 @@ router.post('/reset-password/:token', async (req, res) => {
       return res.redirect(`/reset-password/${token}`);
     }
 
-    // Find user with valid token
+
     const user = await User.findOne({
       resetPasswordToken: token,
       resetPasswordExpires: { $gt: Date.now() }
@@ -740,7 +739,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Check email existence endpoint
+// Check email existence 
 router.post('/check-email', async (req, res) => {
   try {
     const { email } = req.body;
@@ -808,7 +807,7 @@ router.post('/check-username', async (req, res) => {
   }
 });
 
-// Enhanced signup route
+//  signup route
 router.post('/signup', async (req, res, next) => {
   try {
     const { name, username, email, password } = req.body;
@@ -831,7 +830,7 @@ router.post('/signup', async (req, res, next) => {
     });
 
     if (verifiedUser) {
-      req.flash('error', 'Email already in use by a verified account.');
+      req.flash('error', 'This email is already registered and verified');
       return res.redirect('/signup');
     }
 
@@ -999,7 +998,7 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 
-// Enhanced verify-email route
+//  verify-email route
 router.get('/verify-email', async (req, res) => {
   try {
     const { token } = req.query;
@@ -1040,7 +1039,7 @@ router.get('/verify-email', async (req, res) => {
   }
 });
 
-//Enhanced resend verification
+// resend verification
 router.post('/resend-verification', async (req, res) => {
   try {
     const { email } = req.body;
@@ -1231,7 +1230,7 @@ router.get('/resend-verification', async (req, res) => {
       return res.redirect('/login');
     }
 
-    // Generate new token
+    
     user.verificationToken = crypto.randomBytes(20).toString('hex');
     user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
@@ -1377,36 +1376,9 @@ router.get('/resend-verification', async (req, res) => {
   }
 });   
 
-// router.post('/login',
-//   passport.authenticate('local', {
-//     failureRedirect: '/login',
-//     failureFlash: 'Invalid email or password'
-//   }),
-//   async (req, res, next) => {
-//     if (!req.user.isVerified) {
 
-//       const unverifiedEmail = req.user.email;
-
-//       req.logout((err) => {
-//         if (err) return next(err);
-
-//         // Now set session and flash (after logout)
-//         req.session.unverifiedEmail = unverifiedEmail;
-//         const resendUrl = '/resend-verification';
-//         const errorMessage = `Your account is not verified. <a href="${resendUrl}" class="font-medium underline hover:text-blue-700">Resend verification email</a>`;
-
-//         req.flash('error', errorMessage);
-//         return res.redirect('/login');
-//       });
-//       return;
-//     }
-
-//     req.flash('success', 'Login successful!');
-//     res.redirect('/stories');
-//   }
-// );
 router.post('/login',
-  // Store original request data in session in case we need to redirect back
+
   (req, res, next) => {
     req.session.loginFormData = {
       email: req.body.email
@@ -1424,7 +1396,7 @@ router.post('/login',
       if (!req.user.isVerified) {
         const unverifiedEmail = req.user.email;
         
-        // Create verification link with token
+    
         const verificationToken = crypto.randomBytes(20).toString('hex');
         req.user.verificationToken = verificationToken;
         req.user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
@@ -1439,7 +1411,7 @@ router.post('/login',
           html: `Please verify your email by clicking <a href="${verificationUrl}">here</a>`
         });
         
-        // Logout and show message
+      
         req.logout((err) => {
           if (err) return next(err);
           
@@ -1448,14 +1420,14 @@ router.post('/login',
             `Check your email or <a href="/resend-verification" class="font-medium underline hover:text-blue-700">request another</a>.`
           );
           
-          // Clear the stored form data since we're handling it
+  
           delete req.session.loginFormData;
           return res.redirect('/login');
         });
         return;
       }
       
-      // Clear the stored form data on successful login
+
       delete req.session.loginFormData;
       
       req.flash('success', 'Login successful! Welcome back.');
@@ -1469,10 +1441,10 @@ router.post('/login',
   }
 );
 
-// In your GET /login route, make sure to pass the form data back:
+
 router.get('/login', (req, res) => {
   const formData = req.session.loginFormData || {};
-  delete req.session.loginFormData; // Clear after using
+  delete req.session.loginFormData; 
   
   res.render('login', {
     error: req.flash('error'),
@@ -1480,7 +1452,7 @@ router.get('/login', (req, res) => {
     email: formData.email
   });
 });
-// Logout route remains the same
+
 router.get('/logout', (req, res) => {
   req.logout((err) => {
     if (err) {

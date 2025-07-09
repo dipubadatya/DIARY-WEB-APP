@@ -7,7 +7,7 @@ const giphy = require("giphy-api")(process.env.GIPHY_API_KEY);
 const server = http.createServer(app);
 const io = socketIo(server);
 const cors = require("cors");
-const port = process.env.PORT || 4000;
+// const port = process.env.PORT || 4000;
 const path = require("path");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
@@ -122,7 +122,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// Server start
-server.listen(port, () => {
-  console.log("Server running on port 3000");
+// // Server start
+// server.listen(port, () => {
+//   console.log("Server running on port 3000");
+// });
+// In your Node.js app, make sure you're listening on 0.0.0.0
+app.listen(process.env.PORT || 3000, '0.0.0.0', () => {
+  console.log(`Server running`);
 });

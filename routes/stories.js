@@ -16,7 +16,7 @@ const { storage } = require('../cloudinary');
 const upload = multer({ storage });
 const moment = require('moment');
 const {validateStory, validateStoryUpdate }=require('../validation/storiesValidation')
-// Helper function to handle errors
+
 
 const handleError = (res, error, message = 'Internal Server Error', status = 500) => {
     console.error(message, error);
@@ -24,7 +24,7 @@ const handleError = (res, error, message = 'Internal Server Error', status = 500
 };
 
 
-// Render search page
+// user search page
 router.get('/search', (req, res) => {
     res.render('./stories/search');
 });
@@ -39,50 +39,14 @@ router.get('/username/:query', async (req, res) => {
                 { username: regex },
                 { name: regex }
             ]
-        }).limit(10); // Limit results for better performance
+        }).limit(10); 
         res.json(users);
     } catch (error) {
         handleError(res, error, 'Problem searching users');
     }
 });
 
-// router.get('/stories', async (req, res) => {
-//   try {
-//     const user = req.user;
-//     const searchQuery = req.query.search || '';
-//     const categoryQuery = req.query.category || '';
-//     const sortQuery = req.query.sort || '';
 
-//     let filter = {};
-
-//     // Search by title
-//     if (searchQuery) {
-//       filter.title = { $regex: searchQuery, $options: 'i' };
-//     }
-
-//     // Filter by category
-//     if (categoryQuery && categoryQuery !== '') {
-//       filter.category = categoryQuery; // Assuming 'category' is a field in your Stories schema
-//     }
- 
-//     // Sort logic
-//     let sort = { timeStamp: -1 }; // default: newest first
-//     if (sortQuery === 'oldest') {
-//       sort = { timeStamp: 1 };
-//     }
-//     // You can add more sorting types like likes, views, etc.
-
-//     const storyData = await Stories.find(filter)
-//       .sort(sort)
-//       .populate({ path: 'comments', populate: { path: 'author' } })
-//       .populate('owner')
-//       .exec();
-
-//     res.render('./stories/storyList.ejs', { storyData, user });
-//   } catch (error) {
-//     handleError(res, error, 'Problem fetching stories');
-//   }
-// });
  // Get stories with unread counts
 router.get('/stories', async (req, res) => {
   try {
@@ -92,20 +56,18 @@ router.get('/stories', async (req, res) => {
 
     let filter = {};
 
-    // Search and filter logic (same as before)
     if (searchQuery) filter.title = { $regex: searchQuery, $options: 'i' };
     if (categoryQuery && categoryQuery !== '') filter.category = categoryQuery;
 
     let sort = { timeStamp: -1 };
     if (sortQuery === 'oldest') sort = { timeStamp: 1 };
 
-    // Only check for unread messages if user is logged in
     let unreadCounts = {};
     if (req.user && req.user._id) {
       try {
         const unseenMessages = await Message.find({
           receiver: req.user._id,
-          status: { $in: ['delivered', 'sent'] } // Unseen statuses
+          status: { $in: ['delivered', 'sent'] } 
         });
 
         unseenMessages.forEach(msg => {
@@ -184,7 +146,7 @@ router.post('/mark-messages-seen', async (req, res) => {
 });  
      
 
-// API to check for unread messages
+// check for unread messages
 router.get('/api/unread-count', async (req, res) => {
   try {
     if (!req.user || !req.user._id) {
@@ -286,7 +248,7 @@ router.post('/stories', upload.single('image'),validateStory, async (req, res) =
 router.get('/stories/:id/likes', async (req, res) => {
     try {
         const { id } = req.params;
-        const post = await Stories.findById(id).populate('owner'); // Ensure author is populated
+        const post = await Stories.findById(id).populate('owner'); 
         const userId = req.user._id;
         const alreadyLiked = post.likedBy.includes(userId);
 
@@ -297,7 +259,7 @@ router.get('/stories/:id/likes', async (req, res) => {
             post.likedBy.push(userId);
             post.likesCounts += 1;
 
-            // Send notification to the story author
+
             if (!post.owner._id.equals(userId)) {
                 post.owner.notifications.push({
                     type: "like",
@@ -352,7 +314,7 @@ router.put('/stories/:id', upload.single('editStory[image]'),validateStoryUpdate
         }
 
         await editStory.save();
-        req.flash('success', 'Story successfully updated');
+        req.flash('success', ' Your story is now up to date.');
         res.redirect(`/stories/${id}`);
     } catch (error) {
         handleError(res, error, 'Error updating story');

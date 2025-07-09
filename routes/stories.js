@@ -189,8 +189,12 @@ router.get('/stories/:id', loggedIn, async (req, res) => {
   
         const { id } = req.params;
         const user = req.user;
-        const story = await Stories.findById(id)
-            .populate({ path: 'comments', populate: { path: 'author' } })
+           const story = await Stories.findById(id)
+            .populate({
+                path: 'comments',
+                populate: { path: 'author' },
+                options: { sort: { 'timeStamp': -1 } } 
+            })
             .populate('owner');
 
         if (!story) {

@@ -55,6 +55,8 @@ const store = MongoStore.create({
   mongoUrl: process.env.MONGO_ATLAS,
   crypto: { secret: process.env.SESSION_CRYPTO_SECRET },
   // touchAfter: 24 * 3600
+  ttl: 7 * 24 * 60 * 60,
+  autoRemove: 'native'
 
 }); 
 
@@ -66,7 +68,8 @@ const sessionOption = {
   saveUninitialized: false,
   cookie: {
         httpOnly: true,
-        sameSite: "lax",
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000
     },
 

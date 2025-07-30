@@ -25,7 +25,6 @@
         }
     </script>
     <style>
-        /* Better UI for filter buttons */
         #filter-options {
             margin-top: 1rem;
             margin-bottom: 1rem;
@@ -51,7 +50,7 @@
 
         }
 
-        /* Dark mode support */
+
         @media (prefers-color-scheme: dark) {
             #filter-options button:hover {
                 background-color: #4b5563;
@@ -117,20 +116,6 @@
                             </a>
                         </div>
 
-
-                        <!-- <div class="flex-shrink-0 mr-2 relative">
-                            <a href="/notification">
-                                <button onclick="markNotificationsSeen()"
-                                    class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 transition-all duration-200">
-                                    <i class="fas fa-bell"></i>
-                                  
-                                    <span id="red-dot"
-                                        class="red-dot absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-accent text-xs font-bold text-red-700 hidden">
-                       
-                                    </span>
-                                </button>
-                            </a>
-                        </div> -->
 
                         <!-- Profile dropdown -->
                         <div class="ml-3 relative">
@@ -204,7 +189,8 @@
                 <!-- Banner Section -->
                 <div class="relative h-60 sm:h-80 w-full bg-gray-100 dark:bg-gray-700">
                     <% if(profile.banner.url){ %>
-                        <img src="<%=profile.banner.url%>" alt="Profile banner" class="w-full h-full  object-cover" />
+                        <img id="banner-trigger" src="<%=profile.banner.url%>" alt="Profile banner"
+                            class="w-full h-full  object-cover" />
                         <%}else {%>
                             <img src="https://i.pinimg.com/736x/7c/05/b9/7c05b92ca71023ebde50496547407ac5.jpg"
                                 alt="Default banner" class="w-full h-full object-cover" />
@@ -218,12 +204,31 @@
                                     <% } %>
                 </div>
 
+                <div id="banner-modal"
+                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80 hidden">
+
+                    <div class="relative w-full max-w-4xl">
+                        <button id="modal-close"
+                            class="absolute -top-4 -right-4 md:-top-5 md:-right-5 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-200 transition-colors z-20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <img class="rounded-lg shadow-xl w-full h-auto"
+                            src="<%=profile.banner.url  %>"
+                            alt="Enlarged user cover photo">
+                    </div>
+
+                </div>
                 <!-- Profile Info Section -->
                 <div class="relative px-4 sm:px-6 pb-5">
                     <!-- Profile Image -->
                     <div class="relative -mt-16 flex justify-center sm:justify-start">
                         <div class="relative">
-                            <img src="<%=profile.image.url%>" alt="Profile picture"
+                            <img id="profile-trigger" src="<%=profile.image.url%>" alt="Profile picture"
                                 class="h-32 w-32 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-md" />
                             <% if (profile._id.equals(currUser._id)) {%>
                                 <button id="profile-img-btn"
@@ -291,7 +296,30 @@
                     </div>
                 </div>
             </div>
+            <div id="profile-modal"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 hidden">
 
+                <div class="relative bg-white p-4 rounded-lg shadow-xl max-w-xs w-full text-center">
+                    <button id="profile-modal-close"
+                        class="absolute -top-3 -right-3 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-200 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <img class="w-64 h-64 rounded-full mx-auto border-8 border-gray-100" src="<%=profile.image.url  %>"
+                        alt="User profile photo">
+
+                    <h3 class="mt-4 text-xl font-bold text-gray-800">
+                        <%=profile.name %>
+                    </h3>
+                    <p class="text-sm text-gray-500">@<%=profile.username%>
+                    </p>
+                    </p>
+                </div>
+            </div>
             <!-- Stories Section -->
             <div class="mt-8 dark:bg-[#121212]">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Stories</h2>
@@ -387,6 +415,24 @@
                             </button>
                         </div>
                     </form>
+                </div>
+                <div id="banner-modal"
+                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80 hidden">
+
+                    <div class="relative w-full max-w-4xl">
+                        <button id="modal-close"
+                            class="absolute -top-4 -right-4 md:-top-5 md:-right-5 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-200 transition-colors z-20">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <img class="rounded-lg shadow-xl w-full h-auto" src="<%=profile.banner.url%>"
+                            alt="Enlarged user cover photo">
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -647,7 +693,6 @@
                     const form = document.querySelector('#profile-form form');
                     const url = form.action;
 
-                    // Use fetch API to upload the image
                     fetch(url, {
                         method: 'POST',
                         body: formData,
@@ -673,7 +718,7 @@
                             submitBtn.textContent = originalBtnText;
                             submitBtn.disabled = false;
                         });
-                }, 'image/png', 0.9); // 0.9 is quality (0-1)
+                }, 'image/png', 0.9);
             }
 
             // Event listeners
@@ -691,12 +736,10 @@
                 profileInput.addEventListener('change', handleFileSelect);
             }
 
-            // Initialize when form is shown (if there's an existing image)
             if (profileForm && !profileForm.classList.contains('hidden') && profilePreview.src) {
                 initializeCropper();
             }
 
-            // Attach submit event listener to the form
             const form = document.querySelector('#profile-form form');
             if (form) {
                 form.addEventListener('submit', handleFormSubmit);
@@ -735,14 +778,7 @@
                 })
                 .catch(error => console.error("Error marking notifications as seen:", error));
         }
-
-
-
-
     </script>
-
-
-
 
     <script>
         // Dark Mode Implementation
@@ -808,8 +844,6 @@
             });
         }
 
-
-        // // Profile Image Modal
         const profileImgBtn = document.getElementById("profile-img-btn");
         const profileForm = document.getElementById("profile-form");
         const profileFormClose = document.getElementById("profile-form-close");
@@ -838,14 +872,13 @@
             profileDropdown.classList.toggle('hidden');
         });
 
-        // Close dropdown when clicking outside
+
         window.addEventListener('click', (event) => {
             if (!profileButton.contains(event.target)) {
                 profileDropdown.classList.add('hidden');
             }
         });
 
-        // Mobile menu toggle
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
 
@@ -862,9 +895,7 @@
             }
         });
     </script>
-    <script>
 
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -874,11 +905,9 @@
             const imagePreview = document.getElementById('image-preview');
             const imgChangeBtn = document.getElementById('img-cng');
 
-            // Initialize variables
             let bannerCropper;
             let bannerCurrentFilter = 'none';
 
-            // Hide the banner form modal
             function hideBannerForm() {
                 bannerForm.classList.add('hidden');
                 if (bannerCropper) {
@@ -894,29 +923,25 @@
 
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    // First destroy existing cropper if any
+
                     if (bannerCropper) {
                         bannerCropper.destroy();
                         bannerCropper = null;
                     }
 
-                    // Reset any applied filters
                     imagePreview.style.filter = 'none';
                     bannerCurrentFilter = 'none';
 
-                    // Set the image source
                     imagePreview.src = e.target.result;
 
-                    // Initialize cropper after a short delay to ensure image is loaded
                     setTimeout(() => {
                         bannerCropper = new Cropper(imagePreview, {
-                            aspectRatio: 16 / 9, // Widescreen aspect ratio for banner
+                            aspectRatio: 16 / 9,
                             viewMode: 1,
                             guides: true,
                             autoCropArea: 0.8,
                             responsive: true,
                             ready: function () {
-                                // Show filter options once cropper is ready
                                 createBannerFilterOptions();
                             }
                         });
@@ -925,38 +950,66 @@
                 reader.readAsDataURL(file);
             }
 
-
-
-
-
-
-
-
-
-
-
-            // if (imgChangeBtn) {
-            //     imgChangeBtn.addEventListener('click', function () {
-            //         imageInput.click();
-            //     });
-            // }
-
             if (imageInput) {
                 imageInput.addEventListener('change', handleBannerFileSelect);
             }
 
-            // Attach submit event listener to the banner form
             const bannerFormElement = document.querySelector('#banner-form form');
             if (bannerFormElement) {
                 bannerFormElement.addEventListener('submit', handleBannerFormSubmit);
             }
         });
     </script>
+    <script>
+
+        const profileTrigger = document.getElementById('profile-trigger');
+        const profileModal = document.getElementById('profile-modal');
+        const profileModalClose = document.getElementById('profile-modal-close');
+
+
+        const profileShowModal = () => {
+            profileModal.classList.remove('hidden');
+        };
+
+
+        const profileHideModal = () => {
+            profileModal.classList.add('hidden');
+        };
+
+
+        profileTrigger.addEventListener('click', profileShowModal);
+
+
+        profileModalClose.addEventListener('click', profileHideModal);
+
+        profileModal.addEventListener('click', (event) => {
+
+            if (event.target === profileModalClose) {
+                profileHideModal();
+            }
+        });
+
+
+    </script>
+    <script>
+        const bannerTrigger = document.getElementById('banner-trigger');
+        const bannerModal = document.getElementById('banner-modal');
+        const modalClose = document.getElementById('modal-close');
+
+        const showModal = () => bannerModal.classList.remove('hidden');
+        const hideModal = () => bannerModal.classList.add('hidden');
+
+        bannerTrigger.addEventListener('click', showModal);
+        modalClose.addEventListener('click', hideModal);
+
+        bannerModal.addEventListener('click', (event) => {
+            if (event.target === bannerModal) {
+                hideModal();
+            }
+        });
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-
-
-
 
 </body>
 

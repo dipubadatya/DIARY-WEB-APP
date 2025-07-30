@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
   res.render("./stories/landing.ejs");
 });
 
-const allowedOrigins = ['https://your-frontend-app-name.up.railway.app']; // 👈 Replace with your frontend URL
+const allowedOrigins = ['https://diary-web-app-production.up.railway.app']; // 👈 Replace with your frontend URL
 
 const corsOptions = {
   origin: (origin, callback) => {

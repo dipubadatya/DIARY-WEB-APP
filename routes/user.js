@@ -57,7 +57,47 @@ router.get('/followers/:id', isLoggedIn, async (req, res) => {
   res.render('./users/followers.ejs', { profile })
 
 })
+//TOP FIVE USER
+router.get('/writers/:id', async (req, res) => {
+  let {id} = req.params
+  try {
+   
+      const stats = await Stories.aggregate([
+        {
+          $match: {
+            owner: new mongoose.Types.ObjectId(id) 
+          }
+        },
+        {
+          $group: {
+            _id: "$owner", 
+            totalStories: { $sum: 1 }, 
+            totalViews: { $sum: { $size: "$views" } } 
+          }
+        },
 
+        {
+          $project: {
+            _id: 0, 
+            userId: "$_id",
+            totalStories: 1, 
+            totalViews: 1,   
+          }
+        }
+      ]);
+ 
+      let userStats=stats.length > 0 ? stats[0] : {  totalStories: 0, totalViews: 0 }
+   
+      const writer = await User.findById(id).populate('stories')
+
+      res.render('./users/writers.ejs', { writer ,userStats})
+
+    } catch (error) {
+      console.error(error);
+
+    }
+
+  })
 
 router.get('/check-unread-notifications', isLoggedIn, async (req, res) => {
   try {

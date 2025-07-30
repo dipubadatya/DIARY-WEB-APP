@@ -49,52 +49,92 @@ router.get('/username/:query', async (req, res) => {
 
  // Get stories with unread counts
 router.get('/stories', async (req, res) => {
-  try {
-    const searchQuery = req.query.search || '';
-    const categoryQuery = req.query.category || '';
-    const sortQuery = req.query.sort || '';
+    try {
+        const searchQuery = req.query.search || '';
+        const categoryQuery = req.query.category || '';
+        const sortQuery = req.query.sort || '';
+        const topFiveWriters = await User.aggregate([
 
-    let filter = {};
+            {
+                $lookup: {
+                    from: "stories",
+                    localField: "stories",
+                    foreignField: "_id",
+                    as: "storyDetails"
+                }
+            },
 
-    if (searchQuery) filter.title = { $regex: searchQuery, $options: 'i' };
-    if (categoryQuery && categoryQuery !== '') filter.category = categoryQuery;
 
-    let sort = { timeStamp: -1 };
-    if (sortQuery === 'oldest') sort = { timeStamp: 1 };
+            {
+                $addFields: {
+                    storiesCount: { $size: "$storyDetails" },
+                }
+            },
+            {
+                $sort: {
+                    storiesCount: -1
 
-    let unreadCounts = {};
-    if (req.user && req.user._id) {
-      try {
-        const unseenMessages = await Message.find({
-          receiver: req.user._id,
-          status: { $in: ['delivered', 'sent'] } 
+                }
+            },
+
+            {
+                $limit: 5
+            },
+
+            {
+                $project: {
+                    _id: 1,
+                    username: 1,
+                    "image.url": 1,
+                    storiesCount: 1,
+                    totalStoryLength: 1
+                }
+            }
+        ]);
+
+        let filter = {};
+
+
+        if (searchQuery) filter.title = { $regex: searchQuery, $options: 'i' };
+        if (categoryQuery && categoryQuery !== '') filter.category = categoryQuery;
+
+        let sort = { timeStamp: -1 };
+        if (sortQuery === 'oldest') sort = { timeStamp: 1 };
+
+        let unreadCounts = {};
+        if (req.user && req.user._id) {
+            try {
+                const unseenMessages = await Message.find({
+                    receiver: req.user._id,
+                    status: { $in: ['delivered', 'sent'] }
+                });
+
+                unseenMessages.forEach(msg => {
+                    const senderId = msg.sender.toString();
+                    unreadCounts[senderId] = (unreadCounts[senderId] || 0) + 1;
+                });
+            } catch (err) {
+                console.error('Error loading unread messages:', err);
+            }
+        }
+
+        const storyData = await Stories.find(filter)
+            .sort(sort)
+            .populate({ path: 'comments', populate: { path: 'author' } })
+            .populate('owner')
+            .exec();
+
+        res.render('./stories/storyList.ejs', {
+            storyData,
+            user: req.user || null,
+            topFiveWriters,
+            unreadCounts: Object.keys(unreadCounts).length > 0 ? unreadCounts : null,
+            lastChecked: Date.now()
         });
-
-        unseenMessages.forEach(msg => {
-          const senderId = msg.sender.toString();
-          unreadCounts[senderId] = (unreadCounts[senderId] || 0) + 1;
-        });
-      } catch (err) {
-        console.error('Error loading unread messages:', err);
-      }
+    } catch (error) {
+        console.error('Error in /stories route:', error);
+        handleError(res, error, 'Problem fetching stories');
     }
-
-    const storyData = await Stories.find(filter)
-      .sort(sort)
-      .populate({ path: 'comments', populate: { path: 'author' } })
-      .populate('owner')
-      .exec();
-
-    res.render('./stories/storyList.ejs', { 
-      storyData, 
-      user: req.user || null,
-      unreadCounts: Object.keys(unreadCounts).length > 0 ? unreadCounts : null,
-      lastChecked: Date.now()
-    });
-  } catch (error) {
-    console.error('Error in /stories route:', error);
-    handleError(res, error, 'Problem fetching stories');
-  }
 });
  
 

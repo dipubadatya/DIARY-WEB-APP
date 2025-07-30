@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const Stories = require('../models/stories.js');
 const Message = require('../models/message.js');
+const mongoose = require('mongoose')
 const User = require('../models/users');
 const fs = require('fs');
 const isLoggedIn = require('../middleware');

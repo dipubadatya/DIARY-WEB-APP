@@ -28,7 +28,7 @@ const bodyParser = require("body-parser");
 const ejsMate = require("ejs-mate");
 const loggedIn = require("./middleware");     
 const axios = require("axios");
-app.set("trust proxy", 1);
+
 
 require("./socketHandler.js")(io);
 
@@ -39,22 +39,7 @@ app.get("/", (req, res) => {
   res.render("./stories/landing.ejs");
 });
 
-const allowedOrigins = ['https://diary-web-app-production.up.railway.app']; // 👈 Replace with your frontend URL
 
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true, // 👈 This is crucial for cookies/sessions
-};
-
-app.use(cors(corsOptions));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -62,6 +47,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(methodOverride("_method"));
+app.use(cors());
+
 app.engine("ejs", ejsMate);
 app.use(
   "/tinymce",

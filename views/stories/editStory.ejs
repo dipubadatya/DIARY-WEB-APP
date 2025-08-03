@@ -2,224 +2,169 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Write</title>
-    <link rel="stylesheet" href="/css/writer.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Story - Diary</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+    
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+       
         .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(4px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; visibility: hidden;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-
-        .loading-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
+        .loading-overlay.active { opacity: 1; visibility: visible; }
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
+            width: 50px; height: 50px; border: 5px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%; border-top-color: #4f46e5; 
             animation: spin 1s ease-in-out infinite;
         }
-
-        .loading-text {
-            color: white;
-            margin-top: 20px;
-            font-size: 1.2rem;
-        }
-
+        .loading-text { color: #334155; margin-top: 20px; font-size: 1.2rem; }
         .progress-bar {
-            width: 300px;
-            height: 10px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 5px;
-            margin-top: 20px;
-            overflow: hidden;
+            width: 300px; height: 10px; background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 5px; margin-top: 20px; overflow: hidden;
         }
-
         .progress {
-            height: 100%;
-            width: 0%;
-            background-color: #4caf50;
+            height: 100%; width: 0%; background-color: #4f46e5;
             transition: width 0.3s ease;
         }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
         .success-message {
-            color: white;
-            font-size: 1.5rem;
-            margin-top: 20px;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
+            color: #1e293b; font-size: 1.5rem; margin-top: 20px; text-align: center;
+            opacity: 0; transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
-
-        .success-message.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .writer-text textarea {
-            width: 100%;
-            min-height: 300px;
-            padding: 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            outline: none;
-            font-size: 16px;
-            line-height: 1.6;
-            transition: border-color 0.3s ease;
-        }
-
-        .writer-text textarea:focus {
-            box-shadow: 0 0 0 2px rgba(100, 116, 139, 0.1);
-        }
-
-
-        .keyboard-shortcut {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #e2e8f0;
-            color: #475569;
-            border-radius: 4px;
-            padding: 2px 6px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-
-
-        .image-preview {
-            width: 100%;
-            height: 200px;
-            margin-bottom: 2px;
-            border-radius: 8px;
-            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-            object-fit: contain;
-            object-position: center;
-        }
+        .success-message.show { opacity: 1; transform: translateY(0); }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 
-<body>
-    <div id="main">
-    
-        <div class="loading-overlay" id="loadingOverlay">
-            <div class="loading-spinner"></div>
-            <div class="loading-text"> Updating your story...</div>
-            <div class="progress-bar">
-                <div class="progress" id="progressBar"></div>
-            </div>
-            <div class="success-message" id="successMessage">
-                <i class="ri-checkbox-circle-fill" style="color: #4caf50; font-size: 2rem"></i>
-                <p>Story updated successfully</p>
-            </div>
+<body class="bg-slate-50 text-slate-700 font-sans overflow-hidden">
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Updating your story...</div>
+        <div class="progress-bar">
+            <div class="progress" id="progressBar"></div>
         </div>
+        <div class="success-message" id="successMessage">
+            <i class="ri-checkbox-circle-fill" style="color: #16a34a; font-size: 2.5rem;"></i>
+            <p class="mt-2 text-slate-800">Story updated successfully!</p>
+        </div>
+    </div>
 
-        <div id="writer-container">
-            <form id="storyForm" action="/stories/<%=editStory._id%>?_method=PUT" method="post" enctype="multipart/form-data">
-                <div class="writer-header">
-                    <a href="/stories">
-                        <h1>Diary</h1>
-                    </a>
-                    <div class="wrtr-hd-input">
-                        <input type="text" name="title" value="<%=editStory.title%>" placeholder="story title"
-                            class="story-title" id="my-editor" required>
-                        <input type="file" name="editStory[image]" value="<%=editStory.image.url%>" id="image-input"
-                            placeholder="storie image" class="story-img">
+    <div id="main-wrapper" class="h-screen w-screen flex flex-col">
+        <form id="storyForm" action="/stories/<%= editStory._id %>?_method=PUT" method="post" enctype="multipart/form-data" class="flex flex-col h-full">
 
+            <header class="flex-shrink-0 bg-white/80 backdrop-blur-sm border-b border-slate-200 z-10">
+                <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <a href="/stories" class="text-2xl font-bold text-slate-900">Diary</a>
+                        <button type="button" id="publishButton" class="bg-indigo-600 text-white font-semibold px-5 py-2 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            Save Changes
+                        </button>
                     </div>
-
-                    <button type="button" id="publishButton">SAVE</button>
                 </div>
+            </header>
 
-                <div id="image-preview-container">
-                    <img id="image-preview" class="image-preview" src="<%=editStory.image.url %>" alt="Image preview">
-                </div>
+            <main class="flex-grow overflow-y-auto">
+                <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+                    
+                    <input type="text" name="title" value="<%= editStory.title %>" placeholder="Your Story Title" class="w-full bg-transparent text-4xl md:text-5xl font-extrabold text-slate-900 placeholder-slate-300 border-none focus:ring-0 outline-none p-0" required />
 
-                <div class="voice-controls p-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-700 block">Cover Image</label>
+                            <div class="w-full">
+                                <input type="file" name="editStory[image]" value="<%=editStory.image.url%>" accept="image/jpeg, image/png, image/jpg" id="image-input" class="hidden" />
+                                
+                                <label for="image-input" id="upload-button-container" class="w-full h-32 flex-col items-center justify-center bg-white border-2 border-dashed border-slate-300 rounded-lg cursor-pointer hover:bg-slate-100 hover:border-slate-400 transition-colors <%= editStory.image ? 'hidden' : 'flex' %>">
+                                    <i class="ri-image-add-line text-4xl text-slate-400"></i>
+                                    <span class="mt-2 text-sm font-medium text-slate-600">Upload Cover</span>
+                                </label>
 
-                    <select id="categoryFilter" name="category" required
-                        class="text-sm sm:w-48 w-full fullscreen:w-full p-2 border border-gray-500 mt-2">
+                                <div id="image-preview-container" class="relative group <%= editStory.image ? '' : 'hidden' %>">
+                                    <img id="image-preview" class="w-full h-32 object-cover rounded-lg border border-slate-200" src="<%= editStory.image ? editStory.image.url : '' %>" alt="Image preview" />
+                                    <label for="image-input" class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-lg">
+                                        <i class="ri-pencil-line mr-2"></i> Change Image
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
 
-                        <option value="<%=editStory.category  %>">
+                        <div class="space-y-2">
+                            <label for="categoryFilter" class="text-sm font-medium text-slate-700 block">Category</label>
+                            <select id="categoryFilter" name="category" required class="w-full p-3 bg-white border border-slate-300 text-slate-900 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition h-12">
+                              <option value="<%=editStory.category  %>">
                             <%=editStory.category %>
                         </option>
-                        <option value="fantasy">Fantasy</option>
+                         <option value="fantasy">Fantasy</option>
                         <option value="random-thoughts">random-thoughts</option>
                         <option value="poetry">Poetry</option>
                         <option value="letter">Letter</option>
                         <option value="mystery">Mystery</option>
-                        <option value="drama">Adventure</option>
+                        <option value="adventure">Adventure</option>
                         <option value="historical">Historical</option>
                         <option value="fiction">Fiction</option>
                         <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
 
-                    </select>
+                    <div class="writer-text border-t border-slate-200 pt-10">
+                        <textarea name="story" id="story-textarea" placeholder="Tell your story..." class="w-full bg-transparent p-0 text-lg leading-relaxed text-slate-600 placeholder-slate-400 border-none focus:ring-0 outline-none resize-none" style="min-height: 60vh;" required><%= editStory.story %></textarea>
+                    </div>
                 </div>
-
-                <div class="writer-text">
-                    <textarea name="story" id="story-textarea my-editor"
-                        placeholder="write your story..."><%=editStory.story   %></textarea>
-                </div>
-
-            </form>
-        </div>
+            </main>
+        </form>
     </div>
 
-    <script src="/tinymce/tinymce.min.js"></script>
-
     <script>
-        //  image preview
-        const imageInput = document.getElementById('image-input');
-        const imagePreviewContainer = document.getElementById('image-preview-container');
-        const imagePreview = document.getElementById('image-preview');
+        
+        const imageInput = document.getElementById("image-input");
+        const uploadButtonContainer = document.getElementById("upload-button-container");
+        const imagePreviewContainer = document.getElementById("image-preview-container");
+        const imagePreview = document.getElementById("image-preview");
 
-        imageInput.addEventListener('change', function (event) {
+        imageInput.addEventListener("change", function(event) {
             const file = event.target.files[0];
-            if (file && file.type.startsWith('image/')) {
+            if (file && file.type.startsWith("image/")) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
-                    imagePreviewContainer.style.display = 'block';
+                reader.onload = function(e) {
+                    uploadButtonContainer.classList.add('hidden');
+                    imagePreviewContainer.classList.remove('hidden');
                     imagePreview.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
-            } else {
-                imagePreviewContainer.style.display = 'none';
             }
         });
 
-      
+    
         const publishButton = document.getElementById("publishButton");
         const storyForm = document.getElementById("storyForm");
         const loadingOverlay = document.getElementById("loadingOverlay");
         const progressBar = document.getElementById("progressBar");
         const successMessage = document.getElementById("successMessage");
 
-        publishButton.addEventListener("click", function () {
+        publishButton.addEventListener("click", function() {
             if (!storyForm.checkValidity()) {
                 storyForm.reportValidity();
                 return;
@@ -234,17 +179,13 @@
 
                 if (progress >= 100) {
                     clearInterval(interval);
-
                     successMessage.classList.add("show");
-
                     setTimeout(() => {
                         storyForm.submit();
-                    }, 1000);
+                    }, 1500);
                 }
-            }, 50);
+            }, 30);
         });
     </script>
-
 </body>
-
 </html>

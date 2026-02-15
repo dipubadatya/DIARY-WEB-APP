@@ -1,266 +1,176 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Notifications | DIARY.</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#3b82f6',
+                        darkBg: '#121212',
+                        darkSurface: '#1e1e1e'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        
+        .notification-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .notification-card:hover {
+            @apply bg-slate-100/50 dark:bg-white/5;
+            transform: translateX(4px);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+        }
+        .dark .glass-panel {
+            background: rgba(18, 18, 18, 1);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
 </head>
 
-<body>
-    <div class="w-full z-40 h-full bg-gray-800 bg-opacity-90 top-0 overflow-y-auto fixed sticky-0" id="chec-div">
-        <div class="w-full absolute z-10 right-0 h-full overflow-x-hidden transform translate-x-0 transition ease-in-out duration-700"
-            id="notification">
-            <div class="w-full bg-gray-50 h-screen overflow-y-auto p-8 absolute right-0">
-                <div class="flex items-center justify-between">
-                    <p tabindex="0" class="focus:outline-none text-2xl font-semibold leading-6 text-gray-800">
-                        Notifications
-                    </p>
+<body class="bg-transparent overflow-hidden">
+
+    <div class="fixed inset-0 z-50 flex justify-end bg-slate-950/40 backdrop-blur-sm" id="chec-div">
+        
+        <div class="w-full max-w-md glass-panel h-screen shadow-2xl border-l border-slate-100 dark:border-white/5 flex flex-col transform translate-x-0 transition-transform duration-500 ease-in-out" id="notification">
+            
+            <header class="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between sticky top-0 z-10 bg-inherit">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-accent text-white rounded-xl flex items-center justify-center shadow-lg shadow-accent/20">
+                        <i class="ri-notification-3-line text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-black tracking-tight uppercase dark:text-white">Updates.</h1>
                 </div>
+                
+                <button onclick="closeAndGoBack()" class="w-10 h-10 rounded-full hover:bg-slate-100 dark:hover:bg-white/5 transition-colors flex items-center justify-center">
+                    <i class="ri-close-line text-2xl text-slate-400"></i>
+                </button>
+            </header>
 
-                <!-- TODAY NOTIFICATIONS -->
-                <% if (today.length> 0) { %>
-                    <h2 class="text-lg font-semibold text-gray-700 mb-2 mt-10">Today</h2>
-                    <% today.forEach(notif=> { %>
-                        <div class="w-full p-4 bg-gray-50 rounded-lg flex items-center shadow-sm mb-3">
-                            <!-- ICON -->
-                            <div class="w-10 h-10 border rounded-full flex items-center justify-center bg-white">
-                                <% if (notif.type==="like" ) { %>
-
-                                    <img class="rounded-full w-full h-full object-cover"
-                                        src="<%=notif.fromUser.image.url%>" alt="" />
-
-                                    <% } else if (notif.type==="follow" ) { %>
-                                        <img class="rounded-full w-full h-full object-cover"
-                                            src="<%=notif.fromUser.image.url%>" alt="" />
-                                        <% } %>
-                            </div>
-                            <!-- MESSAGE -->
-                            <div class="ml-4 flex-1">
-                                <% if (notif.type==="like" ) { %>
-                                    <p class="text-gray-800">
-                                        <a href="/profile/<%=notif.fromUser._id %>" class="text-blue-600">
-
-                                            <span class="font-semibold text-indigo-700">
-                                                <%= notif.fromUser.username %>
-                                            </span>
-                                        </a>
-                                        liked your <a class="text-blue-600"
-                                            href="/stories/<%=notif.storyId%>">story.</a>
-                                    </p>
-
-                                    <% } else if (notif.type==="follow" ) { %>
-                                        <a href="/profile/<%= notif.fromUser._id %>" class="text-blue-600">
-                                            <p class="text-gray-800">
-                                                <span class="font-semibold text-indigo-700">
-                                                    <%= notif.fromUser.username %>
-                                                </span>
-                                                started following you.
-                                            </p>
-                                        </a>
-                                        <% }else if ((notif.type==="comment" )){ %>
-
-                                            <p class="text-gray-800">
-                                                <a href="/profile/<%= notif.fromUser._id %>" class="text-blue-600">
-                                                    <span class="font-semibold text-indigo-700">
-                                                        <%= notif.fromUser.username %>
-                                                    </span>
-                                                </a>
-                                                commented on your <a class="text-blue-600"
-                                                    href="/stories/<%=notif.storyId%>">post.</a>
-
-                                            </p>
-
-                                            <%}%>
-                                                <p id="like" class="text-xs text-gray-500">
-                                                    <%= notif.timeStamp %>
-                                                </p>
-                            </div>
-                            <!-- DELETE BUTTON -->
-                            <form action="/notification/<%= notif._id %>?_method=DELETE" method="post">
-                                <button class="text-gray-500 hover:text-gray-700">
-                                    <i class="ri-close-line text-lg"></i>
-                                </button>
-                            </form>
+            <div class="flex-1 overflow-y-auto p-6 no-scrollbar space-y-8">
+                
+                <% if (today.length > 0) { %>
+                    <section>
+                        <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-4 ml-1">Today</h2>
+                        <div class="space-y-3">
+                            <% today.forEach(notif => { %>
+                                <div class="notification-card group p-4 rounded-3xl bg-white dark:bg-darkSurface border border-slate-100 dark:border-white/5 flex items-start gap-4">
+                                    <a href="/profile/<%=notif.fromUser._id%>" class="shrink-0">
+                                        <img src="<%=notif.fromUser.image.url%>" class="w-11 h-11 rounded-full object-cover ring-2 ring-slate-50 dark:ring-white/5">
+                                    </a>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                                            <a href="/profile/<%=notif.fromUser._id%>" class="font-bold text-slate-900 dark:text-white hover:text-accent transition-colors"><%= notif.fromUser.username %></a>
+                                            <% if (notif.type === "like") { %> liked your <a href="/stories/<%=notif.storyId%>" class="font-bold text-accent">story.</a>
+                                            <% } else if (notif.type === "follow") { %> started following you.
+                                            <% } else if (notif.type === "comment") { %> commented on your <a href="/stories/<%=notif.storyId%>" class="font-bold text-accent">post.</a><% } %>
+                                        </p>
+                                        <p id="like" class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-1" data-time="<%= notif.timeStamp %>">
+                                            <%= notif.timeStamp %>
+                                        </p>
+                                    </div>
+                                    <form action="/notification/<%= notif._id %>?_method=DELETE" method="post" class="shrink-0">
+                                        <button class="w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:text-red-50 transition-all opacity-0 group-hover:opacity-100">
+                                            <i class="ri-close-line"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            <% }) %>
                         </div>
-                        <% }) %>
-                            <% } %>
+                    </section>
+                <% } %>
 
-                                <!-- YESTERDAY NOTIFICATIONS -->
-                                <% if (yesterday.length> 0) { %>
-                                    <h2 class="text-lg font-semibold text-gray-700 mt-6 mb-2">
-                                        Yesterday
-                                    </h2>
-                                    <% yesterday.forEach(notif=> { %>
-                                        <div class="w-full p-4 bg-gray-50 rounded-lg flex items-center shadow-sm mb-3">
-                                            <div
-                                                class="w-10 h-10 border rounded-full flex items-center justify-center bg-white">
-                                                <% if (notif.type==="like" ) { %>
-                                                    <img class="rounded-full w-full h-full object-cover"
-                                                        src="<%=notif.fromUser.image.url%>" alt="" />
-                                                    <% } else if (notif.type==="follow" ) { %>
-                                                        <img class="rounded-full w-full h-full object-cover"
-                                                            src="<%=notif.fromUser.image.url%>" alt="" />
-                                                        <% } %>
-                                            </div>
-                                            <div class="ml-4 flex-1">
-                                                <% if (notif.type==="like" ) { %>
+                <% if (yesterday.length > 0) { %>
+                    <section>
+                        <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-4 ml-1">Yesterday</h2>
+                        <div class="space-y-3">
+                            <% yesterday.forEach(notif => { %>
+                                <div class="notification-card group p-4 rounded-3xl bg-white dark:bg-darkSurface border border-slate-100 dark:border-white/5 flex items-start gap-4">
+                                    <a href="/profile/<%=notif.fromUser._id%>" class="shrink-0"><img src="<%=notif.fromUser.image.url%>" class="w-11 h-11 rounded-full object-cover"></a>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                                            <a href="/profile/<%=notif.fromUser._id%>" class="font-bold text-slate-900 dark:text-white hover:text-accent"><%= notif.fromUser.username %></a>
+                                            <% if (notif.type === "like") { %> liked your <a href="/stories/<%=notif.storyId%>" class="font-bold text-accent">story.</a>
+                                            <% } else if (notif.type === "follow") { %> started following you.
+                                            <% } else if (notif.type === "comment") { %> commented on your <a href="/stories/<%=notif.storyId%>" class="font-bold text-accent">post.</a><% } %>
+                                        </p>
+                                        <p id="like" class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-1" data-time="<%= notif.timeStamp %>">
+                                            <%= notif.timeStamp %>
+                                        </p>
+                                    </div>
+                                    <form action="/notification/<%= notif._id %>?_method=DELETE" method="post">
+                                        <button class="w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:text-red-50 opacity-0 group-hover:opacity-100"><i class="ri-close-line"></i></button>
+                                    </form>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </section>
+                <% } %>
 
-                                                    <p class="text-gray-800">
-                                                        <a href="/profile/<%= notif.fromUser._id %>"
-                                                            class="text-blue-600">
-                                                            <span class="font-semibold text-indigo-700">
-                                                                <%= notif.fromUser.username %>
-                                                            </span>
-                                                        </a>
-                                                        liked your <a href="/stories/<%= notif.storyId %>"
-                                                            class="text-blue-600"> story. </a>
-
-
-                                                    </p>
-                                                    <% } else if (notif.type==="follow" ) { %>
-                                                        <a href="/profile/<%= notif.fromUser._id %>"
-                                                            class="text-blue-600">
-                                                            <p class="text-gray-800">
-                                                                <span class="font-semibold text-indigo-700">
-                                                                    <%= notif.fromUser.username %>
-                                                                </span>
-                                                                started following you.
-                                                            </p>
-                                                        </a>
-                                                        <% }else if ((notif.type==="comment" )){ %>
-
-                                                            <p class="text-gray-800">
-                                                                <a href="/profile/<%= notif.fromUser._id %>"
-                                                                    class="text-blue-600">
-                                                                    <span class="font-semibold text-indigo-700">
-                                                                        <%= notif.fromUser.username %>
-                                                                    </span>
-                                                                </a>
-                                                                commented on your <a class="text-blue-600"
-                                                                    href="/stories/<%=notif.storyId%>">post.</a>
-
-                                                            </p>
-
-                                                            <%}%>
-                                                                <p id="like" class="text-xs text-gray-500">
-                                                                    <%= notif.timeStamp %>
-                                                                </p>
-                                            </div>
-                                            <form action="/notification/<%= notif._id %>?_method=DELETE" method="post">
-                                                <button class="text-gray-500 hover:text-gray-700">
-                                                    <i class="ri-close-line text-lg"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                        <% }) %>
-                                            <% } %>
-
-                                                <!-- LAST 7 DAYS NOTIFICATIONS -->
-                                                <% if (last7Days.length> 0) { %>
-                                                    <h2 class="text-lg font-semibold text-gray-700 mt-6 mb-2">
-                                                        Last 7 Days
-                                                    </h2>
-                                                    <% last7Days.forEach(notif=> { %>
-                                                        <div
-                                                            class="w-full p-4 bg-gray-50 rounded-lg flex items-center shadow-sm mb-3">
-                                                            <div
-                                                                class="w-10 h-10 border rounded-full flex items-center justify-center bg-white">
-                                                                <% if (notif.type==="like" ) { %>
-                                                                    <img class="rounded-full w-full h-full object-cover"
-                                                                        src="<%=notif.fromUser.image.url%>" alt="" />
-                                                                    <% } else if (notif.type==="follow" ) { %>
-                                                                        <img class="rounded-full w-full h-full object-cover"
-                                                                            src="<%=notif.fromUser.image.url%>"
-                                                                            alt="" />
-                                                                        <% } else if(notif.type==="comment"){%>
-                                                                            <img class="rounded-full w-full h-full object-cover"
-                                                                                src="<%=notif.fromUser.image.url%>"
-                                                                                alt="" />
-                                                                            <% } %>
-                                                            </div>
-                                                            <div class="ml-4 flex-1">
-                                                                <% if (notif.type==="like" ) { %>
-                                                                    <p class="text-gray-800">
-                                                                        <a href="/profile/<%=notif.fromUser._id %>"
-                                                                            class="text-blue-600">
-
-                                                                            <span class="font-semibold text-indigo-700">
-                                                                                <%= notif.fromUser.username %>
-                                                                            </span>
-                                                                        </a>
-                                                                        liked your <a class="text-blue-600"
-                                                                            href="/stories/<%=notif.storyId%>">story.</a>
-                                                                    </p>
-
-                                                                    <% } else if (notif.type==="follow" ) { %>
-                                                                        <a href="/profile/<%= notif.fromUser._id %>"
-                                                                            class="text-blue-600">
-                                                                            <p class="text-gray-800">
-                                                                                <span
-                                                                                    class="font-semibold text-indigo-700">
-                                                                                    <%= notif.fromUser.username %>
-                                                                                </span>
-                                                                                started following you.
-                                                                            </p>
-                                                                        </a>
-                                                                        <% }else if ((notif.type==="comment" )){ %>
-
-                                                                            <p class="text-gray-800">
-                                                                                <a href="/profile/<%= notif.fromUser._id %>"
-                                                                                    class="text-blue-600">
-                                                                                    <span
-                                                                                        class="font-semibold text-indigo-700">
-                                                                                        <%= notif.fromUser.username %>
-                                                                                    </span>
-                                                                                </a>
-                                                                                commented on your <a
-                                                                                    class="text-blue-600"
-                                                                                    href="/stories/<%=notif.storyId%>">post.</a>
-
-                                                                            </p>
-
-                                                                            <%}%>
-                                                                                <p id="like"
-                                                                                    class="text-xs text-gray-500">
-                                                                                    <%= notif.timeStamp %>
-                                                                                </p>
-                                                            </div>
-                                                            <form action="/notification/<%= notif._id %>?_method=DELETE"
-                                                                method="post">
-                                                                <button class="text-gray-500 hover:text-gray-700">
-                                                                    <i class="ri-close-line text-lg"></i>
-                                                                </button>
-                                                            </form>
-                                                        </div>
-                                                        <% }) %>
-                                                            <% } %>
-
-                                                                <!-- NO NOTIFICATIONS -->
-                                                                <% if (today.length===0 && yesterday.length===0 &&
-                                                                    last7Days.length===0) { %>
-                                                                    <p class="text-center text-gray-600 mt-52">
-                                                                        No notifications to show.
-                                                                    </p>
-                                                                    <% } %>
-                </div>
-         </div>
+                <% if (today.length===0 && yesterday.length===0 && last7Days.length===0) { %>
+                    <div class="h-full flex flex-col items-center justify-center py-20 text-center opacity-40">
+                        <i class="ri-ghost-line text-6xl mb-4"></i>
+                        <h3 class="text-lg font-bold italic tracking-tight uppercase">Clear.</h3>
+                        <p class="text-xs font-medium">No updates to show right now.</p>
+                    </div>
+                <% } %>
+            </div>
+        </div>
     </div>
 
     <script>
         let notification = document.getElementById("notification");
         let checdiv = document.getElementById("chec-div");
         let flag3 = false;
+
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+
+        // Logic: Close and Trigger History Back
+        function closeAndGoBack() {
+            notification.classList.add("translate-x-full");
+            notification.classList.remove("translate-x-0");
+            setTimeout(function () {
+                checdiv.classList.add("hidden");
+                // Core Navigation Logic
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = '/stories';
+                }
+            }, 300);
+        }
+
+        // Original notificationHandler preserved for logic fallback
         const notificationHandler = () => {
             if (!flag3) {
                 notification.classList.add("translate-x-full");
                 notification.classList.remove("translate-x-0");
-                setTimeout(function () {
-                    checdiv.classList.add("hidden");
-                }, 100);
+                setTimeout(function () { checdiv.classList.add("hidden"); }, 100);
                 flag3 = true;
             } else {
                 setTimeout(function () {
@@ -271,22 +181,13 @@
                 flag3 = false;
             }
         };
-    </script>
-    <script>
-        document.querySelectorAll("#like").forEach((el) => {
-            const rawDate = new Date(
-                el.innerText.replace("Last edited: ", "").trim()
-            );
-            el.innerText = moment(rawDate).fromNow();
-        });
-        document.querySelectorAll("#follow").forEach((el) => {
-            const rawDate = new Date(
-                el.innerText.replace("Last edited: ", "").trim()
-            );
-            el.innerText = moment(rawDate).fromNow();
-        });
-    </script>
-    
-</body>
 
+        // Moment JS date logic (Preserved exactly)
+        document.querySelectorAll("#like").forEach((el) => {
+            const rawTime = el.getAttribute('data-time') || el.innerText;
+            const rawDate = new Date(rawTime.trim());
+            el.innerText = moment(rawDate).fromNow();
+        });
+    </script>
+</body>
 </html>

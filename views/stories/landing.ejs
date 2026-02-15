@@ -1,326 +1,272 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Landing Page</title>
-    <link rel="stylesheet" href="/css/landing.css" />
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Diary | The Art of Writing</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#3b82f6',
+                        ink: '#0f172a',
+                        parchment: '#fcfaf7'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                        handwriting: ['Pacifico', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
 
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Pacifico&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+
+        /* Creative Texture Overlay */
+        .paper-texture {
+            background-image: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+        }
+
+        /* Ink Bleed Effect */
+        .ink-drop {
+            filter: blur(40px);
+            opacity: 0.15;
+            background: #3b82f6;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 0;
+        }
+
+        .step-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 4px solid transparent;
+        }
+        .step-card:hover {
+            transform: translateY(-12px);
+            border-bottom-color: #3b82f6;
+            @apply shadow-2xl bg-white;
+        }
+
+        /* Custom Swiper Styles */
+        .swiper-card {
+            background: linear-gradient(145deg, #ffffff, #f3f4f6);
+            border-radius: 40px;
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
 </head>
 
-<body>
-    <div id="main">
+<body class="bg-parchment paper-texture text-slate-900 selection:bg-accent selection:text-white">
 
-        <div id="page1">
-            <div id="pg1-top">
-                <h1>"Turn Thoughts into Words, Beat Overthinking"</h1>
-            </div>
-            <div id="pg1-mid">
-                <p>"Sign up or log in to begin your journey. A simple step to join a community of writers sharing their
-                    experiences and tackling overthinking together."</p>
-            </div>
-            <div id="pg1-bottom">
-                <a href="/stories">Get started</a>
-            </div>
+    <div id="main" class="overflow-x-hidden">
 
-        </div>
+        <section id="page1" class="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
+            <div class="ink-drop w-96 h-96 -top-20 -left-20"></div>
+            <div class="ink-drop w-64 h-64 bottom-20 -right-10"></div>
 
-        <div id="page2">
-            <div id="pg2-header">
-                <h1>
-                    "Craft your overthinking into a powerful and inspiring narrative."
+            <div class="max-w-5xl mx-auto space-y-10 relative z-10">
+                <div class="inline-flex items-center gap-3 px-5 py-2 bg-white shadow-sm border border-slate-100 rounded-full text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+                    <i class="ri-book-open-line text-accent"></i> Your thoughts deserve a spine
+                </div>
+                
+                <h1 class="text-6xl md:text-9xl font-black tracking-tighter leading-[0.9] text-ink uppercase">
+                    INK YOUR <br>
+                    <span class="text-accent font-handwriting lowercase tracking-normal px-4">silence.</span>
                 </h1>
-            </div>
+                
+                <p class="text-lg md:text-2xl text-slate-500 max-w-2xl mx-auto leading-relaxed font-serif italic">
+                    "Every book starts with a single stroke of a pen. Sign up to turn your overthinking into a masterpiece."
+                </p>
 
-            <div class="pg2-content">
-                <div class="pg2-card">
-                    <div class="pg2-crd-top">
-                        <i class="ri-user-line"></i>
-                    </div>
-                    <div class="pg2-crd-mid">
-                        <h2>Create Your Account</h2>
-                    </div>
-                    <div class="pg2-crd-btm">
-                        <p>
-                            Sign up or log in to begin your journey. A simple step to join a community of writers
-                            sharing their experiences and tackling overthinking together.
-                        </p>
-                    </div>
-                </div>
-                <div class="pg2-card">
-                    <div class="pg2-crd-top">
-                        <i class="ri-pencil-line"></i>
-                    </div>
-                    <div class="pg2-crd-mid">
-                        <h2>"Write and Upload"</h2>
-                    </div>
-                    <div class="pg2-crd-btm">
-                        <p>
-                            "Craft your thoughts into a story and upload it to inspire others. Writing is a powerful
-                            habit that helps clear your mind and connect with like-minded individuals."
-                        </p>
-                    </div>
-                </div>
-                <div class="pg2-card">
-                    <div class="pg2-crd-top">
-                        <i class="ri-article-line"></i>
-                    </div>
-                    <div class="pg2-crd-mid">
-                        <h2>"Read, Like, and Comment"</h2>
-                    </div>
-                    <div class="pg2-crd-btm">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit.loremg5rtyh tyhtft4erg tfdghr gy5etgrsdgtrhtrrg yuyh5e3
-                            Quisquam, quos.
-                        </p>
-                    </div>
+                <div class="pt-6 flex flex-col sm:flex-row items-center justify-center gap-6">
+                    <a href="/stories" class="px-10 py-5 bg-ink text-white rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl hover:scale-110 hover:shadow-accent/20 transition-all flex items-center gap-3">
+                        Start Writing <i class="ri-edit-2-fill"></i>
+                    </a>
+                    <a href="#page2" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-ink transition-colors">
+                        Scroll to explore <i class="ri-arrow-down-line ml-1"></i>
+                    </a>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="page3">
-            <div id="pg3-content">
-                <div class="pg3-content-left">
-                    <img src="https://c.stocksy.com/a/3oV300/z9/837251.jpg" alt="" />
-                </div>
-                <div class="pg3-content-right">
-                    <h1>write your own story and publish for others</h1>
-                    <p>
-                        "Feeling overwhelmed? You’re not alone. When thoughts become too
-                        much to handle, sometimes writing them down can make all the
-                        difference. This is a place to let go, clear your mind, and find
-                        comfort in expressing what's on your mind."
+        <section id="page2" class="py-32 px-6 bg-white/50 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+                    <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter max-w-xl leading-none">
+                        The ritual of <span class="text-accent underline decoration-4 underline-offset-8">releasing</span> weight.
+                    </h2>
+                    <p class="text-slate-400 font-bold uppercase text-[10px] tracking-[0.3em] border-l-2 border-accent pl-6">
+                        Crafting narratives from chaos
                     </p>
+                </div>
 
-                    <a href="/stories"><button>Get started</button></a>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div class="step-card group p-12 rounded-[3rem] border border-slate-100 bg-slate-50/50">
+                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm mb-8 group-hover:bg-accent group-hover:text-white transition-colors">
+                            <i class="ri-quill-pen-line"></i>
+                        </div>
+                        <h3 class="text-2xl font-black mb-4 uppercase tracking-tight">The Pen</h3>
+                        <p class="text-slate-500 leading-relaxed text-sm font-medium">
+                            Create your account to unlock your digital quill. A safe haven to translate overthinking into organized logic.
+                        </p>
+                    </div>
+
+                    <div class="step-card group p-12 rounded-[3rem] border border-slate-100 bg-slate-50/50">
+                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm mb-8 group-hover:bg-accent group-hover:text-white transition-colors">
+                            <i class="ri-sticky-note-line"></i>
+                        </div>
+                        <h3 class="text-2xl font-black mb-4 uppercase tracking-tight">The Paper</h3>
+                        <p class="text-slate-500 leading-relaxed text-sm font-medium">
+                            Write and upload. Transform invisible heavy thoughts into visible, beautiful stories that live on your profile shelf.
+                        </p>
+                    </div>
+
+                    <div class="step-card group p-12 rounded-[3rem] border border-slate-100 bg-slate-50/50">
+                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-3xl shadow-sm mb-8 group-hover:bg-accent group-hover:text-white transition-colors">
+                            <i class="ri-book-3-line"></i>
+                        </div>
+                        <h3 class="text-2xl font-black mb-4 uppercase tracking-tight">The Library</h3>
+                        <p class="text-slate-500 leading-relaxed text-sm font-medium">
+                            Read, Like, and Comment. Enter a shared archive where every reader adds a new chapter of perspective to your work.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="page4">
-
-            <div class="pg4-header">
-                <h1> "quotes"</h1>
+        <section id="page3" class="py-32 px-6">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="relative order-2 lg:order-1">
+                    <img src="https://c.stocksy.com/a/3oV300/z9/837251.jpg" 
+                         class="rounded-[4rem] grayscale hover:grayscale-0 transition-all duration-1000 shadow-2xl w-full" alt="" />
+                    <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-accent rounded-3xl flex items-center justify-center text-white text-4xl shadow-2xl">
+                        <i class="ri-double-quotes-r"></i>
+                    </div>
+                </div>
+                
+                <div class="space-y-10 order-1 lg:order-2">
+                    <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9]">
+                        Your mind is a book <span class="text-accent italic">waiting</span> to be read.
+                    </h2>
+                    <p class="text-xl text-slate-500 font-serif italic leading-relaxed">
+                        "When thoughts become a storm, writing is the anchor. Diary isn't just an app; it's the binding for your most honest experiences."
+                    </p>
+                    <a href="/stories" class="inline-block px-12 py-5 bg-ink text-white rounded-full font-bold text-xs uppercase tracking-[0.2em] hover:shadow-2xl hover:shadow-accent/40 transition-all">
+                        Open the First Page
+                    </a>
+                </div>
             </div>
-            <div id="pg4-card-slide">
-                <div class="swiper mySwiper">
+        </section>
+
+        <section id="page4" class="py-32 px-6 bg-ink text-white overflow-hidden">
+            <div class="max-w-5xl mx-auto">
+                <div class="mb-16 border-l-4 border-accent pl-8">
+                    <p class="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-2">The Archives</p>
+                    <h2 class="text-4xl font-black tracking-tight uppercase italic leading-none">Voices from the past.</h2>
+                </div>
+
+                <div class="swiper mySwiper pb-20">
                     <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>ho raha hnu mein kis tarha barbaad dekh ne wale hat malte
-                                        hain</q>
-                                    <blockquote>Joun Elia</blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://i.tribune.com.pk/media/images/IMG_20211222_1440591640166076-0/IMG_20211222_1440591640166076-0.jpg"
-                                            alt="" />
-                                    </div>
+                        <div class="swiper-slide h-auto">
+                            <div class="swiper-card p-12 md:p-20 text-ink flex flex-col items-center text-center space-y-10">
+                                <i class="ri-chat-quote-line text-6xl text-accent opacity-20"></i>
+                                <p class="text-2xl md:text-4xl font-serif italic font-light leading-snug">
+                                    "ho raha hnu mein kis tarha barbaad dekh ne wale hat malte hain"
+                                </p>
+                                <div class="flex items-center gap-4">
+                                    <img src="https://i.tribune.com.pk/media/images/IMG_20211222_1440591640166076-0/IMG_20211222_1440591640166076-0.jpg" class="w-16 h-16 rounded-full object-cover grayscale" />
+                                    <div class="text-left"><h4 class="font-black text-xs uppercase tracking-widest">Joun Elia</h4><p class="text-[10px] opacity-50 uppercase font-bold">Poet</p></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="swiper-slide">
-
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>I am free and that is why I am lost.</q>
-                                    <blockquote>Franz Kafka</blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Franz_Kafka%2C_1923.jpg/220px-Franz_Kafka%2C_1923.jpg"
-                                            alt="" />
-                                    </div>
+                        <div class="swiper-slide h-auto">
+                            <div class="swiper-card p-12 md:p-20 text-ink flex flex-col items-center text-center space-y-10">
+                                <i class="ri-chat-quote-line text-6xl text-accent opacity-20"></i>
+                                <p class="text-2xl md:text-4xl font-serif italic font-light leading-snug">
+                                    "I am free and that is why I am lost."
+                                </p>
+                                <div class="flex items-center gap-4">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Franz_Kafka%2C_1923.jpg/220px-Franz_Kafka%2C_1923.jpg" class="w-16 h-16 rounded-full object-cover grayscale" />
+                                    <div class="text-left"><h4 class="font-black text-xs uppercase tracking-widest">Franz Kafka</h4><p class="text-[10px] opacity-50 uppercase font-bold">Writer</p></div>
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="swiper-slide">
-
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>Creativity is the greatest rebellion in existence.</q>
-                                    <blockquote>Sree Rajneesh Osho</blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://www.tallengestore.com/cdn/shop/products/Osho-HD-PIC-WSW3089859_3dcc231f-ab30-4273-b826-145b9e771845.jpg?v=1520689455"
-                                            alt="" />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="swiper-slide">
-
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>But how could you live and have no story to tell?</q>
-                                    <blockquote>Fyodor Dostoevsky</blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Vasily_Perov_-_%D0%9F%D0%BE%D1%80%D1%82%D1%80%D0%B5%D1%82_%D0%A4.%D0%9C.%D0%94%D0%BE%D1%81%D1%82%D0%BE%D0%B5%D0%B2%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_-_Google_Art_Project.jpg/800px-Vasily_Perov_-_%D0%9F%D0%BE%D1%80%D1%82%D1%80%D0%B5%D1%82_%D0%A4.%D0%9C.%D0%94%D0%BE%D1%81%D1%82%D0%BE%D0%B5%D0%B2%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_-_Google_Art_Project.jpg"
-                                            alt="" />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="swiper-slide">
-
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>Don’t walk in front of me… I may not follow
-                                        Don’t walk behind me… I may not lead
-                                        Walk beside me… just be my friend</q>
-                                    <blockquote>Albert Camus </blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://media.newyorker.com/photos/5909675d019dfc3494ea0dd0/master/w_1920,c_limit/120409_r22060_g2048.jpg"
-                                            alt="" />
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="swiper-slide">
-
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>The philosophers have only interpreted the world in various ways the point is to
-                                        change it.</q>
-                                    <blockquote>Karl Marx</blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Karl_Marx_001_%28rotated%29.jpg/220px-Karl_Marx_001_%28rotated%29.jpg"
-                                            alt="" />
-                                    </div>
-                                </div>
-                            </div>
-
-
                         </div>
 
-                        <div class="swiper-slide">
-
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>Only the dead have seen the end of war.</q>
-                                    <blockquote>Plato</blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://www.greeka.com/photos/greece-history/famous-people/plato/hero/plato-1280.webp"
-                                            alt="" />
-                                    </div>
+                        <div class="swiper-slide h-auto">
+                            <div class="swiper-card p-12 md:p-20 text-ink flex flex-col items-center text-center space-y-10">
+                                <i class="ri-chat-quote-line text-6xl text-accent opacity-20"></i>
+                                <p class="text-2xl md:text-4xl font-serif italic font-light leading-snug">
+                                    "Creativity is the greatest rebellion in existence."
+                                </p>
+                                <div class="flex items-center gap-4">
+                                    <img src="https://www.tallengestore.com/cdn/shop/products/Osho-HD-PIC-WSW3089859_3dcc231f-ab30-4273-b826-145b9e771845.jpg?v=1520689455" class="w-16 h-16 rounded-full object-cover grayscale" />
+                                    <div class="text-left"><h4 class="font-black text-xs uppercase tracking-widest">Osho</h4><p class="text-[10px] opacity-50 uppercase font-bold">Philosopher</p></div>
                                 </div>
                             </div>
-
-
-
-
                         </div>
-                        <div class="swiper-slide">
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>Jo Geet tum ne suni nehi wo mera umar bhar ka riaaz tha , Jo tum ne hasi main
-                                        udaa diaa </q>
-                                    <blockquote>Amjad islam amjad</blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://imgcdn.pakistanpoint.com/media/2017/11/_3/730x425/pic_1511869769_1.jpg"
-                                            alt="" />
-                                    </div>
+
+                        <div class="swiper-slide h-auto">
+                            <div class="swiper-card p-12 md:p-20 text-ink flex flex-col items-center text-center space-y-10">
+                                <i class="ri-chat-quote-line text-6xl text-accent opacity-20"></i>
+                                <p class="text-2xl md:text-4xl font-serif italic font-light leading-snug">
+                                    "But how could you live and have no story to tell?"
+                                </p>
+                                <div class="flex items-center gap-4">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Vasily_Perov_-_%D0%9F%D0%BE%D1%80%D1%82%D1%80%D0%B5%D1%82_%D0%A4.%D0%9C.%D0%94%D0%BE%D1%81%D1%82%D0%BE%D0%B5%D0%B2%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_-_Google_Art_Project.jpg/800px-Vasily_Perov_-_%D0%9F%D0%BE%D1%80%D1%82%D1%80%D0%B5%D1%82_%D0%A4.%D0%9C.%D0%94%D0%BE%D1%81%D1%82%D0%BE%D0%B5%D0%B2%D1%81%D0%BA%D0%BE%D0%B3%D0%BE_-_Google_Art_Project.jpg" class="w-16 h-16 rounded-full object-cover grayscale" />
+                                    <div class="text-left"><h4 class="font-black text-xs uppercase tracking-widest">Dostoevsky</h4><p class="text-[10px] opacity-50 uppercase font-bold">Novelist</p></div>
                                 </div>
                             </div>
-
-                        </div>
-                        <div class="swiper-slide">
-                            <div class="swiper-card-center">
-                                <div class="swiper-top">
-                                    <q>Do you think that I count the days? There is only one day left, always starting
-                                        over: it is given to us at dawn and taken away from us at dusk. </q>
-                                    <blockquote>jean-paul sartre</blockquote>
-                                </div>
-                                <div class="swiper-bottom">
-                                    <div class="swiper-writer-img">
-                                        <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSrJrHGiu3TsOfB4OhzBhGSCNdbI7bJFAPbbwpHxxWTpqbXp9io"
-                                            alt="" />
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
+                    <div class="swiper-button-next hidden md:flex"></div>
+                    <div class="swiper-button-prev hidden md:flex"></div>
                     <div class="swiper-pagination"></div>
                 </div>
             </div>
-        </div>
+        </section>
 
-
-
-
-
-
-
-
-
-
+        <footer class="py-20 text-center border-t border-slate-100 bg-white">
+            <p class="text-xs font-black uppercase tracking-[0.8em] opacity-20">DIARY EDITORIAL COLLECTIVE</p>
+        </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://unpkg.com/lenis@1.2.3/dist/lenis.min.js"></script>
 
-
-    <script>// Initialize Lenis
-        const lenis = new Lenis({
-            duration: 2
-        });
-
-        // Use requestAnimationFrame to continuously update the scroll
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-
-        requestAnimationFrame(raf);</script>
     <script>
-
-        var swiper = new Swiper(".mySwiper", {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            loop: true,
-            autoplay: {
-                delay: 2500,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
+        // Luxury Smooth Scroll (Preserved)
+        const lenis = new Lenis({
+            duration: 1.8,
+            wheelMultiplier: 1.2
         });
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
 
-
-
+        // Quote Carousel (Preserved & Enhanced)
+        new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 40,
+            loop: true,
+            autoplay: { delay: 5000, disableOnInteraction: true },
+            pagination: { el: ".swiper-pagination", clickable: true },
+            navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+        });
     </script>
 </body>
-
-
 </html>

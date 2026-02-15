@@ -1,143 +1,159 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Create Account | DIARY.</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#3b82f6',
+                        darkBg: '#121212',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        logo: ['Pacifico', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        .fade-out {
-            animation: fadeOut 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-10px); }
-        }
-        .shake {
-            animation: shake 0.5s ease-in-out;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        .logo-font { font-family: 'Pacifico', cursive; }
+
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .fade-out { animation: fadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-10px); } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
         .loading-spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(0,0,0,0.1);
-            border-radius: 50%;
-            border-top-color: #3b82f6;
-            animation: spin 1s ease-in-out infinite;
+            width: 14px; height: 14px; border: 2px solid rgba(59, 130, 246, 0.1);
+            border-radius: 50%; border-top-color: #3b82f6;
+            animation: spin 0.8s linear infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div class="font-[sans-serif] relative w-full min-h-screen flex flex-col">
-        <div class="h-[340px] font-[sans-serif]">
-            <img src="https://images.unsplash.com/photo-1581855339095-0c282d58527b?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Banner Image" class="w-full h-full object-cover" />
+<body class="bg-slate-50 dark:bg-darkBg transition-colors duration-300">
+
+    <div class="relative w-full min-h-screen flex flex-col items-center justify-center p-4">
+        
+        <div class="fixed top-0 left-0 w-full h-[35vh] z-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1581855339095-0c282d58527b?q=80&w=2073&auto=format&fit=crop"
+                alt="Banner" class="w-full h-full object-cover opacity-80" />
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50 dark:to-darkBg"></div>
         </div>
 
-        <div class="relative -mt-40 m-4 flex-grow">
+        <div class="relative z-10 w-full max-w-xl">
+            <div class="mb-6 text-center">
+                <a href="/stories" class="logo-font text-4xl text-accent drop-shadow-sm">Diary</a>
+            </div>
+
             <form id="signupForm" action="/signup" method="post"
-                class="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-6 sm:p-8 rounded-2xl">
-                <div class="mb-8">
-                    <h3 class="text-gray-800 text-3xl font-bold text-center">Register</h3>
+                class="bg-white dark:bg-slate-900 shadow-2xl shadow-slate-200/50 dark:shadow-none p-8 sm:p-10 rounded-[2.5rem] border border-slate-100 dark:border-white/5 transition-all">
+                
+                <header class="mb-8">
+                    <h3 class="text-slate-900 dark:text-white text-3xl font-black tracking-tight">Create Account.</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">Join the community of storytellers.</p>
+                </header>
+
+                <div class="space-y-4 mb-6">
                     <% if (success && success.length) { %>
-                        <div class="flash-message bg-green-50 text-green-600 px-6 py-3 text-sm flex items-start mt-5 mb-5 rounded-lg fade-in">
-                            <i class="ri-checkbox-circle-line mr-2 mt-0.5"></i>
-                            <span><%= success %></span>
+                        <div class="flash-message bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 px-5 py-3 text-sm flex items-center rounded-2xl fade-in border border-green-100 dark:border-green-500/20">
+                            <i class="ri-checkbox-circle-fill mr-3 text-lg"></i>
+                            <span class="font-bold"><%= success %></span>
                         </div>
                     <% } %>
                     <% if (error && error.length) { %>
-                        <div class="flash-message bg-red-50 text-red-600 px-6 py-3 text-sm flex items-start mt-5 mb-5 rounded-lg fade-in">
-                            <i class="ri-error-warning-line mr-2 mt-0.5"></i>
-                            <span><%= error %></span>
+                        <div class="flash-message bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 px-5 py-3 text-sm flex items-center rounded-2xl fade-in border border-red-100 dark:border-red-500/20">
+                            <i class="ri-error-warning-fill mr-3 text-lg"></i>
+                            <span class="font-bold"><%= error %></span>
                         </div>
                     <% } %>
                 </div>
 
                 <div class="space-y-5">
-                    <div>
-                        <label class="text-gray-800 text-sm font-medium block mb-2">Full Name</label>
+                    <div class="group">
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">Full Name</label>
                         <div class="relative flex items-center">
                             <input name="name" type="text" required
-                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
-                                placeholder="Enter name" value="<%= typeof name !== 'undefined' ? name : '' %>" />
-                            <i class="ri-user-fill text-gray-400 absolute right-3"></i>
+                                class="w-full bg-slate-50 dark:bg-white/5 text-sm text-slate-900 dark:text-white border-2 border-transparent focus:border-accent/20 focus:bg-white dark:focus:bg-slate-800 rounded-2xl px-5 py-3.5 outline-none transition-all shadow-sm"
+                                placeholder="Write your name" value="<%= typeof name !== 'undefined' ? name : '' %>" />
+                            <i class="ri-user-smile-line text-slate-300 dark:text-slate-600 absolute right-5 text-lg"></i>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-gray-800 text-sm font-medium block mb-2">Username</label>
+                    <div class="group">
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">Username</label>
                         <div class="relative flex items-center">
                             <input name="username" id="username" type="text" required
-                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
-                                placeholder="Enter username" 
+                                class="w-full bg-slate-50 dark:bg-white/5 text-sm text-slate-900 dark:text-white border-2 border-transparent focus:border-accent/20 focus:bg-white dark:focus:bg-slate-800 rounded-2xl px-5 py-3.5 outline-none transition-all shadow-sm"
+                                placeholder="Choose a unique ID" 
                                 value="<%= typeof username !== 'undefined' ? username : '' %>"
                                 oninput="checkUsername()" />
-                            <i class="ri-user-fill text-gray-400 absolute right-3"></i>
+                            <i class="ri-at-line text-slate-300 dark:text-slate-600 absolute right-5 text-lg"></i>
                         </div>
-                        <div id="usernameFeedback" class="text-sm mt-1 h-5 flex items-center">
-                            <span id="usernameMessage"></span>
-                            <div id="usernameSpinner" class="loading-spinner ml-2 hidden"></div>
+                        <div id="usernameFeedback" class="mt-2 ml-4 flex items-center gap-2 h-4">
+                            <span id="usernameMessage" class="text-[10px] font-bold uppercase tracking-wider"></span>
+                            <div id="usernameSpinner" class="loading-spinner hidden"></div>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-gray-800 text-sm font-medium block mb-2">Email</label>
+                    <div class="group">
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">Email</label>
                         <div class="relative flex items-center">
                             <input name="email" type="email" required
-                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
-                                placeholder="Enter email" 
+                                class="w-full bg-slate-50 dark:bg-white/5 text-sm text-slate-900 dark:text-white border-2 border-transparent focus:border-accent/20 focus:bg-white dark:focus:bg-slate-800 rounded-2xl px-5 py-3.5 outline-none transition-all shadow-sm"
+                                placeholder="name@example.com" 
                                 value="<%= typeof email !== 'undefined' ? email : '' %>" />
-                            <i class="ri-mail-line text-gray-400 absolute right-3"></i>
+                            <i class="ri-mail-line text-slate-300 dark:text-slate-600 absolute right-5 text-lg"></i>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-gray-800 text-sm font-medium block mb-2">Password (min 6 characters)</label>
+                    <div class="group">
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">Password (min 6)</label>
                         <div class="relative flex items-center">
                             <input name="password" type="password" required minlength="6"
-                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
-                                placeholder="Enter password" id="passwordInput" 
+                                class="w-full bg-slate-50 dark:bg-white/5 text-sm text-slate-900 dark:text-white border-2 border-transparent focus:border-accent/20 focus:bg-white dark:focus:bg-slate-800 rounded-2xl px-5 py-3.5 outline-none transition-all shadow-sm"
+                                placeholder="••••••••" id="passwordInput" 
                                 oninput="checkPassword()" />
-                            <i class="ri-eye-line text-gray-400 absolute right-3 cursor-pointer" id="togglePassword"></i>
+                            <i class="ri-eye-line text-slate-300 dark:text-slate-600 absolute right-5 text-lg cursor-pointer hover:text-accent transition-colors" id="togglePassword"></i>
                         </div>
-                        <div id="passwordFeedback" class="text-xs mt-1 h-5"></div>
+                        <div id="passwordFeedback" class="mt-2 ml-4 text-[10px] font-bold uppercase tracking-wider h-4"></div>
                     </div>
-
-                    <button type="submit" id="submitBtn"
-                        class="w-full shadow-xl py-3 px-4 text-sm font-semibold tracking-wider rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled>
-                        Register
-                    </button>
                 </div>
 
-                <div class="mt-6 text-center">
-                    <p class="text-gray-600 text-sm">
-                        Already have an account? 
-                        <a href="/login" class="text-blue-600 hover:underline font-medium">Login here</a>
+                <button type="submit" id="submitBtn"
+                    class="w-full shadow-xl shadow-accent/20 py-4 px-4 text-sm font-black uppercase tracking-widest rounded-2xl text-white bg-accent hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all mt-8 disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100"
+                    disabled>
+                    Create Account
+                </button>
+                
+                <footer class="mt-8 text-center">
+                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">
+                        Already a member? 
+                        <a href="/login" class="text-accent hover:underline font-bold">Sign In</a>
                     </p>
-                </div>
+                </footer>
             </form>
         </div>
     </div>
 
     <script>
-        // Password toggle visibility
+        // Password toggle
         document.getElementById('togglePassword').addEventListener('click', function() {
             const passwordInput = document.getElementById('passwordInput');
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -146,7 +162,7 @@
             this.classList.toggle('ri-eye-off-line');
         });
 
-        // Check username availability
+        // AJAX: Check username availability (Original Logic)
         async function checkUsername() {
             const username = document.getElementById('username').value.trim();
             const messageElement = document.getElementById('usernameMessage');
@@ -159,11 +175,10 @@
                 return;
             }
 
-            // Basic username validation
             const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
             if (!usernameRegex.test(username)) {
-                messageElement.textContent = '3-20 characters, letters, numbers, underscores only';
-                messageElement.className = 'text-red-500';
+                messageElement.textContent = 'Invalid characters';
+                messageElement.className = 'text-[10px] font-bold uppercase tracking-wider text-red-500';
                 spinnerElement.classList.add('hidden');
                 updateSubmitButton();
                 return;
@@ -171,7 +186,7 @@
 
             try {
                 messageElement.textContent = 'Checking...';
-                messageElement.className = 'text-gray-500';
+                messageElement.className = 'text-[10px] font-bold uppercase tracking-wider text-slate-400';
                 spinnerElement.classList.remove('hidden');
 
                 const response = await fetch('/check-username', {
@@ -184,23 +199,21 @@
                 const { exists } = await response.json();
 
                 if (exists) {
-                    messageElement.textContent = 'Username is already taken';
-                    messageElement.className = 'text-red-500';
+                    messageElement.textContent = 'Unavailable';
+                    messageElement.className = 'text-[10px] font-bold uppercase tracking-wider text-red-500';
                 } else {
-                    messageElement.textContent = 'Username is available';
-                    messageElement.className = 'text-green-500';
+                    messageElement.textContent = 'Available';
+                    messageElement.className = 'text-[10px] font-bold uppercase tracking-wider text-green-500';
                 }
             } catch (error) {
-                console.error('Error:', error);
-                messageElement.textContent = 'Error checking username. Please try again.';
-                messageElement.className = 'text-red-500';
+                messageElement.textContent = 'Error';
             } finally {
                 spinnerElement.classList.add('hidden');
                 updateSubmitButton();
             }
         }
 
-        // Check password length
+        // Check password (Original Logic)
         function checkPassword() {
             const password = document.getElementById('passwordInput').value;
             const feedbackElement = document.getElementById('passwordFeedback');
@@ -212,56 +225,46 @@
             }
 
             if (password.length < 6) {
-                feedbackElement.textContent = 'Password must be at least 6 characters';
-                feedbackElement.className = 'text-xs mt-1 h-5 text-red-500';
+                feedbackElement.textContent = 'Too Short';
+                feedbackElement.className = 'mt-2 ml-4 text-[10px] font-bold uppercase tracking-wider text-red-500';
             } else {
-                feedbackElement.textContent = 'Password meets requirements';
-                feedbackElement.className = 'text-xs mt-1 h-5 text-green-500';
+                feedbackElement.textContent = 'Secure';
+                feedbackElement.className = 'mt-2 ml-4 text-[10px] font-bold uppercase tracking-wider text-green-500';
             }
-            
             updateSubmitButton();
         }
 
+        // Submit button toggle (Original Logic)
         function updateSubmitButton() {
             const submitBtn = document.getElementById('submitBtn');
             const usernameMessage = document.getElementById('usernameMessage').textContent;
             const password = document.getElementById('passwordInput').value;
             const passwordFeedback = document.getElementById('passwordFeedback').textContent;
             
-            const isUsernameValid = usernameMessage === 'Username is available';
-            const isPasswordValid = password.length >= 6 && passwordFeedback.includes('meets requirements');
+            const isUsernameValid = usernameMessage === 'Available';
+            const isPasswordValid = password.length >= 6 && passwordFeedback === 'Secure';
             
             submitBtn.disabled = !(isUsernameValid && isPasswordValid);
         }
 
-        // Form submission validation
+        // Form Shake on validation fail (Original Logic)
         document.getElementById('signupForm').addEventListener('submit', function(e) {
             const password = document.getElementById('passwordInput').value;
             const usernameMessage = document.getElementById('usernameMessage').textContent;
             
-            if (password.length < 6) {
+            if (password.length < 6 || usernameMessage !== 'Available') {
                 e.preventDefault();
-                const input = document.getElementById('passwordInput');
-                input.classList.add('border-red-500', 'shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-                return;
-            }
-            
-            if (usernameMessage !== 'Username is available') {
-                e.preventDefault();
-                const input = document.getElementById('username');
-                input.classList.add('border-red-500', 'shake');
-                setTimeout(() => input.classList.remove('shake'), 500);
-                return;
+                this.classList.add('shake');
+                setTimeout(() => this.classList.remove('shake'), 500);
             }
         });
 
-        // Auto-dismiss flash messages
+        // Flash message auto-dismiss
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.flash-message').forEach(message => {
                 setTimeout(() => {
                     message.classList.add('fade-out');
-                    setTimeout(() => message.remove(), 300);
+                    setTimeout(() => message.remove(), 400);
                 }, 5000);
             });
         });

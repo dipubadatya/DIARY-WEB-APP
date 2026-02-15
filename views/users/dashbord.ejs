@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,456 +7,284 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<%=pageDescription%>">
-  <title>
-    <%=pageTitle%>
-  </title>
-  <link rel="stylesheet" href="/css/dashbord.css">
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.0/lottie.min.js"></script>
+  <title><%=pageTitle%> | DIARY.</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
-  <style>
-    .navbar {
-      font-family: "Pacifico";
-    }
 
-    .stat-box {
-      transition: all 0.3s ease;
-    }
-
-    .stat-box:hover {
-      transform: translateY(-3px);
-    }
-
-    .story-card {
-      transition: all 0.2s ease;
-    }
-
-    .story-card:hover {
-      background-color: rgba(0, 0, 0, 0.02);
-    }
-
-    .dark .story-card:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-  </style>
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
           colors: {
-            primary: {
-              50: '#f0f9ff',
-              100: '#e0f2fe',
-              200: '#bae6fd',
-              300: '#7dd3fc',
-              400: '#38bdf8',
-              500: '#0ea5e9',
-              600: '#0284c7',
-              700: '#0369a1',
-              800: '#075985',
-              900: '#0c4a6e',
-            }
+            accent: '#3b82f6',
+            darkBg: '#121212',
+            darkSurface: '#1e1e1e',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            logo: ['Pacifico', 'cursive'],
           }
         }
       }
     }
   </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Inter:wght@300;400;500;600;700&display=swap');
+    body { -webkit-font-smoothing: antialiased; }
+    .logo-font { font-family: 'Pacifico', cursive; }
+    
+    /* Smooth Transitions */
+    .dashboard-card {
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+    }
+    
+    /* Prevent Section Overlap */
+    .story-grid-system {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    input[type="text"], input[type="file"] {
+      @apply transition-all duration-200;
+    }
+  </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-[#121212] transition-colors duration-200">
-  <div id="main">
-    <nav class="bg-white dark:bg-[#121212] shadow-lg sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300 min-h-screen">
+  <header class="sticky top-0 z-50 w-full border-b border-slate-100 dark:border-slate-900 bg-white/80 dark:bg-slateCustom-950/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+      <a href="/stories" class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+        <span class="bg-accent w-8 h-8 rounded-lg flex items-center justify-center text-white text-base">D</span>
+        DIARY<span class="text-accent">.</span>
+      </a>
 
-          <div class="flex items-center justify-between navbar">
-
-            <div class="flex-shrink-0 flex items-center">
-              <a href="/stories">
-                <span class="text-2xl dark:text-[#B3B3B3] ">
-                  <i class="fas fa-feather-alt mr-3 text-accent"></i>
-                  Diary
-                </span>
-              </a>
-            </div>
-
-            <div class="hidden md:ml-8 md:flex md:space-x-8">
-              <a href="/stories"
-                class="flex items-center username h-16 px-2 text-sm font-medium text-gray-900 dark:text-gray-100 border-b-2 border-accent">
-                <span>Stories</span>
-              </a>
-              <a href="/stories/newWrite"
-                class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
-                <span>Write</span>
-              </a>
-            </div>
-          </div>
-
-          <div class="flex items-center">
-
-            <button id="theme-toggle" type="button"
-              class="p-2 mr-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 ">
-              <i id="theme-icon" class="ri-sun-line"></i>
+      <div class="flex items-center gap-4">
+        <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">
+          <i id="theme-icon" class="ri-moon-clear-line text-xl"></i>
+        </button>
+           <a href="/search" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-slate-400 hover:text-accent">
+          <i class="ri-search-line text-xl"></i>
+        </a>
+        <% if(currUser) { %>
+          <div class="relative">
+            <button id="profile-btn" class="flex items-center gap-3 p-1 pr-3 bg-slate-50 dark:bg-slate-900 rounded-full hover:ring-2 ring-accent/20 transition-all">
+              <img src="<%=user.image.url%>" class="w-8 h-8 rounded-full object-cover" alt="Profile">
+              <span class="text-xs font-bold hidden sm:block"><%=user.username%></span>
             </button>
-
-            <!-- Search button -->
-            <div class="flex-shrink-0 mr-2">
-              <a href="/search">
-                <button
-                  class="p-2   dark:bg-[#121212] hover:bg-primary-100 dark:hover:bg-gray-600  text-primary-600 dark:text-primary-400 transition-all duration-200">
-                  <i class="fas fa-search"></i>
-                </button>
-              </a>
-            </div>
-
-            <!-- Profile dropdown -->
-            <div class="ml-3 relative">
-              <div>
-                <button id="profile-menu-button" type="button" class="flex items-center text-sm rounded-full"
-                  aria-expanded="false" aria-haspopup="true">
-                  <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400" src="<%=user.image.url  %>"
-                    alt="User profile">
-                </button>
-              </div>
-
-              <!-- Dropdown menu -->
-              <div id="profile-dropdown"
-                class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 bg-white dark:bg-[#121212] ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
-                <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-                  <div class="flex items-center space-x-3">
-                    <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400"
-                      src="<%=user.image.url  %>" alt="User profile">
-                    <div>
-                      <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                        <%=user.name%>
-                      </p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400">@<%=user.username%>
-                      </p>
-                    </div>
-                  </div>
+            
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-60 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 py-2 z-[70]">
+                <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 mb-1">
+                  <p class="text-sm font-bold truncate"><%=user.name%></p>
+                  <p class="text-[10px] text-slate-500 uppercase tracking-widest">Member</p>
                 </div>
-                <a href="/dashbord"
-                  class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-700 dark:hover:text-primary-400 transition-colors duration-200"
-                  role="menuitem">
-                  <i class="ri-dashboard-line"></i> Dashboard
-                </a>
-                <a href="/profile"
-                  class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-700 dark:hover:text-primary-400 transition-colors duration-200"
-                  role="menuitem">
-                  <i class="ri-user-line"></i> Profile
-                </a>
-                </a>
-                <a href="/stories"
-                  class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-700 dark:hover:text-primary-400 transition-colors duration-200"
-                  role="menuitem">
-                  <i class="ri-stack-line"></i> Stories
-                </a>
-                <a href="/stories/newWrite"
-                  class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-700 dark:hover:text-primary-400 transition-colors duration-200"
-                  role="menuitem">
-                  <i class="ri-edit-2-line"></i> Write
-                </a>
-
-                <div class="border-t border-gray-100 dark:border-gray-700 mt-1">
-                  <a href="/logout"
-                    class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-red-50 dark:hover:bg-red-900/30 hover:text-red-700 dark:hover:text-red-400 transition-colors duration-200"
-                    role="menuitem">
-                    <i class="ri-logout-box-r-line"></i> Sign out
-                  </a>
+                <a href="/dashbord" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"><i class="ri-dashboard-line"></i> Dashboard</a>
+                <a href="/profile" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"><i class="ri-user-line"></i> Profile</a>
+                <div class="border-t border-slate-50 dark:border-slate-800 mt-1">
+                  <a href="/logout" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"><i class="ri-logout-box-line"></i> Logout</a>
                 </div>
-              </div>
             </div>
           </div>
-        </div>
+        
+        <% } else { %>
+          <a href="/login" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2.5 rounded-full text-sm font-bold">Login</a>
+        <% } %>
       </div>
-    </nav>
-
-    <div class="dashboard-container dark:bg-[#121212]">
-
-      <!-- Profile Section -->
-      <div class="profile-section dark:bg-[#121212] dark:text-[#B3B3B3] "
-        style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-        <div class="profile-header">
-          <div class="profile-image">
-            <img id="profile-preview" src="<%=user.image.url%>" alt="">
-          </div>
-          <h2>
-            <%=user.name%>
-          </h2>
-          <p>@<%=user.username%>
-          </p>
-        </div>
-  
-          <div class="stats-grid">
-            <div class="stat-box bg-white dark:bg-[#121212] dark:text-[#B3B3B3] "
-              style="box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;">
-              <div class="flex items-center justify-center">
-                <i class="ri-heart-2-line  text-primary-600 dark:text-primary-400"></i>
-
-              </div>
-
-              <p>Like</p>
-
-            </div>
-     
-        <a href="/following/<%=user._id%>" class="hover:text-primary-600 dark:hover:text-primary-400">
-          <div class="stat-box bg-white dark:bg-[#121212] dark:text-[#B3B3B3] "
-            style="box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;">
-            <div class="flex items-center justify-center">
-              <i class="ri-user-follow-line text-primary-600 dark:text-primary-400"></i>
-
-            </div>
-
-            <p>Following</p>
-
-          </div>
-        </a>
-
-        <a href="/followers/<%=user._id%>" class="hover:text-primary-600 dark:bg-[#121212] dark:hover:text-primary-400">
-          <div class="stat-box bg-white dark:bg-[#121212] dark:text-[#B3B3B3] "
-            style="box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;">
-            <div class="flex items-center justify-center">
-              <i class="ri-user-shared-line  text-primary-600 dark:text-primary-400"></i>
-
-            </div>
-
-            <p>Followers</p>
-
-          </div>
-        </a>
-      </div>
-
-      <div class="profile-form">
-        <form action="/dashbord/<%=user._id%>?_method=PUT" method="post" enctype="multipart/form-data">
-          <div class="form-group">
-            <label for="profile-input">Profile Picture</label>
-            <input id="profile-input" class="block w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4
-                            file:rounded-full file:border-0
-                            file:text-sm file:font-semibold
-                            file:bg-violet-50 file:text-violet-700 dark:file:bg-gray-700 dark:file:text-violet-400
-                            hover:file:bg-violet-100 dark:hover:file:bg-gray-600" type="file" name="dashbord[image]"
-              value="<%=user.image%>" accept="image/*">
-          </div>
-          <div class="form-group">
-            <label class="dark:text-[#B3B3B3]">Email</label>
-            <div
-              class="p-2 px-3 bg-gray-50 dark:bg-[#121212] border border-emerald-900 dark:border-emerald-700 rounded-md text-gray-700 dark:text-[#B3B3B3]">
-              <%= user.email %>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="dark:text-[#B3B3B3]">Full Name</label>
-            <input type="text" name="dashbord[name]" value="<%=user.name%>"
-              class="dark:bg-[#121212] dark:text-[#B3B3B3]  dark:border-gray-600">
-          </div>
-          <div class="form-group">
-            <label class="dark:text-[#B3B3B3]">Username</label>
-            <input type="text" name="dashbord[username]" value="<%=user.username%>"
-              class="dark:bg-[#121212] dark:text-[#B3B3B3]  dark:border-gray-600">
-          </div>
-          <div class="form-group">
-            <label class="dark:text-[#B3B3B3]">Bio</label>
-            <input type="text" name="dashbord[bio]" value="<%=user.bio%>"
-              class="dark:bg-[#121212] dark:text-[#B3B3B3]  dark:border-gray-600">
-          </div>
-          <button class="dark:bg-primary-600 dark:hover:bg-primary-700">Update Profile</button>
-        </form>
-      </div>
-      <button id="deleteAccountBtn"
-        class="bg-white dark:bg-[#121212] dark:text-[#B3B3B3]  mt-0.5 w-full text-black px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-        <i class="fas fa-trash-alt mr-2"></i>Delete Account
-      </button>
     </div>
+  </header>
+  <main class="max-w-7xl mx-auto px-4 py-10 lg:py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <div class="lg:col-span-5 space-y-8">
+        <section class="bg-white dark:bg-darkSurface p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-white/5">
+          <div class="flex flex-col items-center mb-10">
+            <div class="relative group">
+              <img id="profile-preview" src="<%=user.image.url%>" class="w-32 h-32 rounded-full object-cover ring-4 ring-slate-50 dark:ring-white/5 shadow-xl transition-transform group-hover:scale-105">
+              <label for="profile-input" class="absolute bottom-0 right-0 bg-accent text-white p-2 rounded-full shadow-lg cursor-pointer hover:scale-110 transition-transform">
+                <i class="ri-camera-lens-line"></i>
+              </label>
+            </div>
+            <h2 class="mt-6 text-2xl font-black tracking-tight"><%=user.name%></h2>
+            <p class="text-slate-400 text-sm font-medium">@<%=user.username%></p>
+          </div>
 
-    <!-- Delete Account Modal -->
-    <div id="deleteAccountModal"
-      class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden z-50 dark:bg-[#121212]">
-      <div class="bg-white dark:bg-[#121212] rounded-lg shadow-lg p-6 w-full max-w-md">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-semibold text-gray-800 dark:text-[#B3B3B3] ">Are you absolutely sure?</h2>
-          <button id="closeModalBtn"
-            class="text-gray-600 dark:text-[#B3B3B3] hover:text-gray-800 dark:hover:text-white focus:outline-none">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <p class="text-gray-600 dark:text-[#B3B3B3] mb-6">
-          Deleting your account will remove all your stories, comments, and data permanently.</p>
-        <div class="flex justify-end">
-          <button id="cancelBtn"
-            class="bg-gray-300 dark:bg-[#121212] text-gray-800 dark:text-[#B3B3B3]  px-4 py-2 rounded mr-2 hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50">
-            Cancel
-          </button>
-          <form action="/delete?_method=DELETE" method="post">
-            <button
-              class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
-              <i class="fas fa-trash-alt mr-2"></i>Delete
+          <div class="grid grid-cols-3 gap-3 mb-10">
+            <div class="bg-slate-50 dark:bg-white/5 p-4 rounded-3xl text-center border border-transparent hover:border-accent/20 transition-all">
+                <i class="ri-heart-3-line text-xl text-red-500 mb-1 block"></i>
+                <span class="text-[10px] font-black uppercase opacity-40">Likes</span>
+            </div>
+            <a href="/following/<%=user._id%>" class="bg-slate-50 dark:bg-white/5 p-4 rounded-3xl text-center border border-transparent hover:border-accent/20 transition-all">
+                <i class="ri-user-follow-line text-xl text-accent mb-1 block"></i>
+                <span class="text-[10px] font-black uppercase opacity-40">Following</span>
+            </a>
+            <a href="/followers/<%=user._id%>" class="bg-slate-50 dark:bg-white/5 p-4 rounded-3xl text-center border border-transparent hover:border-accent/20 transition-all">
+                <i class="ri-group-line text-xl text-emerald-500 mb-1 block"></i>
+                <span class="text-[10px] font-black uppercase opacity-40">Followers</span>
+            </a>
+          </div>
+
+          <form action="/dashbord/<%=user._id%>?_method=PUT" method="post" enctype="multipart/form-data" class="space-y-6">
+            <input id="profile-input" type="file" name="dashbord[image]" class="hidden" accept="image/*">
+            
+            <div class="space-y-1">
+              <label class="text-[10px] font-black uppercase tracking-widest ml-2 opacity-50">Email Address</label>
+              <div class="w-full px-5 py-4 bg-slate-100/50 dark:bg-black/20 rounded-2xl text-slate-500 text-sm cursor-not-allowed border border-slate-100 dark:border-white/5">
+                <%= user.email %>
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-[10px] font-black uppercase tracking-widest ml-2 opacity-50">Full Name</label>
+              <input type="text" name="dashbord[name]" value="<%=user.name%>" 
+                class="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-transparent focus:ring-2 ring-accent/20 outline-none transition-all">
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-[10px] font-black uppercase tracking-widest ml-2 opacity-50">Username</label>
+              <input type="text" name="dashbord[username]" value="<%=user.username%>"
+                class="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-transparent focus:ring-2 ring-accent/20 outline-none transition-all">
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-[10px] font-black uppercase tracking-widest ml-2 opacity-50">Bio</label>
+              <input type="text" name="dashbord[bio]" value="<%=user.bio%>"
+                class="w-full px-5 py-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-transparent focus:ring-2 ring-accent/20 outline-none transition-all">
+            </div>
+
+            <button class="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-black uppercase tracking-widest shadow-xl hover:scale-[1.02] active:scale-95 transition-all">
+              Update Profile
             </button>
           </form>
-        </div>
-      </div>
-    </div>
 
-    <!-- Stories Section -->
-    <div class="stories-section dark:bg-[#121212] dark:text-[#B3B3B3] "
-      style="box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;">
-      <div class="stories-header">
-        <h2>Your Stories</h2>
-        <button class="new-story-btn bg-black dark:bg-[#121212] dark:hover:bg-primary-700">
-          <a href="/stories/newWrite" class="text-white dark:text-[#B3B3B3]"><i class="ri-add-line"></i> New Story</a>
-        </button>
+          <button id="deleteAccountBtn" class="w-full mt-4 py-4 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-2xl transition-colors">
+            <i class="ri-delete-bin-7-line mr-2"></i>Permanently Delete Account
+          </button>
+        </section>
       </div>
 
-      <div class="stories-grid" id="load" style="display: block; border-radius: 10px; height: 100%;">
-        <% if (!user.stories.length && user.stories) { %>
-          <div class="flex flex-col items-center h-full justify-center py-12">
-            <img src="/open-doodles-reading-side.gif" alt="No stories" class="w-64 h-64 object-contain mb-4">
-            <p class="text-gray-500 dark:text-[#B3B3B3] text-lg">No stories have been published yet.</p>
+      <div class="lg:col-span-7 space-y-8">
+        <section class="bg-white dark:bg-darkSurface p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-white/5 min-h-[600px]">
+          <div class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-black tracking-tighter">Your Stories</h2>
+            <a href="/stories/newWrite" class="flex items-center gap-2 bg-accent text-white px-5 py-2.5 rounded-full text-xs font-bold shadow-lg shadow-accent/20 hover:scale-105 transition-transform">
+              <i class="ri-add-circle-line text-lg"></i> Write New
+            </a>
           </div>
-          <% } else { %>
-            <% for(stories of user.stories) { %>
-              <div class="story-card mb-2 border-2 dark:bg-[#121212]">
-                <div class="story-info">
-                  <h3 class="dark:text-[#B3B3B3] ">
-                    <%= stories.title.length> 15 ? stories.title.substring(0,35 ) + '...' : stories.title %>
-                  </h3>
-                  <%if(stories.editedAt){%>
-                    <p class="date dark:text-[#B3B3B3]" data-date="<%= stories.editedAt %>">Last edited: <%=
-                        stories.editedAt %>
-                    </p>
-                    <% } %>
-                </div>
 
-                <span
-                  class="inline-flex -space-x-px overflow-hidden rounded-md border bg-white dark:bg-[#121212] shadow-sm">
-                  <form action="/stories/<%=stories._id%>/edit" method="get">
-                    <button
-                      class="inline-block px-4 py-2 text-sm font-medium text-gray-700 dark:text-[#B3B3B3] hover:bg-gray-50 dark:hover:bg-gray-600 focus:relative">
-                      Edit
-                    </button>
-                  </form>
-                  <a href="/stories/<%=stories._id%>">
-                    <button
-                      class="inline-block px-4 py-2 text-sm font-medium text-gray-700 dark:text-[#B3B3B3] hover:bg-gray-50 dark:hover:bg-gray-600 focus:relative">
-                      View
-                    </button>
-                  </a>
-                  <form action="/stories/<%=stories._id%>/delete?_method=DELETE" method="post">
-                    <button
-                      class="inline-block px-4 py-2 text-sm font-medium text-gray-700 dark:text-[#B3B3B3] hover:bg-gray-50 dark:hover:bg-gray-600 focus:relative">
-                      Delete
-                    </button>
-                  </form>
-                </span>
+          <div class="story-grid-system">
+            <% if (!user.stories || user.stories.length === 0) { %>
+              <div class="col-span-full flex flex-col items-center justify-center py-20 text-center opacity-40">
+                <i class="ri-quill-pen-line text-7xl mb-4"></i>
+                <p class="text-xl font-bold italic">No stories published yet.</p>
               </div>
+            <% } else { %>
+              <% for(stories of user.stories) { %>
+                <div class="group bg-slate-50 dark:bg-white/5 rounded-[2rem] p-6 border border-transparent hover:border-accent/30 transition-all">
+                  <div class="space-y-3 mb-6">
+                    <h3 class="text-lg font-black leading-tight group-hover:text-accent transition-colors truncate">
+                      <%= stories.title %>
+                    </h3>
+                    <% if(stories.editedAt){ %>
+                      <p class="date text-[10px] font-bold text-slate-400 uppercase tracking-widest" data-date="<%= stories.editedAt %>">
+                        Last edited: <%= stories.editedAt %>
+                      </p>
+                    <% } %>
+                  </div>
+
+                  <div class="flex items-center justify-between">
+                    <div class="flex gap-1">
+                      <a href="/stories/<%=stories._id%>/edit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-darkBg hover:text-accent transition-colors"><i class="ri-edit-line text-lg"></i></a>
+                      <a href="/stories/<%=stories._id%>" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-darkBg hover:text-accent transition-colors"><i class="ri-eye-line text-lg"></i></a>
+                    </div>
+                    <form action="/stories/<%=stories._id%>/delete?_method=DELETE" method="post">
+                      <button class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                        <i class="ri-delete-bin-line text-lg"></i>
+                      </button>
+                    </form>
+                  </div>
+                </div>
               <% } %>
-                <% } %>
+            <% } %>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div id="deleteAccountModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-6">
+    <div class="bg-white dark:bg-darkSurface p-10 rounded-[2.5rem] w-full max-w-md shadow-2xl text-center">
+      <div class="w-20 h-20 bg-red-100 dark:bg-red-900/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="ri-error-warning-line text-4xl"></i>
+      </div>
+      <h2 class="text-2xl font-black tracking-tight mb-4">Are you absolutely sure?</h2>
+      <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8">
+        Deleting your account is permanent. All your stories, comments, and data will be removed forever.
+      </p>
+      <div class="grid grid-cols-2 gap-4">
+        <button id="cancelBtn" class="py-4 bg-slate-100 dark:bg-white/5 rounded-2xl font-bold hover:bg-slate-200 transition-colors">No, Keep it</button>
+        <form action="/delete?_method=DELETE" method="post">
+          <button class="w-full py-4 bg-red-500 text-white rounded-2xl font-bold shadow-lg shadow-red-200 dark:shadow-none hover:bg-red-600 transition-colors">Yes, Delete</button>
+        </form>
       </div>
     </div>
   </div>
-  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
   <script>
-    // Profile dropdown toggle
-    const profileButton = document.getElementById('profile-menu-button');
-    const profileDropdown = document.getElementById('profile-dropdown');
-
-    profileButton.addEventListener('click', () => {
-      profileDropdown.classList.toggle('hidden');
-    });
-
-    window.addEventListener('click', (event) => {
-      if (!profileButton.contains(event.target)) {
-        profileDropdown.classList.add('hidden');
-      }
-    });
-
-    // Profile image preview
-    const profilePreview = document.getElementById("profile-preview");
-    const profileInput = document.getElementById("profile-input");
-
-    profileInput.addEventListener("change", function (event) {
-      const file = event.target.files[0];
-
-      if (file) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          profilePreview.src = e.target.result;
-          profilePreview.style.display = "block";
-        };
-
-        reader.readAsDataURL(file);
-      } else {
-        profilePreview.src = "";
-        profilePreview.style.display = "none";
-      }
-    });
-
-    // Format dates
-    document.querySelectorAll('.date').forEach(el => {
-      const rawDate = new Date(el.dataset.date);
-      el.textContent = 'Last edited: ' + moment(rawDate).fromNow();
-    });
-
-    // Delete account modal
-    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
-    const deleteAccountModal = document.getElementById('deleteAccountModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
-
-    deleteAccountBtn.addEventListener('click', () => {
-      deleteAccountModal.classList.remove('hidden');
-    });
-
-    closeModalBtn.addEventListener('click', () => {
-      deleteAccountModal.classList.add('hidden');
-    });
-
-    cancelBtn.addEventListener('click', () => {
-      deleteAccountModal.classList.add('hidden');
-    });
-
-    // Dark Mode Implementation
-    document.addEventListener('DOMContentLoaded', function () {
+    // Logic: Theme Implementation
+    document.addEventListener('DOMContentLoaded', () => {
       const themeToggle = document.getElementById('theme-toggle');
       const themeIcon = document.getElementById('theme-icon');
+      const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
-      // Check for saved theme or prefer color scheme
-      const savedTheme = localStorage.getItem('theme') ||
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-      // Apply saved theme
       if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark');
-        themeIcon.classList.remove('ri-sun-line');
-        themeIcon.classList.add('ri-moon-line');
-      } else {
-        document.documentElement.classList.remove('dark');
-        themeIcon.classList.remove('ri-moon-line');
-        themeIcon.classList.add('ri-sun-line');
+        themeIcon.className = 'ri-moon-clear-line';
       }
 
-      // Toggle theme on button click
-      themeToggle.addEventListener('click', function () {
+      themeToggle.onclick = () => {
         const isDark = document.documentElement.classList.toggle('dark');
-
-        if (isDark) {
-          themeIcon.classList.remove('ri-sun-line');
-          themeIcon.classList.add('ri-moon-line');
-          localStorage.setItem('theme', 'dark');
-        } else {
-          themeIcon.classList.remove('ri-moon-line');
-          themeIcon.classList.add('ri-sun-line');
-          localStorage.setItem('theme', 'light');
-        }
-      });
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeIcon.className = isDark ? 'ri-moon-clear-line' : 'ri-sun-line';
+      };
     });
 
-  </script>
-  <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
-</body>
+     // Profile Toggle
+    const pBtn = document.getElementById('profile-btn');
+    const pDropdown = document.getElementById('profile-dropdown');
+    if(pBtn) {
+        pBtn.onclick = (e) => { e.stopPropagation(); pDropdown.classList.toggle('hidden'); };
+        window.onclick = () => pDropdown.classList.add('hidden');
+    }
 
+    // Logic: Image Preview
+    const pInput = document.getElementById("profile-input");
+    const pPreview = document.getElementById("profile-preview");
+    pInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => pPreview.src = event.target.result;
+        reader.readAsDataURL(file);
+      }
+    };
+
+    // Logic: Date Formatting
+    document.querySelectorAll('.date').forEach(el => {
+      el.textContent = 'Edited ' + moment(el.dataset.date).fromNow();
+    });
+
+    // Logic: Modal Handling
+    const dModal = document.getElementById('deleteAccountModal');
+    document.getElementById('deleteAccountBtn').onclick = () => dModal.classList.remove('hidden');
+    document.getElementById('cancelBtn').onclick = () => dModal.classList.add('hidden');
+    
+    // Close on outside click or Esc
+    window.addEventListener('keydown', (e) => { if(e.key === 'Escape') dModal.classList.add('hidden'); });
+  </script>
+</body>
 </html>

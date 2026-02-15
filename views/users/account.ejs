@@ -1,1011 +1,405 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="<%= pageDescription %>">
-    <title>
-        <%=pageTitle%> | Diary
-    </title>
-    <link rel="icon" type="image/png">
+    <title><%=pageTitle%> | Diary</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-
-
     <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
 
     <script>
-
         tailwind.config = {
             darkMode: 'class',
-
+            theme: {
+                extend: {
+                    colors: { accent: '#3b82f6', darkBg: '#121212', darkSurface: '#1e1e1e' }
+                }
+            }
         }
     </script>
+
     <style>
-        #filter-options {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        .logo-font { font-family: 'Pacifico', cursive; }
+        
+        /* Cropper Styling */
+        .profile-cropper-circle .cropper-view-box, .profile-cropper-circle .cropper-face { border-radius: 50%; }
+        
+        /* Filter Button Active State */
+        #filter-options button.ring-2 { @apply bg-accent text-white border-accent shadow-lg shadow-accent/30; }
+        #banner-filter-options button.ring-2 { @apply bg-accent text-white border-accent shadow-lg shadow-accent/30; }
 
-        #filter-options button {
-            transition: all 0.2s ease;
-            font-size: 0.8rem;
-            padding: 0.375rem 0.5rem;
-        }
-
-        #filter-options button:hover {
-            background-color: #e5e7eb;
-        }
-
-        #filter-options button.ring-2 {
-            background-color: #dbeafe;
-            color: #1e40af;
-        }
-
-        .navbar {
-            font-family: "Pacifico";
-
-        }
-
-
-        @media (prefers-color-scheme: dark) {
-            #filter-options button:hover {
-                background-color: #4b5563;
-            }
-
-            #filter-options button.ring-2 {
-                background-color: #1e3a8a;
-                color: #eff6ff;
-            }
-        }
-
-
-        button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-[#121212] text-gray-800 dark:text-gray-200 transition-colors duration-200">
-    <div id="main" class="min-h-screen flex flex-col">
-        <nav class="bg-white dark:bg-[#121212] shadow-lg sticky top-0 z-50">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-                    <div class="flex items-center justify-between navbar">
+    <header class="sticky top-0 z-50 w-full border-b border-slate-100 dark:border-slate-900 bg-white/80 dark:bg-slateCustom-950/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+      <a href="/stories" class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+        <span class="bg-accent w-8 h-8 rounded-lg flex items-center justify-center text-white text-base">D</span>
+        DIARY<span class="text-accent">.</span>
+      </a>
 
-                        <div class="flex-shrink-0 flex items-center">
-                            <a href="/stories">
-                                <span class=" dark:text-white">
-                                    <i class="fas fa-feather-alt mr-3 text-accent"></i>Diary
-                                </span>
-                            </a>
-                        </div>
-
-
-                        <div class="hidden md:ml-8 md:flex md:space-x-8">
-                            <a href="/stories"
-                                class="flex items-center h-16 px-2 text-sm font-medium text-gray-900 dark:text-white border-b-2 border-accent">
-
-                                <span>Stories</span>
-                            </a>
-                            <a href="/stories/newWrite"
-                                class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
-
-                                <span>Write</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center">
-                        <button id="theme-toggle" class="p-2 rounded-full text-gray-800 dark:text-gray-200">
-                            <i id="theme-icon" class="ri-sun-line"></i>
-                        </button>
-
-
-                        <div class="flex-shrink-0 mr-2">
-                            <a href="/search">
-                                <button
-                                    class="p-2 rounded-full bg-primary-50 dark:bg-primary-900/30 hover:bg-primary-100 dark:hover:bg-primary-800/40 text-primary-600 dark:text-primary-400 transition-all duration-200">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </a>
-                        </div>
-
-
-                        <!-- Profile dropdown -->
-                        <div class="ml-3 relative">
-                            <div>
-                                <button id="profile-menu-button" type="button"
-                                    class="flex items-center text-sm rounded-full " aria-expanded="false"
-                                    aria-haspopup="true">
-                                    <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400"
-                                        src="<%=user.image.url  %>" alt="User profile">
-                                </button>
-                            </div>
-
-                            <!-- Dropdown menu -->
-                            <div id="profile-dropdown"
-                                class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 dark:text[#B3B3B3] bg-white dark:bg-[#121212] ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
-                                <div class="px-4 py-3 border-b border-gray-100">
-                                    <div class="flex items-center space-x-3">
-                                        <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400"
-                                            src="<%=user.image.url  %>" alt="User profile">
-                                        <div>
-                                            <p class="text-sm font-semibold ">
-                                                <%=user.name%>
-                                            </p>
-                                            <p class="text-xs text-gray-500">@<%=user.username%>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="/dashbord"
-                                    class="block px-4 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                                    role="menuitem">
-                                    <i class="ri-dashboard-line"></i> Dashboard
-                                </a>
-                                <a href="/profile"
-                                    class="block px-4 py-2 text-sm  hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                                    role="menuitem">
-                                    <i class="ri-user-line"></i> Profile
-                                </a>
-                                </a>
-                                <a href="/stories"
-                                    class="block px-4 py-2 text-sm  hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                                    role="menuitem">
-                                    <i class="ri-stack-line"></i> Stories
-                                </a>
-                                <a href="/stories/newWrite"
-                                    class="block px-4 py-2 text-sm  hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                                    role="menuitem">
-                                    <i class="ri-edit-2-line"></i> Write
-
-                                    <div class="border-t border-gray-100 mt-1">
-                                        <a href="/logout"
-                                            class="block px-4 py-2 text-sm  hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
-                                            role="menuitem">
-                                            <i class="ri-logout-box-r-line"></i> Sign out
-                                        </a>
-                                    </div>
-                            </div>
-                        </div>
-
-
-                    </div>
+      <div class="flex items-center gap-4">
+        <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">
+          <i id="theme-icon" class="ri-moon-clear-line text-xl"></i>
+        </button>
+           <a href="/search" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-colors text-slate-400 hover:text-accent">
+          <i class="ri-search-line text-xl"></i>
+        </a>
+        <% if(currUser) { %>
+          <div class="relative">
+            <button id="profile-btn" class="flex items-center gap-3 p-1 pr-3 bg-slate-50 dark:bg-slate-900 rounded-full hover:ring-2 ring-accent/20 transition-all">
+              <img src="<%=user.image.url%>" class="w-8 h-8 rounded-full object-cover" alt="Profile">
+              <span class="text-xs font-bold hidden sm:block"><%=user.username%></span>
+            </button>
+            
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-60 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 py-2 z-[70]">
+                <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/50 mb-1">
+                  <p class="text-sm font-bold truncate"><%=user.name%></p>
+                  <p class="text-[10px] text-slate-500 uppercase tracking-widest">Member</p>
+                </div>
+                <a href="/dashbord" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"><i class="ri-dashboard-line"></i> Dashboard</a>
+                <a href="/profile" class="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"><i class="ri-user-line"></i> Profile</a>
+                <div class="border-t border-slate-50 dark:border-slate-800 mt-1">
+                  <a href="/logout" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"><i class="ri-logout-box-line"></i> Logout</a>
                 </div>
             </div>
-
-
-        </nav>
-
-        <!-- Profile Content -->
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-            <div class="bg-white dark:bg-[#121212] rounded-xl shadow overflow-hidden">
-                <!-- Banner Section -->
-                <div class="relative h-60 sm:h-80 w-full bg-gray-100 dark:bg-gray-700">
-                    <% if(profile.banner.url){ %>
-                        <img id="banner-trigger" src="<%=profile.banner.url%>" alt="Profile banner"
-                            class="w-full h-full  object-cover" />
-                        <%}else {%>
-                            <img src="https://i.pinimg.com/736x/7c/05/b9/7c05b92ca71023ebde50496547407ac5.jpg"
-                                alt="Default banner" class="w-full h-full object-cover" />
-                            <%}%>
-
-                                <% if (profile._id.equals(currUser._id)) {%>
-                                    <button id="banner-icon"
-                                        class="absolute bottom-4 right-4 p-2 z-20 bg-white dark:bg-gray-800 rounded-full shadow-md text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                        <i class="ri-pencil-fill text-lg"></i>
-                                    </button>
-                                    <% } %>
-                </div>
-
-                <div id="banner-modal"
-                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80 hidden">
-
-                    <div class="relative w-full max-w-4xl">
-                        <button id="modal-close"
-                            class="absolute -top-4 -right-4 md:-top-5 md:-right-5 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-200 transition-colors z-20">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-
-                        <img class="rounded-lg shadow-xl w-full h-auto"
-                            src="<%=profile.banner.url  %>"
-                            alt="Enlarged user cover photo">
-                    </div>
-
-                </div>
-                <!-- Profile Info Section -->
-                <div class="relative px-4 sm:px-6 pb-5">
-                    <!-- Profile Image -->
-                    <div class="relative -mt-16 flex justify-center sm:justify-start">
-                        <div class="relative">
-                            <img id="profile-trigger" src="<%=profile.image.url%>" alt="Profile picture"
-                                class="h-32 w-32 rounded-full border-4 border-white dark:border-gray-800 object-cover shadow-md" />
-                            <% if (profile._id.equals(currUser._id)) {%>
-                                <button id="profile-img-btn"
-                                    class="absolute bottom-0 right-0 p-2 bg-white dark:bg-gray-800 rounded-full shadow-md text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                    <i class="ri-camera-fill text-lg"></i>
-                                </button>
-                                <% } %>
-                        </div>
-                    </div>
-
-                    <!-- User Info -->
-                    <div class="mt-5 sm:mt-3 sm:ml-36 flex flex-col sm:flex-row sm:justify-between">
-                        <div>
-                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                                <%=profile.username%>
-                            </h1>
-                            <div class="mt-2 flex items-center">
-                                <span class="text-gray-700 dark:text-gray-300 font-semibold">
-                                    <%=profile.followers.length %>
-                                </span>
-                                <a href="/followers/<%=profile._id%>"
-                                    class="ml-1 text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300">followers</a>
-                            </div>
-                        </div>
-
-                        <div class="mt-4 sm:mt-0 flex items-center space-x-3">
-                            <% if (!profile._id.equals(currUser._id)) { %>
-                                <a href="/chat/<%=profile._id %>"
-                                    class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                    <i class="ri-message-3-line mr-2"></i>
-                                    Message
-                                </a>
-
-                                <% if (currUser.following.some(followingId=> followingId.equals(profile._id))) { %>
-                                    <form action="/unfollow/<%= profile._id %>" method="post">
-                                        <button
-                                            class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-blue-400 dark:text-b bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                            Unfollow
-                                        </button>
-                                    </form>
-                                    <% } else { %>
-                                        <form action="/follow/<%= profile._id %>" method="post">
-                                            <button
-                                                class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600  text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                                Follow
-                                            </button>
-                                        </form>
-                                        <% } %>
-                                            <% } else { %>
-                                                <a href="/dashbord"
-                                                    class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                                    <i class="ri-pencil-fill mr-2"></i>
-                                                    Edit Profile
-                                                </a>
-                                                <% } %>
-                        </div>
-                    </div>
-
-                    <!-- Bio Section -->
-                    <div class="mt-6 border-t border-gray-200 dark:border-gray-700 pt-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Bio</h3>
-                        <p class="mt-2 text-gray-600 dark:text-gray-300">
-                            <%=profile.bio%>
-                        </p>
-                    </div>
-                </div>
+          </div>
+        
+        <% } else { %>
+          <a href="/login" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2.5 rounded-full text-sm font-bold">Login</a>
+        <% } %>
+      </div>
+    </div>
+  </header>
+    <main class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+        <div class="relative rounded-[2.5rem] h-56 sm:h-96 w-full bg-slate-200 dark:bg-slate-800 overflow-visible shadow-2xl">
+            <div class="w-full h-full rounded-[2.5rem] overflow-hidden">
+                <img id="banner-trigger" src="<%= profile.banner.url || 'https://i.pinimg.com/736x/7c/05/b9/7c05b92ca71023ebde50496547407ac5.jpg' %>" class="w-full h-full object-cover cursor-pointer" />
             </div>
-            <div id="profile-modal"
-                class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 hidden">
-
-                <div class="relative bg-white p-4 rounded-lg shadow-xl max-w-xs w-full text-center">
-                    <button id="profile-modal-close"
-                        class="absolute -top-3 -right-3 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-200 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-
-                    <img class="w-64 h-64 rounded-full mx-auto border-8 border-gray-100" src="<%=profile.image.url  %>"
-                        alt="User profile photo">
-
-                   
-                </div>
-            </div>
-            <!-- Stories Section -->
-            <div class="mt-8 dark:bg-[#121212]">
-                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Stories</h2>
-
-                <% if (!profile.stories.length && profile.stories) { %>
-                    <div class="flex flex-col items-center justify-center py-12">
-                        <img src="/open-doodles-reading-side.gif" alt="No stories"
-                            class="w-64 h-64 object-contain mb-4">
-                        <p class="text-gray-500 dark:text-white text-lg">No stories have been published yet.</p>
-                    </div>
-                    <% } else { %>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                            <% for(stories of profile.stories.reverse()){ %>
-                                <a href="/stories/<%=stories._id%>" class="block group ">
-                                    <div
-                                        class="bg-white dark:bg-[#121212] overflow-hidden rounded-lg shadow-md transition-all duration-300 hover:shadow-xl hover:scale-[1.02]">
-                                        <div class="h-60  overflow-hidden">
-                                            <img src="<%=stories.image.url%>" alt="Story cover"
-                                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                        </div>
-                                        <div class="p-4">
-                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">
-                                                <%=stories.title%>
-                                            </h3>
-                                            <div class="mt-3 flex items-center justify-between">
-                                                <div class="flex items-center text-gray-500 dark:text-gray-400">
-                                                    <i class="fa-regular fa-heart mr-1"></i>
-                                                    <span>
-                                                        <%=stories.likesCounts%>
-                                                    </span>
-                                                </div>
-                                                <div class="flex items-center text-gray-500 dark:text-gray-400">
-                                                    <i class="fa-regular fa-eye mr-1"></i>
-                                                    <span>
-                                                        <%=stories.views.length%>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                                <% } %>
-                        </div>
-                        <% } %>
-            </div>
+            <% if (profile._id.equals(currUser._id)) { %>
+                <button id="banner-icon" class="absolute -bottom-4 right-8 md:bottom-6 md:right-8 p-3.5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 text-accent rounded-full shadow-2xl z-40 transition-transform active:scale-95">
+                    <i class="ri-pencil-fill text-xl"></i>
+                </button>
+            <% } %>
         </div>
 
-        <!-- Modal for Banner Upload -->
-        <div id="banner-form" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-lg w-full mx-4">
-                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 p-4">
-                    <h2 class="text-xl font-semibold dark:text-white">Background Photo</h2>
-                    <div class="flex items-center space-x-2">
-                        <% if(profile.banner.url){ %>
-                            <form action="/profile/<%=profile._id%>/delete?_method=PUT" method="post">
-                                <button
-                                    class="text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400"
-                                    type="submit">
-                                    <i class="ri-delete-bin-6-line text-xl"></i>
-                                </button>
-                            </form>
-                            <% } %>
-                                <button id="banner-form-close"
-                                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
-                                    <i class="ri-close-large-line text-2xl"></i>
-                                </button>
-                    </div>
-                </div>
+        <div class="relative px-6 -mt-12 md:-mt-16 flex flex-col sm:flex-row items-end justify-between gap-6 mb-12">
+            <div class="relative group">
+                <img id="profile-trigger" src="<%=profile.image.url%>" class="h-40 w-40 md:h-44 md:w-44 rounded-full border-8 border-slate-50 dark:border-darkBg object-cover shadow-2xl cursor-pointer" />
+                <% if (profile._id.equals(currUser._id)) { %>
+                    <button id="profile-img-btn" class="absolute bottom-2 right-2 p-3 bg-accent text-white rounded-full shadow-lg border-4 border-slate-50 dark:border-darkBg z-40">
+                        <i class="ri-camera-fill"></i>
+                    </button>
+                <% } %>
+            </div>
 
-                <div class="p-4">
-                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 h-64">
-                        <% if(profile.banner.url){ %>
-                            <img id="image-preview" src="<%=profile.banner.url%>" alt="Banner preview"
-                                class="w-full h-full object-cover" />
-                            <% } else { %>
-                                <img id="image-preview"
-                                    src="https://i.pinimg.com/736x/7c/05/b9/7c05b92ca71023ebde50496547407ac5.jpg"
-                                    alt="Default banner" class="w-full h-full object-cover" />
-                                <% } %>
-                    </div>
-
-                    <form action="/profile/<%=profile._id%>/banner?_method=PUT" method="post"
-                        enctype="multipart/form-data" class="space-y-4">
-                        <input type="file" id="image-input" name="image" class="hidden" accept="image/*" />
-                        <div class="flex items-center justify-between">
-                            <button id="img-cng" type="button"
-                                class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                Change Photo
-                            </button>
-                            <button type="submit"
-                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-700 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                Save
-                            </button>
-                        </div>
+            <div class="flex items-center gap-3 pb-6">
+                <% if (!profile._id.equals(currUser._id)) { %>
+                    <a href="/chat/<%=profile._id %>" class="px-6 py-2.5 bg-white dark:bg-slate-900 rounded-full border dark:border-slate-800 font-bold text-sm">Message</a>
+                    <form action="/<%= currUser.following.some(id => id.equals(profile._id)) ? 'unfollow' : 'follow' %>/<%= profile._id %>" method="post">
+                        <button class="px-8 py-2.5 bg-accent text-white rounded-full font-bold text-sm shadow-xl"><%= currUser.following.some(id => id.equals(profile._id)) ? 'Unfollow' : 'Follow' %></button>
                     </form>
-                </div>
-                <div id="banner-modal"
-                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-80 hidden">
-
-                    <div class="relative w-full max-w-4xl">
-                        <button id="modal-close"
-                            class="absolute -top-4 -right-4 md:-top-5 md:-right-5 bg-white rounded-full p-1.5 shadow-lg hover:bg-gray-200 transition-colors z-20">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-
-                        <img class="rounded-lg shadow-xl w-full h-auto" src="<%=profile.banner.url%>"
-                            alt="Enlarged user cover photo">
-                    </div>
-
-                </div>
+                <% } else { %>
+                    <a href="/dashbord" class="px-8 py-2.5 bg-accent text-white rounded-full font-bold text-sm shadow-xl">Edit Profile</a>
+                <% } %>
             </div>
         </div>
 
-        <!-- Modal for Profile Photo Upload -->
-        <div id="profile-form"
-            class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
-                <div class="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 p-4">
-                    <h2 class="text-xl font-semibold dark:text-white">Profile Photo</h2>
-                    <button id="profile-form-close"
-                        class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
-                        <i class="ri-close-large-line text-2xl"></i>
-                    </button>
-                </div>
-
-                <div class="p-4">
-                    <div class="flex justify-center mb-4">
-                        <div class="h-80 w-80 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
-                            <% if(profile.image.url) { %>
-                                <img id="profile-preview" src="<%=profile.image.url%>" alt="Profile preview"
-                                    class="w-full h-full object-cover" />
-                                <% } else { %>
-                                    <img id="profile-preview"
-                                        src="https://i.pinimg.com/736x/7c/05/b9/7c05b92ca71023ebde50496547407ac5.jpg"
-                                        alt="Default profile" class="w-full h-full object-cover" />
-                                    <% } %>
-                        </div>
-                    </div>
-
-                    <% if (profile._id.equals(currUser._id)) { %>
-                        <form action="/profile/<%=profile._id%>/image?_method=PUT" method="post"
-                            enctype="multipart/form-data" class="space-y-4">
-                            <input type="file" id="profile-input" name="prof-image" class="hidden" accept="image/*" />
-                            <div class="flex items-center justify-between">
-                                <button id="prof-cng" type="button"
-                                    class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 shadow-sm text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                    Add Photo
-                                </button>
-                                <button type="submit"
-                                    class="inline-flex  items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 bg-blue-700  dark:hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                    Save
-                                </button>
-                            </div>
-                        </form>
-                        <% } %>
-                </div>
+        <div class="px-6 mb-16">
+            <h1 class="text-4xl font-black tracking-tight"><%=profile.username%></h1>
+            <div class="mt-4 flex gap-6 text-sm font-bold opacity-70 uppercase tracking-widest text-[10px]">
+                <a href="/followers/<%=profile._id%>" class="hover:text-accent transition-colors"><%=profile.followers.length %> Followers</a>
+                <span><%=profile.stories.length%> Stories</span>
             </div>
+            <p class="text-slate-500 dark:text-slate-400 mt-6 max-w-2xl leading-relaxed text-lg"><%=profile.bio%></p>
         </div>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-6 pb-32">
+            <% for(stories of profile.stories.reverse()){ %>
+                <a href="/stories/<%=stories._id%>" class="group bg-white dark:bg-darkSurface rounded-3xl border dark:border-white/5 overflow-hidden hover:shadow-2xl transition-all duration-300">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="<%=stories.image.url%>" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    </div>
+                    <div class="p-5 flex justify-between items-center">
+                        <h3 class="font-bold text-sm line-clamp-1"><%=stories.title%></h3>
+                        <span class="text-accent text-[10px] font-black"><i class="ri-eye-line"></i> <%=stories.views.length%></span>
+                    </div>
+                </a>
+            <% } %>
+        </div>
+    </main>
 
+    <div id="banner-modal" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-6">
+        <div class="relative max-w-5xl w-full">
+            <button id="modal-close" class="absolute -top-12 right-0 text-white text-3xl"><i class="ri-close-line"></i></button>
+            <img class="rounded-3xl shadow-2xl w-full" src="<%=profile.banner.url%>">
+        </div>
+    </div>
+    <div id="profile-modal" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-6">
+        <div class="relative max-w-md w-full">
+            <button id="profile-modal-close" class="absolute -top-12 right-0 text-white text-3xl"><i class="ri-close-line"></i></button>
+            <img class="w-full aspect-square rounded-full border-4 border-white/20 object-cover shadow-2xl" src="<%=profile.image.url%>">
+        </div>
     </div>
 
+    <div id="profile-form" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[110] flex items-center justify-center hidden p-4">
+        <div class="bg-white dark:bg-darkSurface rounded-[2.5rem] shadow-2xl max-w-md w-full overflow-hidden">
+            <div class="p-6 border-b dark:border-white/5 flex justify-between items-center">
+                <h2 class="font-bold uppercase tracking-widest text-xs">Profile Photo</h2>
+                <button id="profile-form-close" class="p-2"><i class="ri-close-line text-xl"></i></button>
+            </div>
+            <div class="p-6">
+                <div class="mx-auto h-64 w-64 rounded-full overflow-hidden profile-cropper-circle mb-6">
+                    <img id="profile-preview" src="<%=profile.image.url%>" class="max-w-full">
+                </div>
+                <form action="/profile/<%=profile._id%>/image?_method=PUT" method="post" enctype="multipart/form-data">
+                    <input type="file" id="profile-input" name="prof-image" class="hidden" accept="image/*" />
+                    <div class="flex justify-between items-center mt-6">
+                        <button id="prof-cng" type="button" class="px-6 py-2 rounded-xl border dark:border-slate-800 text-xs font-bold transition-all hover:bg-slate-50">Add Photo</button>
+                        <button type="submit" class="px-8 py-2.5 bg-accent text-white rounded-xl font-bold shadow-lg shadow-accent/20 transition-all active:scale-95">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="banner-form" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[110] flex items-center justify-center hidden p-4">
+        <div class="bg-white dark:bg-darkSurface rounded-[2.5rem] shadow-2xl max-w-2xl w-full overflow-hidden">
+            <div class="p-6 border-b dark:border-white/5 flex justify-between items-center">
+                <h2 class="font-bold uppercase tracking-widest text-xs">Banner Image</h2>
+                <div class="flex items-center gap-2">
+                    <% if(profile.banner.url){ %>
+                    <form action="/profile/<%=profile._id%>/delete?_method=PUT" method="post"><button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"><i class="ri-delete-bin-6-line"></i></button></form>
+                    <% } %>
+                    <button id="banner-form-close" class="p-2"><i class="ri-close-line text-xl"></i></button>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="h-64 w-full rounded-2xl overflow-hidden bg-slate-100 dark:bg-black/20 mb-4">
+                    <img id="image-preview" src="<%= profile.banner.url || 'https://via.placeholder.com/800x400' %>" class="max-w-full" />
+                </div>
+                <form action="/profile/<%=profile._id%>/banner?_method=PUT" method="post" enctype="multipart/form-data">
+                    <input type="file" id="image-input" name="image" class="hidden" accept="image/*" />
+                    <div class="flex justify-between items-center mt-6">
+                        <button id="img-cng" type="button" class="px-6 py-2 rounded-xl border dark:border-slate-800 text-xs font-bold transition-all hover:bg-slate-50">Change Photo</button>
+                        <button type="submit" class="px-8 py-2.5 bg-accent text-white rounded-xl font-bold shadow-lg shadow-accent/20 transition-all active:scale-95">Save Banner</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="red-dot" class="hidden fixed bottom-6 left-6 z-50 bg-red-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-2xl animate-bounce"></div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const profileForm = document.getElementById('profile-form');
-            const profileFormClose = document.getElementById('profile-form-close');
-            const profileInput = document.getElementById('profile-input');
-            const profilePreview = document.getElementById('profile-preview');
-            const profChangeBtn = document.getElementById('prof-cng');
-
-            let cropper;
-            let currentFilter = 'none';
-            let filterOptionsCreated = false;
-
-            function hideProfileForm() {
-                profileForm.classList.add('hidden');
-                if (cropper) {
-                    cropper.destroy();
-                    cropper = null;
-                }
-            }
-
-            function showProfileForm() {
-                profileForm.classList.remove('hidden');
-
-
-                if (!cropper && profilePreview.src) {
-                    initializeCropper();
-                }
-            }
-
-            function initializeCropper() {
-
-                profilePreview.style.filter = 'none';
-                currentFilter = 'none';
-
-
-                if (cropper) {
-                    cropper.destroy();
-                }
-
-                // Initialize new cropper
-                cropper = new Cropper(profilePreview, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                    guides: true,
-                    autoCropArea: 0.8,
-                    responsive: true,
-                    ready: function () {
-                        if (!filterOptionsCreated) {
-                            createFilterOptions();
-                            filterOptionsCreated = true;
-                        }
-                    }
-                });
-            }
-
-            function handleFileSelect(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    profilePreview.src = e.target.result;
-
-
-                    filterOptionsCreated = false;
-
-
-                    setTimeout(() => {
-                        showProfileForm();
-                    }, 100);
-                };
-                reader.readAsDataURL(file);
-            }
-
-            function createFilterOptions() {
-
-                const existingFilters = document.getElementById('filter-options');
-                if (existingFilters) {
-                    existingFilters.remove();
-                }
-
-
-                const filterOptions = document.createElement('div');
-                filterOptions.id = 'filter-options';
-                filterOptions.className = 'mt-4 grid grid-cols-4 gap-2';
-
-                const filters = [
-                    { name: 'None', value: 'none' },
-                    { name: 'Classic', value: 'contrast(130%) brightness(100%) saturate(120%)' },
-                    { name: 'Cinematic', value: 'contrast(150%) saturate(100%) brightness(90%) sepia(20%)' },
-                    { name: 'Golden Hour', value: 'hue-rotate(60deg) saturate(120%) brightness(110%)' },
-                    { name: 'Film Noir', value: 'grayscale(100%) contrast(180%) brightness(75%)' },
-                    { name: 'Moody', value: 'contrast(150%) brightness(80%) saturate(140%)' },
-                    { name: 'Warm Fade', value: 'sepia(40%) saturate(130%) contrast(110%) brightness(100%)' },
-                    { name: 'Cool Elegance', value: 'hue-rotate(210deg) brightness(95%) saturate(140%)' },
-                    { name: 'Vintage Charm', value: 'grayscale(60%) sepia(50%) contrast(120%)' },
-                    { name: 'Bright Vibes', value: 'contrast(140%) brightness(140%) saturate(130%)' },
-                    { name: 'High Definition', value: 'contrast(200%) brightness(120%) saturate(100%)' },
-                    { name: 'Soft Focus', value: 'blur(2px) contrast(90%) brightness(100%)' },
-                    { name: 'Modern Classic', value: 'contrast(120%) brightness(110%) saturate(150%)' },
-                ];
-
-                filters.forEach(filter => {
-                    const button = document.createElement('button');
-                    button.type = 'button';
-                    button.className = 'px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded-md text-sm text-center';
-                    button.textContent = filter.name;
-                    button.addEventListener('click', function () {
-                        applyFilter(filter.value);
-
-
-                        document.querySelectorAll('#filter-options button').forEach(btn => {
-                            btn.classList.remove('ring-2', 'ring-blue-500');
-                        });
-                        button.classList.add('ring-2', 'ring-blue-500');
-                    });
-                    filterOptions.appendChild(button);
-                });
-
-
-                const formActions = document.querySelector('#profile-form form .flex.items-center.justify-between');
-                if (formActions) {
-                    formActions.parentNode.insertBefore(filterOptions, formActions);
-                } else {
-
-                    document.querySelector('#profile-form form').appendChild(filterOptions);
-                }
-
-                if (!document.getElementById('selected-filter')) {
-                    const filterInput = document.createElement('input');
-                    filterInput.type = 'hidden';
-                    filterInput.id = 'selected-filter';
-                    filterInput.name = 'filter';
-                    filterInput.value = 'none';
-                    document.querySelector('#profile-form form').appendChild(filterInput);
-                }
-            }
-
-            function applyFilter(filterValue) {
-                currentFilter = filterValue === 'none' ? 'none' : filterValue;
-
-
-                const filterInput = document.getElementById('selected-filter');
-                if (filterInput) {
-                    filterInput.value = filterValue;
-                }
-
-
-                profilePreview.style.filter = filterValue === 'none' ? '' : filterValue;
-
-
-                if (cropper) {
-                    const cropperElements = [
-                        document.querySelector('.cropper-view-box'),
-                        document.querySelector('.cropper-face'),
-                        document.querySelector('.cropper-canvas')
-                    ];
-
-                    cropperElements.forEach(element => {
-                        if (element) {
-                            element.style.filter = filterValue === 'none' ? '' : filterValue;
-                        }
-                    });
-                }
-            }
-
-            function handleFormSubmit(event) {
-                event.preventDefault();
-
-                const submitBtn = event.target.querySelector('button[type="submit"]');
-                const originalBtnText = submitBtn.textContent;
-                submitBtn.textContent = 'Saving...';
-                submitBtn.disabled = true;
-
-                if (!cropper) {
-                    event.target.submit();
-                    return;
-                }
-
-
-                const canvas = cropper.getCroppedCanvas({
-                    width: 300,
-                    height: 300,
-                    fillColor: '#fff'
-                });
-
-
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = canvas.width;
-                tempCanvas.height = canvas.height;
-                const ctx = tempCanvas.getContext('2d');
-
-                if (currentFilter !== 'none') {
-                    ctx.filter = currentFilter;
-                }
-                ctx.drawImage(canvas, 0, 0);
-
-
-                tempCanvas.toBlob(function (blob) {
-                    const formData = new FormData();
-                    formData.append('prof-image', blob, 'profile.png');
-
-
-                    const form = document.querySelector('#profile-form form');
-                    const url = form.action;
-
-                    fetch(url, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json'
-                        }
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('Upload successful', data);
-                            hideProfileForm();
-                            window.location.reload();
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('There was an error uploading your image. Please try again.');
-                            submitBtn.textContent = originalBtnText;
-                            submitBtn.disabled = false;
-                        });
-                }, 'image/png', 0.9);
-            }
-
-            // Event listeners
-            if (profileFormClose) {
-                profileFormClose.addEventListener('click', hideProfileForm);
-            }
-
-            if (profChangeBtn) {
-                profChangeBtn.addEventListener('click', function () {
-                    profileInput.click();
-                });
-            }
-
-            if (profileInput) {
-                profileInput.addEventListener('change', handleFileSelect);
-            }
-
-            if (profileForm && !profileForm.classList.contains('hidden') && profilePreview.src) {
-                initializeCropper();
-            }
-
-            const form = document.querySelector('#profile-form form');
-            if (form) {
-                form.addEventListener('submit', handleFormSubmit);
-            }
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            checkUnreadNotifications();
-
-
-            setInterval(checkUnreadNotifications, 5000);
-        });
-
-        // Function to check unread notifications
-        function checkUnreadNotifications() {
-            fetch('/check-unread-notifications')
-                .then(response => response.json())
-                .then(data => {
-                    const redDot = document.getElementById("red-dot");
-                    if (data.success && data.unreadCount > 0) {
-                        redDot.classList.remove("hidden");
-                        redDot.textContent = data.unreadCount;
-                    } else {
-                        redDot.classList.add("hidden");
-                    }
-                })
-                .catch(error => console.error("Error fetching notifications:", error));
-        }
-
-
-        function markNotificationsSeen() {
-            fetch('/mark-notifications-seen')
-                .then(() => {
-                    document.getElementById("red-dot").classList.add("hidden");
-                })
-                .catch(error => console.error("Error marking notifications as seen:", error));
-        }
-    </script>
-
-    <script>
-        // Dark Mode Implementation
-        document.addEventListener('DOMContentLoaded', function () {
-
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeIcon = document.getElementById('theme-icon');
-
-            const savedTheme = localStorage.getItem('theme') ||
-                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark');
-                themeIcon.classList.remove('ri-sun-line');
-                themeIcon.classList.add('ri-moon-line');
-            } else {
-                document.documentElement.classList.remove('dark');
-                themeIcon.classList.remove('ri-moon-line');
-                themeIcon.classList.add('ri-sun-line');
-            }
-
-
-            themeToggle.addEventListener('click', function () {
-                const isDark = document.documentElement.classList.toggle('dark');
-
-                // Update the icon
-                if (isDark) {
-                    themeIcon.classList.remove('ri-sun-line');
-                    themeIcon.classList.add('ri-moon-line');
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    themeIcon.classList.remove('ri-moon-line');
-                    themeIcon.classList.add('ri-sun-line');
-                    localStorage.setItem('theme', 'light');
-                }
-            });
-        });
-    </script>
-    <script>
-        // Banner Modal
-        const bannerIcon = document.getElementById("banner-icon");
-        const bannerForm = document.getElementById("banner-form");
-        const bannerFormClose = document.getElementById("banner-form-close");
-        const imageInput = document.getElementById("image-input");
-        const imagePreview = document.getElementById("image-preview");
-        const imgCng = document.getElementById("img-cng");
-
-        if (bannerIcon) {
-            bannerIcon.addEventListener("click", function () {
-                bannerForm.classList.remove("hidden");
-            });
-        }
-
-        if (bannerFormClose) {
-            bannerFormClose.addEventListener("click", function () {
-                bannerForm.classList.add("hidden");
-            });
-        }
-
-        if (imgCng) {
-            imgCng.addEventListener("click", function () {
-                imageInput.click();
-            });
-        }
-
-        const profileImgBtn = document.getElementById("profile-img-btn");
-        const profileForm = document.getElementById("profile-form");
-        const profileFormClose = document.getElementById("profile-form-close");
-        const profileInput = document.getElementById("profile-input");
-        const profilePreview = document.getElementById("profile-preview");
-        const profCng = document.getElementById("prof-cng");
-
-        if (profileImgBtn) {
-            profileImgBtn.addEventListener("click", function () {
-                profileForm.classList.remove("hidden");
-            });
-        }
-
-        if (profileFormClose) {
-            profileFormClose.addEventListener("click", function () {
-                profileForm.classList.add("hidden");
-            });
-        }
-
-
-        // Profile dropdown toggle
-        const profileButton = document.getElementById('profile-menu-button');
-        const profileDropdown = document.getElementById('profile-dropdown');
-
-        profileButton.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-        });
-
-
-        window.addEventListener('click', (event) => {
-            if (!profileButton.contains(event.target)) {
-                profileDropdown.classList.add('hidden');
-            }
-        });
-
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        window.addEventListener("click", function (e) {
-            if (e.target === bannerForm) {
-                bannerForm.classList.add("hidden");
-            }
-            if (e.target === profileForm) {
-                profileForm.classList.add("hidden");
-            }
-        });
-    </script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-
-            const bannerForm = document.getElementById('banner-form');
-            const bannerFormClose = document.getElementById('banner-form-close');
-            const imageInput = document.getElementById('image-input');
-            const imagePreview = document.getElementById('image-preview');
-            const imgChangeBtn = document.getElementById('img-cng');
-
-            let bannerCropper;
-            let bannerCurrentFilter = 'none';
-
-            function hideBannerForm() {
-                bannerForm.classList.add('hidden');
-                if (bannerCropper) {
-                    bannerCropper.destroy();
-                    bannerCropper = null;
-                }
-            }
-
-            // Handle file selection for banner
-            function handleBannerFileSelect(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-
-                    if (bannerCropper) {
-                        bannerCropper.destroy();
-                        bannerCropper = null;
-                    }
-
-                    imagePreview.style.filter = 'none';
-                    bannerCurrentFilter = 'none';
-
-                    imagePreview.src = e.target.result;
-
-                    setTimeout(() => {
-                        bannerCropper = new Cropper(imagePreview, {
-                            aspectRatio: 16 / 9,
-                            viewMode: 1,
-                            guides: true,
-                            autoCropArea: 0.8,
-                            responsive: true,
-                            ready: function () {
-                                createBannerFilterOptions();
-                            }
-                        });
-                    }, 200);
-                };
-                reader.readAsDataURL(file);
-            }
-
-            if (imageInput) {
-                imageInput.addEventListener('change', handleBannerFileSelect);
-            }
-
-            const bannerFormElement = document.querySelector('#banner-form form');
-            if (bannerFormElement) {
-                bannerFormElement.addEventListener('submit', handleBannerFormSubmit);
-            }
-        });
-    </script>
-    <script>
+        // --- 1. THEME & DROPDOWN ---
+        if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+        document.getElementById('theme-toggle').onclick = () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        };
+     // Profile Toggle
+    const pBtn = document.getElementById('profile-btn');
+    const pDropdown = document.getElementById('profile-dropdown');
+    if(pBtn) {
+        pBtn.onclick = (e) => { e.stopPropagation(); pDropdown.classList.toggle('hidden'); };
+        window.onclick = () => pDropdown.classList.add('hidden');
+    }
+
+        // --- 2. VIEW MODALS ---
+        const bannerTrigger = document.getElementById('banner-trigger');
+        const bannerModal = document.getElementById('banner-modal');
+        const modalClose = document.getElementById('modal-close');
+        if(bannerTrigger) bannerTrigger.onclick = () => bannerModal.classList.remove('hidden');
+        if(modalClose) modalClose.onclick = () => bannerModal.classList.add('hidden');
 
         const profileTrigger = document.getElementById('profile-trigger');
         const profileModal = document.getElementById('profile-modal');
         const profileModalClose = document.getElementById('profile-modal-close');
+        if(profileTrigger) profileTrigger.onclick = () => profileModal.classList.remove('hidden');
+        if(profileModalClose) profileModalClose.onclick = () => profileModal.classList.add('hidden');
 
+        // --- 3. ORIGINAL PROFILE LOGIC (STRICT) ---
+        let cropper;
+        let currentFilter = 'none';
+        let filterOptionsCreated = false;
 
-        const profileShowModal = () => {
-            profileModal.classList.remove('hidden');
-        };
+        const profileForm = document.getElementById('profile-form');
+        const profileFormClose = document.getElementById('profile-form-close');
+        const profileInput = document.getElementById('profile-input');
+        const profilePreview = document.getElementById('profile-preview');
+        const profChangeBtn = document.getElementById('prof-cng');
 
-
-        const profileHideModal = () => {
-            profileModal.classList.add('hidden');
-        };
-
-
-        profileTrigger.addEventListener('click', profileShowModal);
-
-
-        profileModalClose.addEventListener('click', profileHideModal);
-
-        profileModal.addEventListener('click', (event) => {
-
-            if (event.target === profileModalClose) {
-                profileHideModal();
-            }
+        document.getElementById('profile-img-btn')?.addEventListener('click', () => {
+            profileForm.classList.remove('hidden');
+            if (!cropper && profilePreview.src) initializeCropper();
         });
 
+        profileFormClose.onclick = () => { profileForm.classList.add('hidden'); if(cropper) { cropper.destroy(); cropper = null; } };
 
-    </script>
-    <script>
-        const bannerTrigger = document.getElementById('banner-trigger');
-        const bannerModal = document.getElementById('banner-modal');
-        const modalClose = document.getElementById('modal-close');
+        function initializeCropper() {
+            profilePreview.style.filter = 'none';
+            currentFilter = 'none';
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(profilePreview, {
+                aspectRatio: 1, viewMode: 1, guides: true, autoCropArea: 0.8, responsive: true,
+                ready: function () { if (!filterOptionsCreated) { createFilterOptions(); filterOptionsCreated = true; } }
+            });
+        }
 
-        const showModal = () => bannerModal.classList.remove('hidden');
-        const hideModal = () => bannerModal.classList.add('hidden');
-
-        bannerTrigger.addEventListener('click', showModal);
-        modalClose.addEventListener('click', hideModal);
-
-        bannerModal.addEventListener('click', (event) => {
-            if (event.target === bannerModal) {
-                hideModal();
-            }
+        profileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profilePreview.src = e.target.result;
+                filterOptionsCreated = false;
+                setTimeout(initializeCropper, 100);
+            };
+            reader.readAsDataURL(file);
         });
+
+        profChangeBtn.onclick = () => profileInput.click();
+
+        function createFilterOptions() {
+            const existing = document.getElementById('filter-options');
+            if (existing) existing.remove();
+            const filterOptions = document.createElement('div');
+            filterOptions.id = 'filter-options';
+            filterOptions.className = 'mt-4 grid grid-cols-4 gap-2 no-scrollbar overflow-x-auto py-2';
+            const filters = [
+                { name: 'None', value: 'none' },
+                { name: 'Classic', value: 'contrast(130%) brightness(100%) saturate(120%)' },
+                { name: 'Cinematic', value: 'contrast(150%) saturate(100%) brightness(90%) sepia(20%)' },
+                { name: 'Golden Hour', value: 'hue-rotate(60deg) saturate(120%) brightness(110%)' },
+                { name: 'Film Noir', value: 'grayscale(100%) contrast(180%) brightness(75%)' },
+                { name: 'Moody', value: 'contrast(150%) brightness(80%) saturate(140%)' },
+                { name: 'Warm Fade', value: 'sepia(40%) saturate(130%) contrast(110%) brightness(100%)' },
+                { name: 'Cool Elegance', value: 'hue-rotate(210deg) brightness(95%) saturate(140%)' },
+                { name: 'Vintage Charm', value: 'grayscale(60%) sepia(50%) contrast(120%)' },
+                { name: 'Bright Vibes', value: 'contrast(140%) brightness(140%) saturate(130%)' },
+                { name: 'High Def', value: 'contrast(200%) brightness(120%) saturate(100%)' },
+                { name: 'Soft Focus', value: 'blur(2px) contrast(90%) brightness(100%)' },
+                { name: 'Modern Classic', value: 'contrast(120%) brightness(110%) saturate(150%)' }
+            ];
+            filters.forEach(filter => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'px-2 py-1.5 bg-slate-100 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-tighter transition-all';
+                btn.textContent = filter.name;
+                btn.onclick = () => {
+                    currentFilter = filter.value === 'none' ? 'none' : filter.value;
+                    const filterInput = document.getElementById('selected-filter');
+                    if (filterInput) filterInput.value = filter.value;
+                    profilePreview.style.filter = filter.value === 'none' ? '' : filter.value;
+                    document.querySelectorAll('#filter-options button').forEach(b => b.classList.remove('ring-2'));
+                    btn.classList.add('ring-2');
+                    // Sync with cropper
+                    const viewBox = document.querySelector('.cropper-view-box');
+                    if (viewBox) viewBox.style.filter = filter.value === 'none' ? '' : filter.value;
+                };
+                filterOptions.appendChild(btn);
+            });
+            const formActions = document.querySelector('#profile-form form .flex');
+            formActions.parentNode.insertBefore(filterOptions, formActions);
+            
+            const filterInput = document.createElement('input');
+            filterInput.type = 'hidden'; filterInput.id = 'selected-filter'; filterInput.name = 'filter'; filterInput.value = 'none';
+            document.querySelector('#profile-form form').appendChild(filterInput);
+        }
+
+        document.querySelector('#profile-form form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true; submitBtn.textContent = 'Saving...';
+            if (!cropper) { e.target.submit(); return; }
+            const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;
+            const ctx = tempCanvas.getContext('2d');
+            if (currentFilter !== 'none') ctx.filter = currentFilter;
+            ctx.drawImage(canvas, 0, 0);
+            tempCanvas.toBlob(blob => {
+                const formData = new FormData(); formData.append('prof-image', blob, 'profile.png');
+                fetch(e.target.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(() => window.location.reload());
+            }, 'image/png', 0.9);
+        });
+
+        // --- 4. ORIGINAL BANNER LOGIC (STRICT) ---
+        const bannerEditModal = document.getElementById('banner-form');
+        const bannerInput = document.getElementById('image-input');
+        const bannerPreview = document.getElementById('image-preview');
+        let bannerCropper;
+        let bannerCurrentFilter = 'none';
+
+        document.getElementById('banner-icon')?.addEventListener('click', () => bannerEditModal.classList.remove('hidden'));
+        document.getElementById('banner-form-close').onclick = () => { bannerEditModal.classList.add('hidden'); if(bannerCropper) bannerCropper.destroy(); };
+        document.getElementById('img-cng').onclick = () => bannerInput.click();
+
+        bannerInput.addEventListener('change', function(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                if (bannerCropper) bannerCropper.destroy();
+                bannerPreview.src = event.target.result;
+                setTimeout(() => {
+                    bannerCropper = new Cropper(bannerPreview, { aspectRatio: 16 / 9, viewMode: 1, ready: createBannerFilterOptions });
+                }, 200);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function createBannerFilterOptions() {
+            const existing = document.getElementById('banner-filter-options');
+            if (existing) existing.remove();
+            const filterOptions = document.createElement('div');
+            filterOptions.id = 'banner-filter-options';
+            filterOptions.className = 'mt-4 grid grid-cols-4 gap-2 no-scrollbar overflow-x-auto py-2';
+            // Filters logic same as profile
+            const filters = [{ name: 'Classic', value: 'contrast(130%)' }, { name: 'Film', value: 'grayscale(100%)' }, { name: 'Warm', value: 'sepia(50%)' }, { name: 'None', value: 'none' }];
+            filters.forEach(filter => {
+                const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'px-2 py-1.5 bg-slate-100 rounded-lg text-[10px] font-bold uppercase'; btn.textContent = filter.name;
+                btn.onclick = () => { bannerPreview.style.filter = filter.value === 'none' ? '' : filter.value; bannerCurrentFilter = filter.value; };
+                filterOptions.appendChild(btn);
+            });
+            const formActions = document.querySelector('#banner-form form .flex');
+            formActions.parentNode.insertBefore(filterOptions, formActions);
+        }
+
+        document.querySelector('#banner-form form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!bannerCropper) { e.target.submit(); return; }
+            const canvas = bannerCropper.getCroppedCanvas({ width: 800 });
+            const tempCanvas = document.createElement('canvas'); tempCanvas.width = canvas.width; tempCanvas.height = canvas.height;
+            const ctx = tempCanvas.getContext('2d'); if (bannerCurrentFilter !== 'none') ctx.filter = bannerCurrentFilter;
+            ctx.drawImage(canvas, 0, 0);
+            tempCanvas.toBlob(blob => {
+                const formData = new FormData(); formData.append('image', blob, 'banner.png');
+                fetch(e.target.action, { method: 'POST', body: formData, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                .then(() => window.location.reload());
+            });
+        });
+
+        // --- 5. POLLING LOGIC ---
+        function checkNotifs() {
+            fetch('/check-unread-notifications').then(r => r.json()).then(data => {
+                const dot = document.getElementById("red-dot");
+                if (data.unreadCount > 0) { dot.classList.remove("hidden"); dot.textContent = data.unreadCount; }
+            });
+        }
+        setInterval(checkNotifs, 5000);
     </script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-
 </body>
-
 </html>

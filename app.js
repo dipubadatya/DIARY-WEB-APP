@@ -20,29 +20,29 @@ const chatRoutes = require("./routes/chat");
 const database = require("./dbConfig.js");
 const passport = require("passport");
 const User = require("./models/users");
-const Message = require("./models/message.js");
+const Message = require("./models/message.js");  
 const session = require("express-session");
 const flash = require("connect-flash");
 const MongoStore = require("connect-mongo");
 const bodyParser = require("body-parser");
 const ejsMate = require("ejs-mate");
-const loggedIn = require("./middleware");     
+const loggedIn = require("./middleware/middleware.js");     
 const axios = require("axios");
 
 
 require("./socketHandler.js")(io);
-
-// Database connection
+ 
+// Database connection   
 database();
-
+ 
 app.get("/", (req, res) => {
-  res.render("./stories/landing.ejs");
+  res.render("./stories/landing.ejs"); 
 });
-
-
-
+  
+ 
+ 
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "views"));  
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));

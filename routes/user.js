@@ -1,9 +1,9 @@
 
 const express = require('express')
 const router = express.Router()
+const mongoose = require('mongoose')
 const passport = require('passport')
 const User = require('../models/users')
-const mongoose = require('mongoose')
 const Comments = require('../models/comment')
 const Stories = require('../models/stories')
 const multer = require('multer');
@@ -13,7 +13,7 @@ const axios = require('axios')
 const { storage } = require('../cloudinary.js')
 const Joi = require('joi');
 const upload = multer({ storage })
-const isLoggedIn = require('../middleware')
+const isLoggedIn = require('../middleware/middleware.js')
 const validator = require('validator')
 const moment = require('moment');
 const crypto = require('crypto');
@@ -59,8 +59,6 @@ router.get('/followers/:id', isLoggedIn, async (req, res) => {
 
 })
 
-
-//TOP FIVE USER
 router.get('/writers/:id', async (req, res) => {
   let { id } = req.params
   try {
@@ -126,6 +124,7 @@ router.get('/notification', isLoggedIn, async (req, res) => {
     return res.redirect("/");
   }
 
+  // Mark all notifications as read
   user.notifications.forEach(notif => notif.read = true);
   await user.save();
 
@@ -264,7 +263,7 @@ router.put('/profile/:id/banner', isLoggedIn, upload.single('image'), async (req
   }
 });
 
-// Update profile image
+// Update your route to handle the filtered and cropped image
 router.put('/profile/:id/image', isLoggedIn, upload.single('prof-image'), async (req, res) => {
   try {
     const { id } = req.params;
@@ -342,7 +341,7 @@ router.get('/profile/:id', isLoggedIn, async (req, res) => {
   res.render('./users/account.ejs', { profile, user, pageTitle, pageDescription })
 })
 
-router.post('/follow/:id', async (req, res) => {
+router.post('/follow/:id', isLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
     const currentUserId = req.user._id;
@@ -363,7 +362,7 @@ router.post('/follow/:id', async (req, res) => {
       userToFollow.followers.push(currentUserId);
       currentUser.following.push(userToFollow._id);
 
-   
+      // Send notification to the followed user
       userToFollow.notifications.push({
         type: "follow",
         fromUser: currentUserId
@@ -381,7 +380,7 @@ router.post('/follow/:id', async (req, res) => {
 });
 
 // unfollow functionality
-router.post('/unfollow/:id', async (req, res) => {
+router.post('/unfollow/:id', isLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
     const currentUserId = req.user._id;
@@ -420,7 +419,7 @@ router.get('/forgot-password', (req, res) => {
   });
 });
 
-// Forgot Password -
+// Forgot Password - Handle submission
 router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
@@ -428,14 +427,14 @@ router.post('/forgot-password', async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      req.flash('error', 'If that email exists, we\'ve sent a reset link');
+      req.flash('error', 'We couldn’t find an account with that email address.');
       return res.redirect('/forgot-password');
     }
 
 
     const resetToken = crypto.randomBytes(20).toString('hex');
     user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; 
+    user.resetPasswordExpires = Date.now() + 3600000;
     await user.save();
 
     const resetUrl = `${req.protocol}://${req.headers.host}/reset-password/${resetToken}`;
@@ -578,7 +577,7 @@ router.get('/reset-password/:token', async (req, res) => {
     });
 
     if (!user) {
-      req.flash('error', 'Password reset token is invalid or has expired');
+      req.flash('error', 'Your password reset link has expired or is invalid. Please request a new one.');
       return res.redirect('/forgot-password');
     }
 
@@ -618,14 +617,14 @@ router.post('/reset-password/:token', async (req, res) => {
       return res.redirect(`/reset-password/${token}`);
     }
 
-
+    // Find user with valid token
     const user = await User.findOne({
       resetPasswordToken: token,
       resetPasswordExpires: { $gt: Date.now() }
     });
 
     if (!user) {
-      req.flash('error', 'Password reset token is invalid or has expired. Please request a new one.');
+      req.flash('error', 'Your password reset link has expired or is invalid. Please request a new one.');
       return res.redirect('/forgot-password');
     }
 
@@ -782,7 +781,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-// Check email existence 
+// Check email existence endpoint
 router.post('/check-email', async (req, res) => {
   try {
     const { email } = req.body;
@@ -850,7 +849,7 @@ router.post('/check-username', async (req, res) => {
   }
 });
 
-//  signup route
+// Enhanced signup route
 router.post('/signup', async (req, res, next) => {
   try {
     const { name, username, email, password } = req.body;
@@ -862,7 +861,7 @@ router.post('/signup', async (req, res, next) => {
 
     if (unverifiedUser) {
 
-      req.flash('error', 'This email is already registered but not verified. Check your email or request a new verification link.');
+      req.flash('error', 'Email registered but not verified. Check your email or resend the link.');
       return res.redirect('/signup');
     }
 
@@ -1041,7 +1040,7 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 
-//  verify-email route
+// Enhanced verify-email route
 router.get('/verify-email', async (req, res) => {
   try {
     const { token } = req.query;
@@ -1082,7 +1081,7 @@ router.get('/verify-email', async (req, res) => {
   }
 });
 
-// resend verification
+//Enhanced resend verification
 router.post('/resend-verification', async (req, res) => {
   try {
     const { email } = req.body;
@@ -1169,7 +1168,7 @@ router.post('/resend-verification', async (req, res) => {
         color: white !important;
         padding: 16px 32px;
         text-decoration: none;
-        border-radius: 8px;
+        border-radius: 8px;   
         font-weight: 600;
         margin: 25px 0;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1181,7 +1180,7 @@ router.post('/resend-verification', async (req, res) => {
         background: #f1f5f9;
         padding: 16px;
         border-radius: 8px;
-        word-break: break-all;
+        word-break: break-all; 
         font-size: 14px;
         color: #334155;
         margin: 20px 0;
@@ -1231,13 +1230,13 @@ router.post('/resend-verification', async (req, res) => {
         </div>
 
         <p>Happy writing!<br>The Diary Team</p>
-      </div>
-
+      </div>   
+ 
       <div class="footer">
         © ${new Date().getFullYear()} Diary. All rights reserved.
-      </div>
+      </div>             
     </div>
-  </body>
+  </body>  
   </html>
   `
     };
@@ -1273,7 +1272,7 @@ router.get('/resend-verification', async (req, res) => {
       return res.redirect('/login');
     }
 
-    
+    // Generate new token
     user.verificationToken = crypto.randomBytes(20).toString('hex');
     user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
     await user.save();
@@ -1417,7 +1416,9 @@ router.get('/resend-verification', async (req, res) => {
     req.flash('error', 'Failed to resend verification email');
     res.redirect('/login');
   }
-});   
+});
+
+
 
 
 router.post('/login',
@@ -1428,23 +1429,23 @@ router.post('/login',
     };
     next();
   },
-  
+
   passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: 'Invalid email or password'
   }),
-  
+
   async (req, res, next) => {
     try {
       if (!req.user.isVerified) {
         const unverifiedEmail = req.user.email;
-        
-    
+
+        // Create verification link with token
         const verificationToken = crypto.randomBytes(20).toString('hex');
         req.user.verificationToken = verificationToken;
         req.user.verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
         await req.user.save();
-        
+
         // Send verification email
         const verificationUrl = `${req.protocol}://${req.headers.host}/verify-email?token=${verificationToken}`;
         await transporter.sendMail({
@@ -1453,29 +1454,29 @@ router.post('/login',
           subject: 'Complete Your Registration',
           html: `Please verify your email by clicking <a href="${verificationUrl}">here</a>`
         });
-        
-      
+
+        // Logout and show message   
         req.logout((err) => {
           if (err) return next(err);
-          
-          req.flash('error', 
+
+          req.flash('error',
             `Your account is not verified. We've sent a new verification link to ${unverifiedEmail}. ` +
             `Check your email or <a href="/resend-verification" class="font-medium underline hover:text-blue-700">request another</a>.`
           );
-          
-  
+
+
           delete req.session.loginFormData;
           return res.redirect('/login');
         });
         return;
       }
-      
 
+      // Clear the stored form data on successful login
       delete req.session.loginFormData;
-      
+
       req.flash('success', 'Login successful! Welcome back.');
       return res.redirect('/stories');
-      
+
     } catch (err) {
       // Clear the stored form data on error
       delete req.session.loginFormData;
@@ -1487,24 +1488,24 @@ router.post('/login',
 
 router.get('/login', (req, res) => {
   const formData = req.session.loginFormData || {};
-  delete req.session.loginFormData; 
-  
+  delete req.session.loginFormData;
+
   res.render('login', {
     error: req.flash('error'),
     success: req.flash('success'),
     email: formData.email
   });
 });
-
+// Logout route remains the same
 router.get('/logout', (req, res) => {
   req.logout((err) => {
     if (err) {
       return next(err);
     } else {
       req.flash('success', 'Logged out successfully');
-          req.session.save(() => {
-      res.redirect('/stories');
-          })
+      req.session.save(() => {
+        res.redirect('/stories');
+      })
     }
   });
 });

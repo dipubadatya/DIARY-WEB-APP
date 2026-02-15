@@ -1,62 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Followers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Followers | DIARY.</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#3b82f6',
+                        darkBg: '#121212',
+                        darkSurface: '#1e1e1e'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .follower-item {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .follower-item:hover {
+            @apply bg-slate-50 dark:bg-white/5;
+            transform: translateX(4px);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
     </style>
 </head>
-<body class="bg-gray-50 p-4 md:p-8 flex justify-center items-start min-h-screen">
-    <div class="bg-white rounded-lg shadow-sm p-6 w-full max-w-2xl border border-gray-100">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-semibold text-gray-900">Followers</h2>
-            <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                <%= profile.followers ? profile.followers.length : 0 %> followers
-            </span>
-        </div>
-        
-        <div class="divide-y divide-gray-100">
-            <% if (profile.followers && profile.followers.length > 0) { %>
-                <% for (const follower of profile.followers) { %>
-                    <div class="py-4 first:pt-0 last:pb-0">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <a href="/profile/<%=follower._id%>" class="flex items-center space-x-4 group">
+
+<body class="bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
+
+    <div class="max-w-2xl mx-auto px-6 py-12 lg:py-20">
+
+        <header class="mb-12 flex items-end justify-between">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <a href="javascript:history.back()" class="w-10 h-10 flex items-center justify-center bg-white dark:bg-darkSurface rounded-full shadow-sm border border-slate-100 dark:border-white/5 text-slate-500 hover:text-accent transition-all">
+                        <i class="ri-arrow-left-line text-xl"></i>
+                    </a>
+                    <h1 class="text-3xl font-black tracking-tight uppercase">Followers.</h1>
+                </div>
+                <p class="text-slate-500 dark:text-slate-400 font-medium ml-1">The people keeping up with your journey.</p>
+            </div>
+
+            <div class="hidden sm:block">
+                <span class="px-4 py-2 bg-accent text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-accent/20">
+                    <%= profile.followers ? profile.followers.length : 0 %> Community
+                </span>
+            </div>
+        </header>
+
+        <div class="bg-white dark:bg-darkSurface rounded-[2.5rem] shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-white/5 overflow-hidden">
+            
+            <div class="divide-y divide-slate-50 dark:divide-white/5">
+                <% if (profile.followers && profile.followers.length > 0) { %>
+                    <% for (const follower of profile.followers) { %>
+                        <div class="follower-item">
+                            <a href="/profile/<%=follower._id%>" class="flex items-center justify-between p-6 group">
+                                <div class="flex items-center gap-4">
                                     <div class="relative">
-                                        <img class="h-12 w-12 rounded-full object-cover border border-gray-200" 
+                                        <img class="h-14 w-14 rounded-full object-cover ring-4 ring-slate-50 dark:ring-white/5 shadow-md" 
                                              src="<%= follower.image.url %>" 
                                              alt="<%= follower.username %>"
-                                             onerror="this.src='https://ui-avatars.com/api/?name=<%= follower.username %>&background=random'">
-                                    
+                                             onerror="this.src='https://ui-avatars.com/api/?name=<%= follower.username %>&background=3b82f6&color=fff'">
                                     </div>
                                     <div>
-                                        <p class="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">
+                                        <h3 class="font-bold text-slate-900 dark:text-white group-hover:text-accent transition-colors">
                                             <%= follower.username %>
-                                        </p>
-                                        <p class="text-sm text-gray-500"><%= follower.name %></p>
+                                        </h3>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-0.5"><%= follower.name %></p>
                                     </div>
-                                </a>
-                            </div>
-                      
+                                </div>
+                                
+                                <div class="opacity-0 group-hover:opacity-100 transition-opacity pr-2 text-accent">
+                                    <i class="ri-arrow-right-up-line text-2xl"></i>
+                                </div>
+                            </a>
                         </div>
+                    <% } %>
+                <% } else { %>
+                    <div class="py-32 text-center">
+                        <div class="mx-auto w-20 h-20 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-300 mb-6">
+                            <i class="ri-group-line text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold tracking-tight">No followers yet</h3>
+                        <p class="text-slate-400 mt-2 max-w-xs mx-auto text-sm leading-relaxed">
+                            When people start following this profile, they will appear in this list.
+                        </p>
+                        <a href="/stories" class="inline-block mt-8 text-xs font-black uppercase tracking-widest text-accent hover:underline">Explore Stories</a>
                     </div>
                 <% } %>
-            <% } else { %>
-                <div class="py-8 text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    <h3 class="mt-2 text-lg font-medium text-gray-900">No followers yet</h3>
-                    <p class="mt-1 text-gray-500">When someone follows you, they'll appear here.</p>
-                </div>
-            <% } %>
+            </div>
+        </div>
+
+        <div class="sm:hidden mt-8 text-center">
+            <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+                Total: <%= profile.followers ? profile.followers.length : 0 %> Members
+            </span>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Dark Mode check from localStorage (Consistent with your other pages)
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+    </script>
 </body>
+
 </html>

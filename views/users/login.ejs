@@ -2,17 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Sign In | DIARY.</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#3b82f6',
+                        darkBg: '#121212',
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        logo: ['Pacifico', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out forwards;
-        }
-        .fade-out {
-            animation: fadeOut 0.3s ease-in-out forwards;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        .logo-font { font-family: 'Pacifico', cursive; }
+
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        .fade-out { animation: fadeOut 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -21,107 +42,125 @@
             from { opacity: 1; transform: translateY(0); }
             to { opacity: 0; transform: translateY(-10px); }
         }
-        .flash-message {
-            display: flex !important;
-            opacity: 1;
-        }
-        .flash-container {
-            position: relative;
-            overflow: hidden;
-        }
+
+        /* Logic: Flash message display preserved */
+        .flash-message { display: flex !important; opacity: 1; }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div class="font-[sans-serif] relative w-full min-h-screen flex flex-col">
-        <div class="h-[340px] font-[sans-serif]">
-            <img src="https://images.unsplash.com/photo-1506957833838-96c1e88d394f?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Banner Image" class="w-full h-full object-cover" />
+<body class="bg-slate-50 dark:bg-darkBg transition-colors duration-300">
+
+    <div class="relative w-full min-h-screen flex flex-col items-center justify-center p-4">
+        
+        <div class="fixed top-0 left-0 w-full h-[40vh] z-0 overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1506957833838-96c1e88d394f?q=80&w=2072&auto=format&fit=crop"
+                alt="Banner" class="w-full h-full object-cover opacity-80" />
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50 dark:to-darkBg"></div>
         </div>
 
-        <div class="relative -mt-40 m-4 flex-grow">
+        <div class="relative z-10 w-full max-w-lg">
+            <div class="mb-8 text-center">
+                <a href="/stories" class="logo-font text-4xl text-accent drop-shadow-sm">Diary</a>
+            </div>
+
             <form action="/login" method="post"
-                class="bg-white max-w-xl w-full mx-auto shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] p-6 sm:p-8 rounded-2xl">
-                <div class="mb-8 flash-container">
-                    <h3 class="text-gray-800 text-3xl font-bold text-center">Sign in</h3>
-                    
+                class="bg-white dark:bg-slate-900 shadow-2xl shadow-slate-200/50 dark:shadow-none p-8 sm:p-10 rounded-[2.5rem] border border-slate-100 dark:border-white/5 transition-all">
+                
+                <header class="mb-8">
+                    <h3 class="text-slate-900 dark:text-white text-3xl font-black tracking-tight">Welcome back.</h3>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">Please enter your details to continue.</p>
+                </header>
+
+                <div class="space-y-4 mb-6">
                     <% if (success && success.length) { %>
-                        <div class="flash-message bg-green-50 text-green-600 px-6 py-3 text-sm flex items-center mt-5 mb-5 rounded-lg fade-in">
-                            <i class="ri-checkbox-circle-line mr-2"></i>
-                            <span><%= success %></span>
-                            <button class="ml-auto text-lg font-bold hover:text-green-800" onclick="dismissFlash(this.parentElement)">&times;</button>
+                        <div class="flash-message bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 px-5 py-3.5 text-sm flex items-center rounded-2xl fade-in border border-green-100 dark:border-green-500/20">
+                            <i class="ri-checkbox-circle-fill mr-3 text-lg"></i>
+                            <span class="font-bold"><%= success %></span>
+                            <button type="button" class="ml-auto text-xl opacity-50 hover:opacity-100" onclick="dismissFlash(this.parentElement)">&times;</button>
                         </div>
                     <% } %>
                     
                     <% if (error && error.length) { %>
-                        <div class="flash-message bg-red-50 text-red-600 px-6 py-3 text-sm flex items-center mt-5 mb-5 rounded-lg fade-in">
-                            <i class="ri-error-warning-line mr-2"></i>
-                            <span><%- error %></span>
-                            <button class="ml-auto text-lg font-bold hover:text-red-800" onclick="dismissFlash(this.parentElement)">&times;</button>
+                        <div class="flash-message bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 px-5 py-3.5 text-sm flex items-center rounded-2xl fade-in border border-red-100 dark:border-red-500/20">
+                            <i class="ri-error-warning-fill mr-3 text-lg"></i>
+                            <span class="font-bold"><%- error %></span>
+                            <button type="button" class="ml-auto text-xl opacity-50 hover:opacity-100" onclick="dismissFlash(this.parentElement)">&times;</button>
                         </div>
                     <% } %>
                 </div>
 
-                <div class="space-y-6">
-                    <div>
-                        <label class="text-gray-800 text-sm font-medium block mb-2">Email</label>
+                <div class="space-y-5">
+                    <div class="group">
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">Email Address</label>
                         <div class="relative flex items-center">
                             <input name="email" id="email" type="email" required
-                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
-                                placeholder="Enter email" value="<%= typeof email !== 'undefined' ? email : '' %>" />
-                            <i class="ri-mail-line text-gray-400 absolute right-3"></i>
+                                class="w-full bg-slate-50 dark:bg-white/5 text-sm text-slate-900 dark:text-white border-2 border-transparent focus:border-accent/20 focus:bg-white dark:focus:bg-slate-800 rounded-2xl px-5 py-4 outline-none transition-all shadow-sm"
+                                placeholder="name@example.com" value="<%= typeof email !== 'undefined' ? email : '' %>" />
+                            <i class="ri-mail-unread-line text-slate-300 dark:text-slate-600 absolute right-5 text-lg"></i>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="text-gray-800 text-sm font-medium block mb-2">Password</label>
+                    <div class="group">
+                        <label class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-4 mb-2 block">Password</label>
                         <div class="relative flex items-center">
                             <input name="password" type="password" required
-                                class="w-full bg-gray-50 text-sm text-gray-800 border border-gray-300 focus:border-blue-500 rounded-lg px-4 py-3 outline-none transition-all"
-                                placeholder="Enter password" id="passwordInput" />
-                            <i class="ri-eye-line text-gray-400 absolute right-3 cursor-pointer" id="togglePassword"></i>
+                                class="w-full bg-slate-50 dark:bg-white/5 text-sm text-slate-900 dark:text-white border-2 border-transparent focus:border-accent/20 focus:bg-white dark:focus:bg-slate-800 rounded-2xl px-5 py-4 outline-none transition-all shadow-sm"
+                                placeholder="••••••••" id="passwordInput" />
+                            <i class="ri-eye-line text-slate-300 dark:text-slate-600 absolute right-5 text-lg cursor-pointer hover:text-accent transition-colors" id="togglePassword"></i>
                         </div>
                     </div>
                 </div>
 
                 <button type="submit"
-                    class="w-full shadow-xl py-3 px-4 text-sm font-semibold tracking-wider rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all mt-8">
-                    Login
+                    class="w-full shadow-xl shadow-accent/20 py-4 px-4 text-sm font-black uppercase tracking-widest rounded-2xl text-white bg-accent hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all mt-10">
+                    Sign In
                 </button>
                 
-                <div class="mt-6 text-center space-y-3">
-                    <p class="text-gray-600 text-sm">
-                        Don't have an account? 
-                        <a href="/signup" class="text-blue-600 hover:underline font-medium">Register here</a>
+                <footer class="mt-8 pt-8 border-t border-slate-100 dark:border-white/5 text-center space-y-4">
+                    <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">
+                        New to Diary? 
+                        <a href="/signup" class="text-accent hover:underline font-bold">Create account</a>
                     </p>
-                    <p class="text-gray-600 text-sm">
-                        <a href="/forgot-password" class="text-blue-600 hover:underline">Forgot password?</a>
+                    <p class="text-slate-400 dark:text-slate-500 text-xs">
+                        <a href="/forgot-password" class="hover:text-accent transition-colors">Forgot your password?</a>
                     </p>
-                </div>
+                </footer>
             </form>
         </div>
     </div>
 
     <script>
-        // Password toggle
+        // Password visibility toggle logic
         document.getElementById('togglePassword').addEventListener('click', function() {
             const passwordInput = document.getElementById('passwordInput');
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
+            
+            // Toggle icons using Remix Icon classes
             this.classList.toggle('ri-eye-line');
             this.classList.toggle('ri-eye-off-line');
         });
 
-        // Flash message handling
+        // Flash message dismissal logic
         function dismissFlash(element) {
             element.classList.add('fade-out');
-            setTimeout(() => element.remove(), 300);
+            setTimeout(() => {
+                element.style.maxHeight = '0';
+                element.style.margin = '0';
+                element.style.padding = '0';
+                setTimeout(() => element.remove(), 400);
+            }, 300);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Auto-dismiss flash messages after 5 seconds
+            // Dark Mode persistence check
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+
+            // Auto-dismiss logic preserved
             document.querySelectorAll('.flash-message').forEach(message => {
                 setTimeout(() => {
-                    dismissFlash(message);
+                    if(document.body.contains(message)) dismissFlash(message);
                 }, 5000);
             });
         });

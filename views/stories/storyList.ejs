@@ -1,863 +1,302 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width initial-scale=1.0">
-  <meta name="description" content="Browse and search a wide variety of stories in our Stories section.">
-  <title>Stories Collection | DIARY.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Stories | DIARY.</title>
 
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
-  <script src="https://kit.fontawesome.com/0790e1818c.js" crossorigin="anonymous"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
 
+  <script>
     tailwind.config = {
       darkMode: 'class',
-
+      theme: {
+        extend: {
+          colors: {
+            accent: '#3b82f6',
+            slateCustom: { 50: '#f8fafc', 900: '#0f172a', 950: '#020617' }
+          }
+        }
+      }
     }
   </script>
+
   <style>
-    body.preloader-active {
-      overflow: hidden;
+    body { -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    
+    /* 2 columns on mobile, auto on PC */
+    .story-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
     }
 
-    #preloader-text {
-      font-size: clamp(2rem, 8vw, 4rem);
-    }
-
-    #line-loader-container {
-      width: min(80vw, 24rem);
-    }
-
-    .story-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .scrollbar-hide::-webkit-scrollbar {
-      display: none;
-    }
-
-    .scrollbar-hide {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
-    .category-btn {
-      flex-shrink: 0;
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      border: 1px solid #e5e7eb;
-      background-color: white;
-      color: #1f2937;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .category-btn:hover {
-      border-color: #d1d5db;
-      background-color: #f9fafb;
-    }
-
-    .category-btn.active {
-      background-color: #eff6ff;
-      border-color: #3b82f6;
-      color: #1e40af;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .story-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-      z-index: 10;
-    }
-
-    .story-card:hover .story-details {
-      opacity: 1;
-    }
-
-    .story-image {
-      height: 200px;
-      object-fit: cover;
-    }
-
-    .navbar {
-      font-family: "Pacifico";
-      font-size: large;
-    }
-
-
-
-
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
+    @media (min-width: 768px) {
+      .story-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2.5rem;
       }
     }
 
-    .fade-out {
-      animation: fadeOut 0.3s ease forwards;
+    .glass-dock {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .dark .glass-dock {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden;
-      }
+    /* Updated Category Pill Styling */
+    .category-pill {
+      @apply px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap bg-white dark:bg-slate-900 text-slate-500;
     }
-
-    .skeleton-loader {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 4px;
+    
+    /* Active State: Highlighted Blue */
+    .category-pill.active {
+      @apply bg-accent border-accent text-white shadow-lg shadow-blue-500/30;
     }
-
-    @keyframes shimmer {
-      0% {
-        background-position: 200% 0;
-      }
-
-      100% {
-        background-position: -200% 0;
-      }
-    }
+    
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   </style>
 </head>
 
-<body class="dark:bg-[#121212] bg-white">
+<body class="bg-white dark:bg-slateCustom-950 text-slateCustom-900 dark:text-slate-100 transition-colors duration-500">
 
-  <div id="preloader"  style="display: none;"
-    class="fixed dark:bg-white inset-0 w-full h-full flex flex-col items-center justify-center bg-white z-[9999]">
-    <div class="overflow-hidden px-4 w-full text-center">
-      <h1 id="preloader-text" class="font-bold  mb-6 md:mb-8">
-        WELCOME TO DIARY
-      </h1>
-    </div>
-    <div id="line-loader-container" class="h-1 bg-gray-200 rounded-full overflow-hidden mx-auto">
-      <div id="line-loader" class="h-full bg-gray-800 rounded-full w-0"></div>
-    </div>
+  <div id="preloader" class="fixed inset-0 z-[100] flex items-center justify-center bg-white dark:bg-slateCustom-950">
+    <div class="w-10 h-10 border-2 border-slate-200 dark:border-slate-800 border-t-accent rounded-full animate-spin"></div>
   </div>
-  <div id="container" class="w-full h-full bg-white ">
 
-    <!-- Navbar -->
-    <nav class="bg-white dark:bg-[#121212] shadow-lg sticky top-0 z-50 ">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
+  <header class="sticky top-0 z-50 w-full border-b border-slate-100 dark:border-white/5 bg-white/80 dark:bg-slateCustom-950/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex justify-between items-center">
+      <a href="/stories" class="text-xl md:text-2xl font-black tracking-tighter flex items-center gap-2">
+        <span class="bg-accent w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center text-white text-sm md:text-base">D</span>
+        DIARY<span class="text-accent">.</span>
+      </a>
 
-          <div class="flex items-center justify-between navbar">
-
-            <div class="flex-shrink-0 flex items-center">
-              <a href="/stories" class="dark:text-[#B3B3B3]">
-                <span class=" diary">
-                  <i class="fas fa-feather-alt mr-3 text-accent dark:text-[#B3B3B3]"></i>
-                  Diary
-                </span>
-              </a>
-            </div>
-
-
-            <div class="hidden md:ml-8 md:flex md:space-x-8">
-              <a href="/stories"
-                class="flex items-center h-16 px-2 text-sm font-medium dark:text-[#B3B3B3] border-b-2 border-accent">
-                <span>Stories</span>
-              </a>
-              <a href="/stories/newWrite"
-                class="flex items-center h-16 px-2 text-sm font-medium text-gray-500 hover:dark:text-[#B3B3B3] border-b-2 border-transparent hover:border-primary-400 transition-all duration-200">
-                <span>Write</span>
-              </a>
-            </div>
-          </div>
-
-
-          <div class="flex items-center">
-            <button id="theme-toggle" class="p-2 rounded-full  ">
-              <i id="theme-icon" class="ri-sun-line  dark:text-[#B3B3B3]"></i>
+      <div class="flex items-center gap-2 md:gap-4">
+        <button id="theme-toggle" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-slate-500">
+          <i id="theme-icon" class="ri-moon-clear-line text-xl"></i>
+        </button>
+        <a href="/search" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-500">
+          <i class="ri-search-line text-xl"></i>
+        </a>
+        
+        <% if(currUser) { %>
+          <div class="relative">
+            <button id="profile-btn" class="flex items-center p-1 bg-slate-50 dark:bg-white/5 rounded-full ring-1 ring-slate-200 dark:ring-white/10">
+              <img src="<%=user.image.url%>" class="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover" alt="Profile">
             </button>
-
-            <!-- Search button -->
-            <div class="flex-shrink-0 mr-2">
-              <a href="/search">
-                <button
-                  class="p-2 rounded-full bg-primary-50 hover:bg-primary-100 text-primary-600 dark:text-[#B3B3B3] transition-all duration-200">
-                  <i class="fas fa-search"></i>
-                </button>
-              </a>
-            </div>
-
-            <!-- Profile dropdown -->
-            <div class="ml-3 relative">
-              <% if(!currUser) { %>
-                <a href="/login"
-                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white dark:text-[#B3B3B3] bg-blue-600 hover:bg-blue-700">
-                  SIGN IN
-                </a>
-                <% } else { %>
-                  <div>
-                    <button id="profile-menu-button" type="button" class="flex items-center text-sm  ">
-                      <img class="h-9 w-9 rounded-full object-cover border-2 border-primary-400"
-                        src="<%=user.image.url  %>" alt="User profile">
-                    </button>
-                  </div>
-
-                  <!-- Dropdown menu -->
-                  <div id="profile-dropdown"
-                    class="hidden origin-top-right absolute right-0 mt-2 w-64 rounded-xl shadow-xl py-1 bg-white dark:text-[#B3B3B3] dark:bg-[#121212] ring-1 ring-black ring-opacity-5 focus:outline-none z-10 transform transition-all duration-200">
-                    <div class="px-4 py-3 border-b border-gray-100">
-                      <div class="flex items-center space-x-3">
-                        <img class="h-10 w-10 rounded-full object-cover border-2 border-primary-400"
-                          src="<%=user.image.url  %>" alt="User profile">
-                        <div>
-                          <p class="text-sm font-semibold dark:text-[#B3B3B3]">
-                            <%=user.name%>
-                          </p>
-                          <p class="text-xs text-gray-500 dark:text-[#B3B3B3]">@<%=user.username%>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <a href="/dashbord"
-                      class="block px-4 py-2 text-sm dark:text-[#B3B3B3] text-gray-700 hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                      role="menuitem">
-                      <i class="ri-dashboard-line"></i> Dashboard
-                    </a>
-                    <a href="/profile"
-                      class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                      role="menuitem">
-                      <i class="ri-user-line"></i> Profile
-                    </a>
-                    </a>
-                    <a href="/stories"
-                      class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                      role="menuitem">
-                      <i class="ri-stack-line"></i> Stories
-                    </a>
-
-                    <a href="/stories/newWrite"
-                      class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-primary-50 hover:text-primary-700 transition-colors duration-200"
-                      role="menuitem">
-                      <i class="ri-edit-2-line"></i> Write
-                    </a>
-                    <div class="border-t border-gray-100 mt-1">
-                      <a href="/logout"
-                        class="block px-4 py-2 text-sm text-gray-700 dark:text-[#B3B3B3] hover:bg-red-50 hover:text-red-700 transition-colors duration-200"
-                        role="menuitem">
-                        <i class="ri-logout-box-r-line"></i> Sign out
-                      </a>
-                    </div>
-                  </div>
-                  <%}%>
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border dark:border-white/10 py-2 z-50">
+                <a href="/dashbord" class="block px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-white/5">Dashboard</a>
+                <a href="/profile" class="block px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-white/5">Profile</a>
+                <a href="/logout" class="block px-4 py-2 text-sm text-red-500">Logout</a>
             </div>
           </div>
-        </div>
+        <% } else { %>
+          <a href="/login" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest">Login</a>
+        <% } %>
       </div>
-    </nav>
-    <!-- NAVBAR END -->
+    </div>
+  </header>
 
-    <% if(success && success.length){ %>
-      <div
-        class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end z-50"
-        id="toast-success">
-        <div
-          class="max-w-sm w-full bg-white dark:bg-[#121212] shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden transition-all duration-300 transform translate-y-0 opacity-100">
-          <div class="p-4">
-            <div class="flex items-start">
-              <div class="flex-shrink-0">
-                <svg class="h-6 w-6 dark:text-[#B3B3B3] text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <div class="ml-3 w-0 flex-1 pt-0.5">
-                <p class="text-sm font-medium dark:text-[#B3B3B3]">
-                  <%= success %>
-                </p>
-              </div>
-              <div class="ml-4 flex-shrink-0 flex">
-                <button
-                  class="bg-white rounded-md inline-flex text-gray-400 dark:text-[#B3B3B3] hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
-                  <span class="sr-only">Close</span>
-                  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd"
-                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                      clip-rule="evenodd" />
-                  </svg>
-                </button>
-              </div>
+  <main class="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-16">
+    
+    <section class="mb-12">
+        <h1 class="text-4xl md:text-7xl font-black leading-none tracking-tighter mb-4 uppercase">Latest <span class="text-accent italic">Insights.</span></h1>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <p class="text-slate-400 text-sm md:text-xl italic">"Where overthinking meets clarity."</p>
+            <div class="relative w-full md:w-80 group">
+                <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-accent transition-colors"></i>
+                <input id="searchInput" type="text" placeholder="Search archives..." 
+                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-white/5 border-none rounded-xl focus:ring-1 ring-accent/30 outline-none text-sm font-bold shadow-inner">
             </div>
-          </div>
         </div>
-      </div>
-      <% } %>
+    </section>
 
+    <section class="mb-8 md:mb-12 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-50 dark:border-white/5 pb-6">
+        <div class="flex-grow overflow-x-auto no-scrollbar">
+            <div id="pills-container" class="flex gap-2"></div>
+            <select id="categoryFilter" class="hidden">
+                <option value="">All</option>
+                <option value="fantasy">Fantasy</option>
+                <option value="random-thoughts">Thoughts</option>
+                <option value="poetry">Poetry</option>
+                <option value="letter">Letter</option>
+                <option value="mystery">Mystery</option>
+                <option value="drama">Adventure</option>
+                <option value="historical">Historical</option>
+                <option value="fiction">Fiction</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <select id="sortStories" class="bg-transparent text-[10px] font-black uppercase tracking-[0.2em] border-none focus:ring-0 cursor-pointer text-slate-400 hover:text-accent">
+            <option value="newest">Recent First</option>
+            <option value="oldest">Oldest First</option>
+        </select>
+    </section>
 
-        <div id="page1" class="h-50 w-full bg-white dark:bg-[#121212]">
-          <div id="card-center" class="dark:bg-[#121212] bg-white" style=" width: 100%;
-          min-height: 60%;
-          padding: 4vw;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 2vw;
-          flex-wrap: wrap;">
-            <div class="bg-white dark:bg-[#121212] rounded-lg  p-4 ">
-              <div class="flex flex-col gap-3">
-
-              </div>
-              <section>
-                <button style="display: none;" id="confettiButton">Celebrate!</button>
-
-                <!-- Container -->
-                <div class="mx-auto dark:bg-[#121212] w-full max-w-7xl px-5 py-16 md:px-10 md:py-20">
-                  <!-- Component -->
-                  <div class="flex flex-col items-center">
-                    <!-- Title -->
-                    <h2 class="text-center dark:text-[#B3B3B3] text-3xl font-bold md:text-5xl"> "Write. Share. Relate." </h2>
-                    <p class="mb-8 mt-4 text-center dark:text-[#B3B3B3] text-sm text-gray-500 sm:text-base md:mb-12 lg:mb-16"> "Discover
-                      genuine stories from people navigating overthinking. Share your own journey and find comfort in
-                      knowing you're not alone."</p>
-
-                  </div>
+    <section id="content-area" class="relative">
+        <div id="skeleton-loader" class="hidden story-grid">
+            <% for(let i=0; i<4; i++) { %>
+                <div class="space-y-4 animate-pulse">
+                    <div class="aspect-square md:aspect-[16/11] bg-slate-100 dark:bg-white/5 rounded-2xl md:rounded-[2.5rem]"></div>
+                    <div class="h-4 bg-slate-100 dark:bg-white/5 rounded w-3/4"></div>
+                    <div class="h-4 bg-slate-100 dark:bg-white/5 rounded w-1/2"></div>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-2">
-
-                  <div class="relative flex-grow">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                      <i class="ri-search-line"></i>
-                    </div>
-                    <input id="searchInput" type="search"
-                      class="w-full dark:bg-[#121212] dark:text-[#B3B3B3] pl-10 pr-4 py-2 text-sm rounded-lg border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                      placeholder="Search stories..." />
-                  </div>
-
-
-                  <select id="categoryFilter"
-                    class="text-sm p-2 dark:bg-[#121212] border dark:text-[#B3B3B3] hidden border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    <option  value="">All Genres</option>
-                    <option value="fantasy">Fantasy </option>
-                    <option value="random-thoughts">random-thoughts</option>
-                    <option value="poetry">Poetry</option>
-                    <option value="letter">Letter</option>
-                    <option value="mystery">Mystery</option>
-                    <option value="drama">adventure</option>
-                    <option value="historical">Historical</option>
-                    <option value="fiction">Fiction</option>
-                    <option value="other">Other</option>
-                  </select>
-
-                  <select id="sortStories"
-                    class="text-sm p-2 dark:bg-[#121212] dark:text-[#B3B3B3] border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                  </select>
-                </div>
-              </section>
-            </div>
-          </div>
-
-          <div class="bg-white dark:bg-[#121212] dark:text-[#B3B3B3] text-white container mx-auto px-4  ">
-            <div class="relative max-w-full">
-              <div class="flex space-x-2 pb-4 overflow-x-auto scrollbar-hide">
-
-              </div>
-            </div>
-            <h2 class="text-2xl text-black dark:text-[#B3B3B3] font-semibold mb-6"> Stories</h2>
-
-
-            <div id="skeleton-loader"
-              class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 min-h-[300px] hidden">
-              <% for(let i=0; i<10; i++) { %>
-                <div class="story-card bg-gray-100 rounded-lg overflow-hidden mb-2">
-                  <div class="relative">
-                    <div class="skeleton-loader w-full h-48"></div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-20"></div>
-                    <div class="absolute bottom-0 left-0 p-3 w-full">
-                      <div class="skeleton-loader h-6 w-3/4 mb-2"></div>
-                      <div class="flex space-x-2">
-                        <div class="skeleton-loader h-4 w-16"></div>
-                        <div class="skeleton-loader h-4 w-16"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <% } %>
-            </div>
-
-
-            <div id="stories-grid"
-              class="grid dark:bg-[#121212] dark:text-[#B3B3B3] grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 mb-16 min-h-[300px]">
-              <% for(stories of storyData) { %>
-                <a href="/stories/<%= stories._id %>" class="group">
-                  <div
-                    class="story-card bg-white dark:bg-[#121212] rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100 dark:border-gray-800">
-                    <div class="relative aspect-[4/3]">
-                      <img src="<%= stories.image.url %>" alt="Story cover" class="w-full h-full object-cover"
-                        loading="lazy">
-                      <div class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
-                        <h3 class="font-semibold text-white dark:text-white text-base line-clamp-2">
-                          <%= stories.title %>
-                        </h3>
-                      </div>
-                      <div class="absolute top-2 right-2 text-white dark:text-[#B3B3B3] bg-black bg-opacity-70 px-2 py-1 rounded text-sm">
-                        <i class="ri-eye-2-line"></i>
-                        <%=stories.views.length %>
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <div class="flex items-center space-x-2">
-                        <div class="flex-shrink-0 w-6 h-6 rounded-full overflow-hidden">
-                          <img src="<%= stories.owner.image.url %>" alt="<%= stories.owner.username %>"
-                            class="w-full h-full object-cover">
-                        </div>
-                        <div class="text-sm text-gray-600  dark:text-[#B3B3B3]">
-                          <span>
-                            <%= stories.owner.username %>
-                          </span>
-                          <span class="mx-1">•</span>
-                          <span id="date" class="text-gray-500 dark:text-[#B3B3B3] text-xs">
-                            <%= stories.timeStamp %>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-                <% } %>
-            </div>
-
-
-          </div>
-        <div class="flex justify-center gap-12 mt-4 mb-16 overflow-x-auto">
-            <section class="font-sans  p-4 sm:p-6 bg-white dark:bg-[#121212]  overflow-x-auto">
-              <div class="flex justify-center m-6 mb-12 align-items">
-                <h2 class="text-xl  sm:text-2xl font-bold m-6 text-zinc-900 dark:text-white"> Users with the Most
-                  Stories </h2>
-
-              </div>
-
-              <div class="flex gap-4 sm:gap-6 overflow-x-auto space-x-8 pb-4 scrollbar-hide">
-                <% for (const writers of topFiveWriters) { %>
-                  <div class="flex-shrink-0 w-32 sm:w-40 text-center">
-                    <a href="/writers/<%=writers._id%>" class="group block">
-                      <img
-                        class="w-32 h-32 sm:w-40 sm:h-40 rounded-full object-cover mx-auto shadow-md group-hover:scale-105 transition-transform"
-                        src="<%= writers.image.url %>" alt="<%= writers.username %>">
-                      <h3 class="mt-3 font-semibold text-zinc-800 dark:text-white truncate">
-                        <%= writers.username %>
-                      </h3>
-                      <p class="text-sm text-zinc-500 dark:text-zinc-400">
-                        <%=writers.storiesCount%> Stories
-                      </p>
-                    </a>
-                  </div>
-                  <% } %>
-              </div>
-
-          </div>
-
-          <% if(currUser) { %>
-            <div
-              class="fixed dark:bg-[#121212]  bottom-0 left-0 right-0 md:bottom-4 md:left-1/2 md:right-auto md:transform md:-translate-x-1/2 z-50">
-              <div
-                class="bg-white dark:bg-[#121212] shadow-xl md:rounded-full px-6 py-3 flex items-center justify-around md:justify-center md:gap-12 border-t border-gray-200 md:border">
-
-                <a href="/chat"
-                  class="text-gray-700 dark:text-[#F7F2E9] hover:text-blue-600 transition flex flex-col items-center relative">
-                  <div class="relative">
-                    <i class="ri-message-3-line text-xl"></i>
-                    <button onclick="markMessagesAsSeen()">
-                      <span id="message-dot"
-                        class="unread-count absolute -top-2 -right-2 bg-gray-200 dark:text-black  text-xs rounded-full h-5 w-5 flex items-center justify-center"></span>
-                    </button>
-                  </div>
-                  <span class="text-xs mt-1 hidden md:block">Message</span>
-                </a>
-
-                <a href="/followers/<%=currUser._id%>"
-                  class="text-gray-700 dark:text-[#F7F2E9] hover:text-blue-600 transition flex flex-col items-center">
-                  <i class="ri-group-line text-xl"></i>
-                  <span class="text-xs mt-1 hidden md:block">Followers</span>
-                </a>
-
-                <a href="/stories/newWrite"
-                  class="text-white bg-blue-600 dark:bg-blue-500 w-14 h-14 -mt-8 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition">
-                  <i class="fas fa-pen-nib text-xl"></i>
-                </a>
-
-                <a href="/notification"
-                  class="text-gray-700 dark:text-[#F7F2E9] hover:text-blue-600 transition flex flex-col items-center relative">
-                  <div class="relative">
-                    <button onclick="markNotificationsSeen()">
-                      <i class="ri-notification-3-line text-xl"></i>
-                      <span id="red-dot"
-                        class="absolute -top-2 -right-2 bg-gray-200 dark:text-black text-xs rounded-full h-5 w-5 flex items-center justify-center">
-
-                      </span>
-                    </button>
-                  </div>
-                  <span class="text-xs mt-1 hidden md:block">Notifications</span>
-                </a>
-                <a href="/profile"
-                  class="text-gray-700 dark:text-gray-300 hover:text-blue-600 transition flex flex-col items-center">
-                  <i class="ri-user-smile-line text-xl"></i>
-                  <span class="text-xs mt-1 hidden md:block">Profile</span>
-                </a>
-
-              </div>
-            </div>
             <% } %>
         </div>
 
+        <div id="stories-grid" class="story-grid transition-opacity duration-300">
+            <% for(stories of storyData) { %>
+                <article class="editorial-card group">
+                    <a href="/stories/<%= stories._id %>" class="block space-y-3">
+                        <div class="relative aspect-square md:aspect-[16/11] overflow-hidden rounded-2xl md:rounded-[2.5rem] bg-slate-50 dark:bg-white/5 shadow-sm">
+                            <img src="<%= stories.image.url %>" class="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0" loading="lazy">
+                            <div class="absolute top-3 left-3">
+                                <span class="px-2 py-1 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md rounded-lg text-[8px] md:text-[10px] font-black uppercase tracking-widest shadow-sm"><%= stories.category || 'Thought' %></span>
+                            </div>
+                        </div>
+                        <div class="space-y-2 px-1">
+                            <div class="flex items-center gap-2 text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                <span class="text-accent flex items-center gap-1"><i class="ri-eye-line"></i> <%= stories.views.length %></span>
+                                <span class="opacity-20">•</span>
+                                <span id="date"><%= stories.timeStamp %></span>
+                            </div>
+                            <h3 class="text-sm md:text-2xl font-bold leading-tight line-clamp-2 group-hover:text-accent transition-colors"><%= stories.title %></h3>
+                        </div>
+                    </a>
+                    
+                    <div class="pt-4 md:pt-6 mt-4 md:mt-6 border-t border-slate-50 dark:border-white/5 flex items-center justify-between px-1">
+                        <div class="flex items-center gap-2">
+                            <img src="<%= stories.owner.image.url %>" class="w-6 h-6 md:w-8 md:h-8 rounded-full object-cover grayscale group-hover:grayscale-0">
+                            <span class="text-[10px] md:text-xs font-bold truncate max-w-[70px] md:max-w-none"><%= stories.owner.username %></span>
+                        </div>
+                        <i class="ri-bookmark-3-line text-slate-300 md:text-lg"></i>
+                    </div>
+                </article>
+            <% } %>
+        </div>
+    </section>
 
-        <script src="./assets/vendor/canvas-confetti/dist/confetti.browser.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <section class="mt-24 pt-12 border-t border-slate-50 dark:border-white/5">
+        <h2 class="text-[10px] font-black uppercase tracking-[0.4em] mb-10 opacity-40">Top Contributors</h2>
+        <div class="flex gap-10 overflow-x-auto no-scrollbar pb-6">
+          <% for (const writers of topFiveWriters) { %>
+            <a href="/writers/<%=writers._id%>" class="flex-shrink-0 flex flex-col items-center group text-center w-24">
+              <img class="w-16 h-16 rounded-full object-cover ring-2 ring-transparent group-hover:ring-accent transition-all duration-500" src="<%= writers.image.url %>" alt="">
+              <h3 class="text-[10px] font-bold mt-3 uppercase tracking-tighter"><%= writers.username %></h3>
+            </a>
+          <% } %>
+        </div>
+    </section>
+  </main>
 
+  <% if(currUser) { %>
+    <nav class="fixed bottom-6 left-0 right-0 z-[60] px-4 pointer-events-none">
+      <div class="max-w-md mx-auto glass-dock rounded-[2.5rem] p-2 shadow-2xl flex items-center justify-between pointer-events-auto">
+        <a href="/chat" class="w-12 h-12 flex items-center justify-center rounded-full relative">
+          <i class="ri-chat-smile-2-line text-xl md:text-2xl"></i>
+          <span id="message-dot" class="hidden absolute top-3 right-3 w-2.5 h-2.5 bg-accent rounded-full ring-4 ring-white dark:ring-slate-900 animate-pulse"></span>
+        </a>
+        <a href="/followers/<%=currUser._id%>" class="w-12 h-12 flex items-center justify-center rounded-full"><i class="ri-team-line text-xl md:text-2xl"></i></a>
+        
+        <a href="/stories/newWrite" class="w-14 h-14 md:w-16 md:h-16 bg-slate-950 dark:bg-white text-white dark:text-slate-950 rounded-full flex items-center justify-center shadow-2xl transform -translate-y-6 hover:scale-110 active:scale-95 transition-all">
+          <i class="ri-add-line text-3xl md:text-4xl"></i>
+        </a>
+        
+        <a href="/notification" class="w-12 h-12 flex items-center justify-center rounded-full relative">
+          <i class="ri-notification-4-line text-xl md:text-2xl"></i>
+          <span id="red-dot" class="hidden absolute top-3 right-3 w-2.5 h-2.5 bg-red-500 rounded-full ring-4 ring-white dark:ring-slate-900 animate-pulse"></span>
+        </a>
+        <a href="/profile" class="w-12 h-12 flex items-center justify-center rounded-full"><i class="ri-user-line text-xl md:text-2xl"></i></a>
+      </div>
+    </nav>
+  <% } %>
 
-        <script>
-          document.addEventListener("DOMContentLoaded", function () {
+  <script>
+    if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+    document.getElementById('theme-toggle').onclick = () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    };
 
-            checkUnreadNotifications();
-            checkUnreadMessages();
+    const pBtn = document.getElementById('profile-btn');
+    if(pBtn) pBtn.onclick = (e) => { e.stopPropagation(); document.getElementById('profile-dropdown').classList.toggle('hidden'); };
+    window.onclick = () => document.getElementById('profile-dropdown')?.classList.add('hidden');
 
+    const nSelect = document.getElementById('categoryFilter');
+    const pContainer = document.getElementById('pills-container');
+    
+    Array.from(nSelect.options).forEach(opt => {
+      const b = document.createElement('button');
+      b.innerText = opt.text;
+      // Initialize class with logic check for 'active'
+      b.className = `category-pill ${opt.selected ? 'active' : ''}`;
+      
+      b.onclick = () => {
+        nSelect.value = opt.value;
+        // Logic to toggle 'active' class on all pills
+        document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+        b.classList.add('active');
+        updateStories();
+      };
+      pContainer.appendChild(b);
+    });
 
-            setInterval(checkUnreadNotifications, 500);
-            setInterval(checkUnreadMessages, 1000);
+    function formatDates() {
+      document.querySelectorAll('#date').forEach(el => {
+        const d = el.innerText.replace('Last edited: ', '').trim();
+        if(d) el.innerText = moment(new Date(d)).fromNow();
+      });
+    }
+    formatDates();
+
+    window.onload = () => { gsap.to("#preloader", { opacity: 0, display: 'none', duration: 0.5 }); };
+
+    function checkBadges() {
+      fetch('/check-unread-notifications').then(r => r.json()).then(d => {
+        const dot = document.getElementById("red-dot");
+        if(dot) dot.classList.toggle("hidden", d.unreadCount <= 0);
+      });
+      fetch('/check-unread-messages').then(r => r.json()).then(d => {
+        const msgDot = document.getElementById("message-dot");
+        if(msgDot) msgDot.classList.toggle("hidden", d.unreadCount <= 0);
+      });
+    }
+    setInterval(checkBadges, 5000);
+    checkBadges();
+
+    function updateStories() {
+        const search = document.getElementById("searchInput").value;
+        const category = nSelect.value;
+        const sort = document.getElementById("sortStories").value;
+        
+        const grid = document.getElementById("stories-grid");
+        const loader = document.getElementById("skeleton-loader");
+
+        grid.style.opacity = '0';
+        loader.classList.remove('hidden');
+
+        fetch(`/stories?search=${search}&category=${category}&sort=${sort}`)
+          .then(res => res.text()).then(html => {
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            grid.innerHTML = doc.getElementById("stories-grid").innerHTML;
+            formatDates();
+          }).finally(() => {
+            loader.classList.add('hidden');
+            grid.style.opacity = '1';
           });
-
-
-          function checkUnreadNotifications() {
-            fetch('/check-unread-notifications')
-              .then(response => response.json())
-              .then(data => {
-                const dot = document.getElementById("notification-dot");
-                if (data.success && data.unreadCount > 0) {
-                  dot.classList.remove("hidden");
-                  dot.textContent = data.unreadCount;
-                } else {
-                  dot.classList.add("hidden");
-                }
-              })
-              .catch(error => console.error("Error:", error));
-          }
-
-          function markNotificationsSeen() {
-            fetch('/mark-notifications-seen')
-              .then(() => {
-                document.getElementById("notification-dot").classList.add("hidden");
-              })
-              .catch(error => console.error("Error:", error));
-          }
-
-
-          function checkUnreadMessages() {
-            fetch('/check-unread-messages')
-              .then(response => response.json())
-              .then(data => {
-                const dot = document.getElementById("message-dot");
-                if (data.success && data.unreadCount > 0) {
-                  dot.classList.remove("hidden");
-                  dot.textContent = data.unreadCount;
-                } else {
-                  dot.classList.add("hidden");
-                }
-              })
-              .catch(error => console.error("Error checking messages:", error));
-          }
-
-          function markMessagesSeen() {
-            fetch('/mark-messages-seen')
-              .then(() => {
-                document.getElementById("message-dot").classList.add("hidden");
-              })
-              .catch(error => console.error("Error marking messages as seen:", error));
-          }
-        </script>
-
-
-        <script>
-          const themeToggleBtn = document.getElementById('theme-toggle');
-          const themeIcon = document.getElementById('theme-icon');
-
-          const savedTheme = localStorage.getItem('theme');
-          if (savedTheme === 'dark') {
-            document.documentElement.classList.add('dark');
-            themeIcon.classList.replace('ri-sun-line', 'ri-moon-line');
-          }
-
-          themeToggleBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            const isDarkMode = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-            themeIcon.classList.toggle('ri-sun-line', !isDarkMode);
-            themeIcon.classList.toggle('ri-moon-line', isDarkMode);
-          });
-
-          function showLoading() {
-
-            const skeleton = document.getElementById('skeleton-loader');
-            const storiesGrid = document.getElementById('stories-grid');
-
-            // Show skeleton first
-            skeleton.classList.remove('hidden');
-            storiesGrid.classList.add('hidden');
-
-
-            document.body.style.overflow = 'hidden';
-          }
-
-          function hideLoading() {
-
-            const skeleton = document.getElementById('skeleton-loader');
-            const storiesGrid = document.getElementById('stories-grid');
-
-            setTimeout(() => {
-              skeleton.classList.add('hidden');
-              storiesGrid.classList.remove('hidden');
-              document.body.style.overflow = '';
-            }, 300);
-          }
-
-          document.addEventListener('DOMContentLoaded', function () {
-            const select = document.getElementById('categoryFilter');
-            const container = document.querySelector('.flex.space-x-2');
-
-            const iconMap = {};
-
-
-            const colorMap = {
-              '': 'blue',
-              'fantasy': 'purple',
-              'random-thoughts': 'yellow',
-              'poetry': 'pink',
-              'Letter': 'pink',
-              'mystery': 'indigo',
-              'adventure': 'green',
-              'historical': 'amber',
-              'fiction': 'purple',
-              'other': 'gray'
-            };
-
-            // Create buttons for each option
-            Array.from(select.options).forEach(option => {
-              const btn = document.createElement('button');
-              btn.type = 'button';
-              btn.className = 'category-btn';
-              btn.dataset.value = option.value;
-
-
-              const text = document.createElement('span');
-              text.textContent = option.text;
-              btn.appendChild(text);
-
-              if (option.selected) {
-                btn.classList.add('active');
-              }
-
-              btn.addEventListener('click', () => {
-                select.value = option.value;
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const event = new Event('change');
-                select.dispatchEvent(event);
-              });
-
-              container.appendChild(btn);
-            });
-
-            select.addEventListener('change', function () {
-              document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.value === this.value);
-              });
-            });
-          });
-
-          setTimeout(() => {
-            const toast = document.getElementById('toast-success');
-            if (toast) {
-              toast.style.display = "none";
-              location.reload();
-            }
-          }, 3000);
-
-          const flashMessage = "<%= success %>";
-          if (flashMessage === 'your story is live!') {
-            confetti({
-              particleCount: 200,
-              angle: Math.random() * 360,
-              spread: 90 + Math.random() * 90,
-              origin: { x: Math.random(), y: Math.random() },
-              colors: ['#ff6347', '#ff4500', '#32cd32', '#1e90ff', '#ff1493'],
-              shapes: ['circle', 'square', 'triangle'],
-              gravity: 0.3 + Math.random() * 0.5,
-              drift: Math.random() * 1 - 0.5
-            });
-
-            setTimeout(() => {
-              confetti({
-                particleCount: 500,
-                spread: 360,
-                origin: { x: 0.5, y: 0.5 },
-                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00'],
-                shapes: ['circle'],
-                gravity: 0.6,
-                scalar: 1.2
-              });
-            }, 100);
-          }
-
-          document.querySelectorAll('#date').forEach(el => {
-            const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
-            el.innerText = moment(rawDate).fromNow();
-          });
-
-          document.addEventListener("DOMContentLoaded", function () {
-            checkUnreadNotifications();
-            setInterval(checkUnreadNotifications, 5000);
-          });
-
-          function checkUnreadNotifications() {
-            fetch('/check-unread-notifications')
-              .then(response => response.json())
-              .then(data => {
-                const redDot = document.getElementById("red-dot");
-                if (data.success && data.unreadCount > 0) {
-                  redDot.classList.remove("hidden");
-                  redDot.textContent = data.unreadCount;
-                } else {
-                  redDot.classList.add("hidden");
-                }
-              })
-              .catch(error => console.error("Error fetching notifications:", error));
-          }
-
-          function markNotificationsSeen() {
-            fetch('/mark-notifications-seen')
-              .then(() => {
-                document.getElementById("red-dot").classList.add("hidden");
-              })
-              .catch(error => console.error("Error marking notifications as seen:", error));
-          }
-
-          function updateDateFormatting() {
-            document.querySelectorAll('#date').forEach(el => {
-              const rawDate = new Date(el.innerText.replace('Last edited: ', '').trim());
-              el.innerText = moment(rawDate).fromNow();
-            });
-          }
-
-          function updateStories() {
-            const search = document.getElementById("searchInput")?.value.trim() || '';
-            const category = document.getElementById("categoryFilter")?.value || '';
-            const sort = document.getElementById("sortStories")?.value || '';
-
-            const query = new URLSearchParams({
-              search: search,
-              category: category,
-              sort: sort
-            });
-
-            showLoading();
-
-            fetch(`/stories?${query.toString()}`)
-              .then(response => response.text())
-              .then(html => {
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(html, "text/html");
-                let newStoryList = doc.querySelector("#stories-grid");
-
-                if (newStoryList.children.length === 0) {
-                  document.getElementById("stories-grid").innerHTML = `
-                  <div class="col-span-full py-12 text-center text-gray-400">
-                    <i class="ri-emotion-sad-line text-4xl mb-2"></i>
-                    <p>No stories found</p>
-                  </div>
-                `;
-                } else {
-                  document.getElementById("stories-grid").innerHTML = newStoryList.innerHTML;
-                }
-
-                updateDateFormatting();
-              })
-              .catch(error => {
-                console.error("Error fetching stories:", error);
-                document.getElementById("stories-grid").innerHTML = `
-                <div class="col-span-full py-12 text-center text-gray-400">
-                  <i class="ri-alert-line text-4xl mb-2"></i>
-                  <p>Error loading stories. Please try again.</p>
-                </div>
-              `;
-              })
-              .finally(() => {
-                hideLoading();
-              });
-          }
-
-          document.getElementById("searchInput")?.addEventListener("input", updateStories);
-          document.getElementById("categoryFilter")?.addEventListener("change", updateStories);
-          document.getElementById("sortStories")?.addEventListener("change", updateStories);
-
-          const profileButton = document.getElementById('profile-menu-button');
-          const profileDropdown = document.getElementById('profile-dropdown');
-
-          profileButton.addEventListener('click', () => {
-            profileDropdown.classList.toggle('hidden');
-          });
-
-
-          window.addEventListener('click', (event) => {
-            if (!profileButton.contains(event.target)) {
-              profileDropdown.classList.add('hidden');
-            }
-          });
-        </script>
-        <script>
-          document.addEventListener('DOMContentLoaded', () => {
-            const preloader = document.getElementById('preloader');
-
-            if (!sessionStorage.getItem('preloaderShown')) {
-              document.body.classList.add('preloader-active');
-              preloader.style.display = 'flex';
-
-              gsap.from("#preloader-text", {
-                y: "100%",
-                duration: 1.2,
-                ease: "power4.out",
-                delay: 0.3
-              });
-
-              gsap.to("#line-loader", {
-                width: "100%",
-                duration: 2.5,
-                ease: "power1.inOut",
-                delay: 0.5
-              });
-
-              gsap.to("#preloader", {
-                opacity: 0,
-                duration: 0.8,
-                delay: 3,
-                onComplete: () => {
-                  preloader.remove();
-                  document.body.classList.remove('preloader-active');
-                }
-              });
-
-              sessionStorage.setItem('preloaderShown', 'true');
-            } else {
-              preloader.remove();
-            }
-          });
-        </script>
-  </div>
+    }
+    document.getElementById("searchInput").oninput = updateStories;
+    document.getElementById("sortStories").onchange = updateStories;
+  </script>
 </body>
-
 </html>

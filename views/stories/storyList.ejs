@@ -28,7 +28,7 @@
   <style>
     body { -webkit-font-smoothing: antialiased; overflow-x: hidden; }
     
-    /* 2 columns on mobile, auto on PC */
+    /* Editorial Grid: 2 columns on mobile, auto on PC */
     .story-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -53,14 +53,16 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    /* Updated Category Pill Styling */
     .category-pill {
       @apply px-4 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap bg-white dark:bg-slate-900 text-slate-500;
     }
-    
-    /* Active State: Highlighted Blue */
+
+    /* Logic: Visual Indicator for Chosen Category */
     .category-pill.active {
-      @apply bg-accent border-accent text-white shadow-lg shadow-blue-500/30;
+      background-color: #3b82f6 !important;
+      border-color: #3b82f6 !important;
+      color: white !important;
+      box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
     }
     
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -74,34 +76,36 @@
     <div class="w-10 h-10 border-2 border-slate-200 dark:border-slate-800 border-t-accent rounded-full animate-spin"></div>
   </div>
 
-  <header class="sticky top-0 z-50 w-full border-b border-slate-100 dark:border-white/5 bg-white/80 dark:bg-slateCustom-950/80 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex justify-between items-center">
-      <a href="/stories" class="text-xl md:text-2xl font-black tracking-tighter flex items-center gap-2">
-        <span class="bg-accent w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center text-white text-sm md:text-base">D</span>
+  <header class="sticky top-0 z-50 w-full border-b border-slate-100 dark:border-slate-900 bg-white/80 dark:bg-slateCustom-950/80 backdrop-blur-md">
+    <div class="max-w-5xl mx-auto px-6 h-20 flex justify-between items-center">
+      <a href="/stories" class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+        <span class="bg-accent w-8 h-8 rounded-lg flex items-center justify-center text-white text-base">D</span>
         DIARY<span class="text-accent">.</span>
       </a>
 
-      <div class="flex items-center gap-2 md:gap-4">
-        <button id="theme-toggle" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-slate-500">
+      <div class="flex items-center gap-4">
+        <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">
           <i id="theme-icon" class="ri-moon-clear-line text-xl"></i>
         </button>
-        <a href="/search" class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-500">
-          <i class="ri-search-line text-xl"></i>
-        </a>
-        
+
         <% if(currUser) { %>
           <div class="relative">
-            <button id="profile-btn" class="flex items-center p-1 bg-slate-50 dark:bg-white/5 rounded-full ring-1 ring-slate-200 dark:ring-white/10">
-              <img src="<%=user.image.url%>" class="w-7 h-7 md:w-8 md:h-8 rounded-full object-cover" alt="Profile">
+            <button id="profile-btn" class="flex items-center gap-2 p-1 pr-3 bg-slate-50 dark:bg-slate-900 rounded-full hover:ring-2 ring-accent/20 transition-all">
+              <img src="<%=user.image.url%>" class="w-8 h-8 rounded-full object-cover" alt="Profile">
+              <span class="text-xs font-bold hidden sm:block"><%=user.username%></span>
             </button>
-            <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border dark:border-white/10 py-2 z-50">
-                <a href="/dashbord" class="block px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-white/5">Dashboard</a>
-                <a href="/profile" class="block px-4 py-2 text-sm hover:bg-slate-50 dark:hover:bg-white/5">Profile</a>
-                <a href="/logout" class="block px-4 py-2 text-sm text-red-500">Logout</a>
+            <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-60 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 py-2 z-[70]">
+                <div class="px-4 py-3 border-b dark:border-slate-800 mb-1">
+                  <p class="text-sm font-bold truncate"><%=user.name%></p>
+                  <p class="text-[10px] text-slate-500 uppercase">@<%=user.username%></p>
+                </div>
+                <a href="/dashbord" class="block px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"><i class="ri-dashboard-line mr-2"></i> Dashboard</a>
+                <a href="/profile" class="block px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"><i class="ri-user-line mr-2"></i> Profile</a>
+                <div class="border-t border-slate-50 dark:border-slate-800 mt-1">
+                  <a href="/logout" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"><i class="ri-logout-box-line mr-2"></i> Logout</a>
+                </div>
             </div>
           </div>
-        <% } else { %>
-          <a href="/login" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest">Login</a>
         <% } %>
       </div>
     </div>
@@ -186,7 +190,7 @@
         </div>
     </section>
 
-    <section class="mt-24 pt-12 border-t border-slate-50 dark:border-white/5">
+    <section class="mt-24 pt-12 border-t  mb-16 border-slate-50 dark:border-white/5">
         <h2 class="text-[10px] font-black uppercase tracking-[0.4em] mb-10 opacity-40">Top Contributors</h2>
         <div class="flex gap-10 overflow-x-auto no-scrollbar pb-6">
           <% for (const writers of topFiveWriters) { %>
@@ -235,21 +239,26 @@
     const nSelect = document.getElementById('categoryFilter');
     const pContainer = document.getElementById('pills-container');
     
-    Array.from(nSelect.options).forEach(opt => {
-      const b = document.createElement('button');
-      b.innerText = opt.text;
-      // Initialize class with logic check for 'active'
-      b.className = `category-pill ${opt.selected ? 'active' : ''}`;
-      
-      b.onclick = () => {
-        nSelect.value = opt.value;
-        // Logic to toggle 'active' class on all pills
-        document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
-        b.classList.add('active');
-        updateStories();
-      };
-      pContainer.appendChild(b);
-    });
+    // LOGIC: Maintain selected category color
+    const renderPills = () => {
+        pContainer.innerHTML = '';
+        Array.from(nSelect.options).forEach(opt => {
+          const b = document.createElement('button');
+          b.innerText = opt.text;
+          // Apply active class if selected
+          b.className = `category-pill ${nSelect.value === opt.value ? 'active' : ''}`;
+          
+          b.onclick = () => {
+            nSelect.value = opt.value;
+            // Immediate UI feedback before AJAX starts
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            b.classList.add('active');
+            updateStories();
+          };
+          pContainer.appendChild(b);
+        });
+    }
+    renderPills();
 
     function formatDates() {
       document.querySelectorAll('#date').forEach(el => {
